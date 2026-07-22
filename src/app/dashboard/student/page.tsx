@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { requestReschedule } from "./actions";
 
 export default async function StudentDashboard() {
   const session = await getServerSession(authOptions);
@@ -75,18 +76,39 @@ export default async function StudentDashboard() {
                     {t.sessions.length === 0 ? <p className="text-sm text-gray-500">No classes scheduled.</p> : (
                       <ul className="space-y-3 max-h-96 overflow-y-auto pr-2">
                         {t.sessions.map(s => (
-                          <li key={s.id} className="p-4 border border-gray-100 rounded-xl bg-gray-50 flex justify-between items-center">
-                            <div>
-                              <p className="font-medium text-gray-900">{new Date(s.date).toLocaleString()}</p>
-                              {s.rescheduledTo && <p className="text-xs font-semibold text-indigo-600 mt-1">Rescheduled: {new Date(s.rescheduledTo).toLocaleString()}</p>}
-                              <div className="mt-2">
-                                <span className={`text-xs px-2 py-1 rounded-full font-semibold ${s.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : s.status === 'MISSED' ? 'bg-red-100 text-red-700' : s.status === 'RESCHEDULED' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700'}`}>{s.status}</span>
-                              </div>
+                          <li key={s.id} className="p-4 border border-gray-100 rounded-xl bg-gray-50 flex flex-col gap-2">
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <p className="font-medium text-gray-900">{new Date(s.date).toLocaleString()}</p>
+                                    {s.rescheduledTo && <p className="text-xs font-semibold text-indigo-600 mt-1">Rescheduled: {new Date(s.rescheduledTo).toLocaleString()}</p>}
+                                    <div className="mt-2">
+                                        <span className={`text-xs px-2 py-1 rounded-full font-semibold ${s.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : s.status === 'MISSED' ? 'bg-red-100 text-red-700' : s.status === 'RESCHEDULED' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700'}`}>{s.status}</span>
+                                    </div>
+                                </div>
+                                {s.classLink && s.status !== "COMPLETED" && s.status !== "MISSED" && (
+                                    <a href={s.classLink} target="_blank" rel="noreferrer" className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm mb-2 block text-center">
+                                        Join Class
+                                    </a>
+                                )}
                             </div>
-                            {s.classLink && s.status !== "COMPLETED" && s.status !== "MISSED" && (
-                              <a href={s.classLink} target="_blank" rel="noreferrer" className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm">
-                                Join Class
-                              </a>
+                            {s.status === "SCHEDULED" && (
+                              s.rescheduleStatus === 'PENDING' ? (
+                                <div className="mt-2 p-2 bg-yellow-50 rounded border border-yellow-100 text-right">
+                                  <p className="text-xs text-yellow-800 font-medium">Reschedule requested: {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : ''} - {s.rescheduleProposedEndTime ? new Date(s.rescheduleProposedEndTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'N/A'}</p>
+                                  <p className="text-xs text-yellow-600">Pending admin approval.</p>
+                                </div>
+                              ) : <div className="mt-2 text-right border-t border-gray-100 pt-2">
+                                    <p className="text-xs font-semibold mb-1 text-gray-500">Request Reschedule (Same Day)</p>
+                                    <form action={requestReschedule.bind(null, s.id)} className="flex flex-col gap-2 items-end">
+                                      <div className="flex gap-1 items-center max-w-[250px] w-full">
+                                        <input type="time" name="startTime" required className="border border-gray-300 rounded px-2 py-1 text-xs w-full" title="Start Time" />
+                                        <span className="text-gray-400 text-xs">to</span>
+                                        <input type="time" name="endTime" required className="border border-gray-300 rounded px-2 py-1 text-xs w-full" title="End Time" />
+                                      </div>
+                                      <input type="text" name="reason" placeholder="Reason (optional)" className="border border-gray-300 rounded px-2 py-1 text-xs w-full max-w-[250px]" />
+                                      <button className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 px-3 py-1 rounded text-xs font-medium">Submit</button>
+                                    </form>
+                                  </div>
                             )}
                           </li>
                         ))}

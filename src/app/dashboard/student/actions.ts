@@ -24,28 +24,12 @@ export async function requestReschedule(sessionId: string, formData: FormData) {
   await prisma.classSession.update({
     where: { id: sessionId },
     data: {
-      rescheduleRequestedBy: "TEACHER",
+      rescheduleRequestedBy: "STUDENT",
       rescheduleProposedTime: proposedStart,
       rescheduleProposedEndTime: proposedEnd,
       rescheduleReason: reason,
       rescheduleStatus: "PENDING"
     }
   });
-  revalidatePath("/dashboard/teacher");
-}
-
-export async function markClassStatus(sessionId: string, status: "COMPLETED" | "MISSED" | "PENDING") {
-  await prisma.classSession.update({
-    where: { id: sessionId },
-    data: { status },
-  });
-  revalidatePath("/dashboard/teacher");
-}
-
-export async function updateClassLink(sessionId: string, link: string) {
-  await prisma.classSession.update({
-    where: { id: sessionId },
-    data: { classLink: link },
-  });
-  revalidatePath("/dashboard/teacher");
+  revalidatePath("/dashboard/student");
 }

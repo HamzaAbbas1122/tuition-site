@@ -8,29 +8,11 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  ADMIN
-  TEACHER
-  STUDENT
-}
 
-enum AppStatus {
-  PENDING
-  ACCEPTED
-  REJECTED
-}
-
-enum ClassStatus {
-  SCHEDULED
-  COMPLETED
-  MISSED
-  PENDING
-  RESCHEDULED
-}
 
 model User {
   id        String   @id @default(cuid())
@@ -38,7 +20,7 @@ model User {
   email     String   @unique
   password  String?
   phone     String?
-  role      Role     @default(STUDENT)
+  role      String   @default("STUDENT")
   createdAt DateTime @default(now())
   
   // Relations
@@ -68,7 +50,7 @@ model StudentApplication {
   parentName  String
   phone       String
   subject     String
-  status      AppStatus @default(PENDING)
+  status      String    @default("PENDING")
   createdAt   DateTime  @default(now())
 }
 
@@ -78,7 +60,7 @@ model TeacherApplication {
   phone     String
   email     String
   subjects  String
-  status    AppStatus @default(PENDING)
+  status    String    @default("PENDING")
   createdAt DateTime  @default(now())
 }
 
@@ -96,13 +78,18 @@ model TuitionClass {
 }
 
 model ClassSession {
-  id          String        @id @default(cuid())
-  tuitionId   String
-  date        DateTime
-  endTime     DateTime
-  status      ClassStatus   @default(SCHEDULED)
-  classLink   String?
-  rescheduledTo DateTime?
+  id                    String        @id @default(cuid())
+  tuitionId             String
+  date                  DateTime
+  endTime               DateTime
+  status                String        @default("SCHEDULED")
+  classLink             String?
+  
+  rescheduleRequestedBy String?
+  rescheduleProposedTime DateTime?
+  rescheduleProposedEndTime DateTime?
+  rescheduleReason      String?
+  rescheduleStatus      String?
   
   tuition     TuitionClass  @relation(fields: [tuitionId], references: [id])
 }

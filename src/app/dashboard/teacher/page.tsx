@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { addClassSession, markClassStatus, updateClassLink } from "./actions";
+import { requestReschedule, markClassStatus, updateClassLink } from "./actions";
 
 export default async function TeacherDashboard() {
   const session = await getServerSession(authOptions);
@@ -37,35 +37,7 @@ export default async function TeacherDashboard() {
         <p className="mt-2 text-gray-600">Welcome back, {session.user.name}. Here is your schedule.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Schedule a new class */}
-        <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Schedule a Class</h2>
-          <form action={addClassSession} className="flex flex-col gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Select Student/Tuition</label>
-              <select name="tuitionId" className="w-full border-gray-300 rounded-md p-2 border" required>
-                <option value="">Select...</option>
-                {tuitions.map(t => <option key={t.id} value={t.id}>{t.student.name} ({t.subject})</option>)}
-              </select>
-            </div>
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
-                <input type="datetime-local" name="date" required className="w-full border-gray-300 rounded-md p-2 border" />
-              </div>
-              <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
-                <input type="datetime-local" name="endTime" required className="w-full border-gray-300 rounded-md p-2 border" />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Class Link (Optional initially)</label>
-              <input type="url" name="classLink" className="w-full border-gray-300 rounded-md p-2 border" placeholder="https://meet.google.com/..." />
-            </div>
-            <button type="submit" className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 font-medium">Schedule</button>
-          </form>
-        </section>
+      <div className="grid grid-cols-1 gap-8">
 
         {/* My Students */}
         <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -105,7 +77,25 @@ export default async function TeacherDashboard() {
                         <span className={`text-xs px-2 py-1 rounded-full font-semibold ${s.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : s.status === 'MISSED' ? 'bg-red-100 text-red-700' : s.status === 'RESCHEDULED' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700'}`}>{s.status}</span>
                       </div>
                       
-                      {s.rescheduledTo && <p className="text-xs font-semibold text-indigo-600">Rescheduled to: {new Date(s.rescheduledTo).toLocaleString()}</p>}
+                      {s.rescheduleStatus === 'PENDING' ? (
+                        <div className="mt-2 p-2 bg-yellow-50 rounded border border-yellow-100">
+                          <p className="text-xs text-yellow-800 font-medium">Reschedule requested: {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : ''} - {s.rescheduleProposedEndTime ? new Date(s.rescheduleProposedEndTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'N/A'}</p>
+                          <p className="text-xs text-yellow-600">Pending admin approval.</p>
+                        </div>
+                      ) : (
+                        <div className="mt-2 text-right border-t border-gray-100 pt-2">
+                          <p className="text-xs font-semibold mb-1 text-gray-500">Request Reschedule (Same Day)</p>
+                          <form action={requestReschedule.bind(null, s.id)} className="flex flex-col gap-2 items-end">
+                            <div className="flex gap-1 items-center max-w-[250px] w-full">
+                              <input type="time" name="startTime" required className="border border-gray-300 rounded px-2 py-1 text-xs w-full" title="Start Time" />
+                              <span className="text-gray-400 text-xs">to</span>
+                              <input type="time" name="endTime" required className="border border-gray-300 rounded px-2 py-1 text-xs w-full" title="End Time" />
+                            </div>
+                            <input type="text" name="reason" placeholder="Reason (optional)" className="border border-gray-300 rounded px-2 py-1 text-xs w-full max-w-[250px]" />
+                            <button className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 px-3 py-1 rounded text-xs font-medium">Submit</button>
+                          </form>
+                        </div>
+                      )}
 
                       <div className="mt-2">
                         <form action={async (formData) => { "use server"; await updateClassLink(s.id, formData.get("link") as string) }} className="flex gap-2">

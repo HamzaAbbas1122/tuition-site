@@ -117,3 +117,102 @@ export async function rescheduleClass(id: string, newDate: string) {
   });
   revalidatePath("/dashboard/admin");
 }
+
+export async function generateMonthSchedule(tuitionId: string, startDateStr: string, startTimeStr: string, endTimeStr: string, selectedDays: number[]) {
+  const startDate = new Date(startDateStr);
+  const [startHours, startMinutes] = startTimeStr.split(':').map(Number);
+  const [endHours, endMinutes] = endTimeStr.split(':').map(Number);
+  
+  const sessionsToCreate = [];
+
+  // Generate for 30 days starting from the given start date
+  for (let i = 0; i < 30; i++) {
+    const sessionDate = new Date(startDate);
+    sessionDate.setDate(startDate.getDate() + i);
+    
+    // Only schedule if the day of week is selected
+    if (selectedDays.includes(sessionDate.getDay())) {
+      sessionDate.setHours(startHours, startMinutes, 0, 0);
+      
+      const endTime = new Date(sessionDate);
+      endTime.setHours(endHours, endMinutes, 0, 0);
+      
+      sessionsToCreate.push({
+        tuitionId,
+        date: sessionDate,
+        endTime: endTime,
+        status: "SCHEDULED"
+      });
+    }
+  }
+
+  if (sessionsToCreate.length > 0) {
+    for (const session of sessionsToCreate) {
+      await prisma.classSession.create({ data: session });
+    }
+  }
+  revalidatePath("/dashboard/admin");
+}
+
+export async function handleRescheduleRequest(sessionId: string, action: 'APPROVE' | 'REJECT') {
+  const session = await prisma.classSession.findUnique({ where: { id: sessionId } });
+  if (!session || session.rescheduleStatus !== 'PENDING') return;
+
+  if (action === 'APPROVE' && session.rescheduleProposedTime) {
+    const newEndTime = session.rescheduleProposedEndTime || new Date(session.rescheduleProposedTime.getTime() + 3600000);
+
+    await prisma.classSession.update({
+      where: { id: sessionId },
+      data: {
+        date: session.rescheduleProposedTime,
+        endTime: newEndTime,
+        rescheduleStatus: 'ACCEPTED',
+        status: 'RESCHEDULED'
+      }
+    });
+  } else {
+    await prisma.classSession.update({
+      where: { id: sessionId },
+      data: {
+        rescheduleStatus: 'REJECTED'
+      }
+    });
+  }
+  
+  revalidatePath("/dashboard/admin");
+}
+
+export async function deleteSession(sessionId: string) {
+  await prisma.classSession.delete({ where: { id: sessionId } });
+  revalidatePath("/dashboard/admin");
+}
+
+export async function deleteTuition(tuitionId: string) {
+  await prisma.classSession.deleteMany({ where: { tuitionId } });
+  await prisma.payment.deleteMany({ where: { tuitionId } });
+  await prisma.tuitionClass.delete({ where: { id: tuitionId } });
+  revalidatePath("/dashboard/admin");
+}
+
+export async function deleteUser(userId: string) {
+  // Manual cascade delete
+  const user = await prisma.user.findUnique({ where: { id: userId }, include: { teacherClasses: true, studentClasses: true } });
+  if (!user) return;
+
+  const tuitionIds = [
+    ...user.teacherClasses.map(t => t.id),
+    ...user.studentClasses.map(t => t.id)
+  ];
+
+  if (tuitionIds.length > 0) {
+    await prisma.classSession.deleteMany({ where: { tuitionId: { in: tuitionIds } } });
+    await prisma.payment.deleteMany({ where: { tuitionId: { in: tuitionIds } } });
+    await prisma.tuitionClass.deleteMany({ where: { id: { in: tuitionIds } } });
+  }
+
+  await prisma.teacherProfile.deleteMany({ where: { userId } });
+  await prisma.studentProfile.deleteMany({ where: { userId } });
+  await prisma.user.delete({ where: { id: userId } });
+  
+  revalidatePath("/dashboard/admin");
+}
