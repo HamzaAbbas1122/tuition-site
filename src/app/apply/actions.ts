@@ -8,9 +8,10 @@ export async function submitStudentApplication(formData: FormData) {
   const parentName = formData.get("parentName") as string;
   const phone = formData.get("phone") as string;
   const subject = formData.get("subject") as string;
+  const grade = formData.get("grade") as string;
 
   if (!studentName || !parentName || !phone || !subject) {
-    return { error: "All fields are required" };
+    throw new Error("All fields are required");
   }
 
   await prisma.studentApplication.create({
@@ -19,7 +20,8 @@ export async function submitStudentApplication(formData: FormData) {
       parentName,
       phone,
       subject,
-    },
+      grade: grade || "Class 9",
+    } as any,
   });
 
   redirect("/apply/success");
@@ -30,9 +32,11 @@ export async function submitTeacherApplication(formData: FormData) {
   const phone = formData.get("phone") as string;
   const email = formData.get("email") as string;
   const subjects = formData.get("subjects") as string;
+  const grades = formData.getAll("grades") as string[];
+  const gradesStr = grades.length > 0 ? grades.join(", ") : (formData.get("grades") as string || "Class 2 to A Levels");
 
   if (!name || !phone || !email || !subjects) {
-    return { error: "All fields are required" };
+    throw new Error("All fields are required");
   }
 
   await prisma.teacherApplication.create({
@@ -41,8 +45,10 @@ export async function submitTeacherApplication(formData: FormData) {
       phone,
       email,
       subjects,
-    },
+      grades: gradesStr,
+    } as any,
   });
 
   redirect("/apply/success");
 }
+

@@ -42,6 +42,7 @@ model TeacherProfile {
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id])
   subjects  String?
+  grades    String?
 }
 
 model StudentApplication {
@@ -50,6 +51,7 @@ model StudentApplication {
   parentName  String
   phone       String
   subject     String
+  grade       String?
   status      String    @default("PENDING")
   createdAt   DateTime  @default(now())
 }
@@ -60,6 +62,7 @@ model TeacherApplication {
   phone     String
   email     String
   subjects  String
+  grades    String?
   status    String    @default("PENDING")
   createdAt DateTime  @default(now())
 }
@@ -69,7 +72,9 @@ model TuitionClass {
   teacherId String
   studentId String
   subject   String
+  grade     String?
   isActive  Boolean  @default(true)
+
   
   teacher   User     @relation("TeacherClasses", fields: [teacherId], references: [id])
   student   User     @relation("StudentClasses", fields: [studentId], references: [id])

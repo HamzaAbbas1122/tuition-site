@@ -28,15 +28,17 @@ export default async function StudentDashboard() {
   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
   return (
-    <div className="space-y-12">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Student Dashboard</h1>
-        <p className="mt-2 text-gray-600">Welcome back, {session.user.name}.</p>
+    <div className="space-y-10">
+      <div className="border-b border-blue-100/80 pb-6">
+        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
+          Student <span className="blue-glow-text">Dashboard</span>
+        </h1>
+        <p className="mt-1.5 text-sm text-slate-600">Welcome back, <span className="text-slate-900 font-bold">{session.user.name}</span>.</p>
       </div>
 
       {tuitions.length === 0 ? (
-        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
-          <p className="text-gray-500">You don't have any active classes yet.</p>
+        <div className="glass-card p-10 rounded-2xl text-center">
+          <p className="text-slate-500 text-sm font-medium">You don't have any active classes assigned yet.</p>
         </div>
       ) : (
         <div className="space-y-8">
@@ -47,24 +49,27 @@ export default async function StudentDashboard() {
             const pending = monthlySessions.filter(s => s.status === "SCHEDULED" || s.status === "PENDING" || s.status === "RESCHEDULED").length;
 
             return (
-              <div key={t.id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+              <div key={t.id} className="glass-card glass-card-hover p-4 sm:p-7 rounded-2xl space-y-6">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200/80 pb-6 gap-4">
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900">{t.subject}</h2>
-                    <p className="text-gray-600">Teacher: {t.teacher.name}</p>
+                    <h2 className="text-2xl font-extrabold text-slate-900 tracking-wide inline-flex items-center gap-2.5">
+                      {t.subject}
+                      {(t as any).grade && <span className="text-xs font-bold px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">{(t as any).grade}</span>}
+                    </h2>
+                    <p className="text-sm text-slate-600 mt-1">Instructor: <span className="text-blue-600 font-bold">{t.teacher.name}</span></p>
                   </div>
-                  <div className="flex gap-4 mt-4 md:mt-0 text-sm">
-                    <div className="text-center px-4 py-2 bg-green-50 rounded-lg">
-                      <span className="block font-bold text-green-700 text-xl">{attended}</span>
-                      <span className="text-green-600">Attended</span>
+                  <div className="flex gap-3 text-xs">
+                    <div className="text-center px-4 py-2.5 bg-emerald-50 border border-emerald-200 rounded-xl">
+                      <span className="block font-bold text-emerald-700 text-xl">{attended}</span>
+                      <span className="text-emerald-600 font-medium">Attended</span>
                     </div>
-                    <div className="text-center px-4 py-2 bg-red-50 rounded-lg">
+                    <div className="text-center px-4 py-2.5 bg-red-50 border border-red-200 rounded-xl">
                       <span className="block font-bold text-red-700 text-xl">{missed}</span>
-                      <span className="text-red-600">Missed</span>
+                      <span className="text-red-600 font-medium">Missed</span>
                     </div>
-                    <div className="text-center px-4 py-2 bg-blue-50 rounded-lg">
+                    <div className="text-center px-4 py-2.5 bg-blue-50 border border-blue-200 rounded-xl">
                       <span className="block font-bold text-blue-700 text-xl">{pending}</span>
-                      <span className="text-blue-600">Pending</span>
+                      <span className="text-blue-600 font-medium">Upcoming</span>
                     </div>
                   </div>
                 </div>
@@ -72,43 +77,47 @@ export default async function StudentDashboard() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   {/* Class Schedule */}
                   <div>
-                    <h3 className="font-semibold text-lg mb-3">Your Classes</h3>
-                    {t.sessions.length === 0 ? <p className="text-sm text-gray-500">No classes scheduled.</p> : (
+                    <h3 className="font-bold text-xs uppercase tracking-wider text-slate-600 mb-4 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+                      Your Classes
+                    </h3>
+                    {t.sessions.length === 0 ? <p className="text-sm text-slate-500">No classes scheduled.</p> : (
                       <ul className="space-y-3 max-h-96 overflow-y-auto pr-2">
                         {t.sessions.map(s => (
-                          <li key={s.id} className="p-4 border border-gray-100 rounded-xl bg-gray-50 flex flex-col gap-2">
+                          <li key={s.id} className="p-4 border border-slate-200/80 rounded-xl bg-white/90 shadow-xs flex flex-col gap-3">
                             <div className="flex justify-between items-center">
-                                <div>
-                                    <p className="font-medium text-gray-900">{new Date(s.date).toLocaleString()}</p>
-                                    {s.rescheduledTo && <p className="text-xs font-semibold text-indigo-600 mt-1">Rescheduled: {new Date(s.rescheduledTo).toLocaleString()}</p>}
-                                    <div className="mt-2">
-                                        <span className={`text-xs px-2 py-1 rounded-full font-semibold ${s.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : s.status === 'MISSED' ? 'bg-red-100 text-red-700' : s.status === 'RESCHEDULED' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700'}`}>{s.status}</span>
-                                    </div>
+                              <div>
+                                <p className="font-semibold text-slate-900 text-sm">{new Date(s.date).toLocaleString()}</p>
+                                <div className="mt-2">
+                                  <span className={`text-xs px-2.5 py-1 rounded-lg font-semibold border ${s.status === 'COMPLETED' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : s.status === 'MISSED' ? 'bg-red-50 text-red-700 border-red-200' : s.status === 'RESCHEDULED' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>{s.status}</span>
                                 </div>
-                                {s.classLink && s.status !== "COMPLETED" && s.status !== "MISSED" && (
-                                    <a href={s.classLink} target="_blank" rel="noreferrer" className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm mb-2 block text-center">
-                                        Join Class
-                                    </a>
-                                )}
+                              </div>
+                              {s.classLink && s.status !== "COMPLETED" && s.status !== "MISSED" && (
+                                <a href={s.classLink} target="_blank" rel="noreferrer" className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all shadow-md shadow-blue-600/20 block text-center">
+                                  Join Class
+                                </a>
+                              )}
                             </div>
                             {s.status === "SCHEDULED" && (
                               s.rescheduleStatus === 'PENDING' ? (
-                                <div className="mt-2 p-2 bg-yellow-50 rounded border border-yellow-100 text-right">
-                                  <p className="text-xs text-yellow-800 font-medium">Reschedule requested: {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : ''} - {s.rescheduleProposedEndTime ? new Date(s.rescheduleProposedEndTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'N/A'}</p>
-                                  <p className="text-xs text-yellow-600">Pending admin approval.</p>
+                                <div className="mt-2 p-3 bg-amber-50/80 rounded-xl border border-amber-200 text-right">
+                                  <p className="text-xs text-amber-900 font-semibold">Reschedule requested: {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : ''} - {s.rescheduleProposedEndTime ? new Date(s.rescheduleProposedEndTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'N/A'}</p>
+                                  <p className="text-xs text-amber-700 mt-0.5">Pending admin approval.</p>
                                 </div>
-                              ) : <div className="mt-2 text-right border-t border-gray-100 pt-2">
-                                    <p className="text-xs font-semibold mb-1 text-gray-500">Request Reschedule (Same Day)</p>
-                                    <form action={requestReschedule.bind(null, s.id)} className="flex flex-col gap-2 items-end">
-                                      <div className="flex gap-1 items-center max-w-[250px] w-full">
-                                        <input type="time" name="startTime" required className="border border-gray-300 rounded px-2 py-1 text-xs w-full" title="Start Time" />
-                                        <span className="text-gray-400 text-xs">to</span>
-                                        <input type="time" name="endTime" required className="border border-gray-300 rounded px-2 py-1 text-xs w-full" title="End Time" />
-                                      </div>
-                                      <input type="text" name="reason" placeholder="Reason (optional)" className="border border-gray-300 rounded px-2 py-1 text-xs w-full max-w-[250px]" />
-                                      <button className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 px-3 py-1 rounded text-xs font-medium">Submit</button>
-                                    </form>
-                                  </div>
+                              ) : (
+                                <div className="mt-2 text-right border-t border-slate-100 pt-3">
+                                  <p className="text-xs font-bold mb-2 text-slate-500">Request Reschedule (Same Day)</p>
+                                  <form action={requestReschedule.bind(null, s.id)} className="flex flex-col gap-2 items-end">
+                                    <div className="flex gap-1.5 items-center max-w-[260px] w-full">
+                                      <input type="time" name="startTime" required className="glass-input rounded-lg px-2.5 py-1 text-xs w-full" title="Start Time" />
+                                      <span className="text-slate-400 text-xs">to</span>
+                                      <input type="time" name="endTime" required className="glass-input rounded-lg px-2.5 py-1 text-xs w-full" title="End Time" />
+                                    </div>
+                                    <input type="text" name="reason" placeholder="Reason (optional)" className="glass-input rounded-lg px-2.5 py-1 text-xs w-full max-w-[260px]" />
+                                    <button className="bg-amber-100 border border-amber-200 text-amber-800 hover:bg-amber-200 px-3.5 py-1 rounded-lg text-xs font-semibold transition-all">Submit Request</button>
+                                  </form>
+                                </div>
+                              )
                             )}
                           </li>
                         ))}
@@ -118,16 +127,19 @@ export default async function StudentDashboard() {
 
                   {/* Payments */}
                   <div>
-                    <h3 className="font-semibold text-lg mb-3">Payments</h3>
-                    {t.payments.length === 0 ? <p className="text-sm text-gray-500">No payment records found.</p> : (
+                    <h3 className="font-bold text-xs uppercase tracking-wider text-slate-600 mb-4 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-indigo-600"></span>
+                      Payments Overview
+                    </h3>
+                    {t.payments.length === 0 ? <p className="text-sm text-slate-500">No payment records found.</p> : (
                       <ul className="space-y-3 max-h-96 overflow-y-auto pr-2">
                         {t.payments.map(p => (
-                          <li key={p.id} className="p-4 border border-gray-100 rounded-xl bg-gray-50 flex justify-between items-center">
+                          <li key={p.id} className="p-4 border border-slate-200/80 rounded-xl bg-white/90 shadow-xs flex justify-between items-center">
                             <div>
-                              <p className="font-medium text-gray-900">${p.amount}</p>
-                              <p className="text-sm text-gray-500">Due: {new Date(p.dueDate).toLocaleDateString()}</p>
+                              <p className="font-bold text-slate-900 text-base">${p.amount}</p>
+                              <p className="text-xs text-slate-500 mt-0.5">Due Date: {new Date(p.dueDate).toLocaleDateString()}</p>
                             </div>
-                            <span className={`text-sm px-3 py-1 rounded-full font-semibold ${p.status === 'PAID' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                            <span className={`text-xs px-3 py-1 rounded-lg font-semibold border ${p.status === 'PAID' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
                               {p.status}
                             </span>
                           </li>
@@ -144,3 +156,5 @@ export default async function StudentDashboard() {
     </div>
   );
 }
+
+

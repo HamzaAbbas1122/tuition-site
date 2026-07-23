@@ -25,9 +25,11 @@ export default function DeleteButton({
         }
       }}
       disabled={isPending}
-      className={className || "text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-md text-xs font-medium transition-colors border border-red-100 shadow-sm disabled:opacity-50"}
+      className={className || "text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-xs disabled:opacity-50"}
     >
       {isPending ? "Deleting..." : children}
     </button>
   );
 }
+
+

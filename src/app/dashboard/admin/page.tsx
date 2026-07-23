@@ -4,7 +4,11 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { acceptStudentApp, rejectStudentApp, acceptTeacherApp, rejectTeacherApp, createTuitionClass, togglePaymentStatus, rescheduleClass, deleteUser, handleRescheduleRequest } from "./actions";
 import TimetableManager from "./TimetableManager";
+import GradeCategoryManager from "./GradeCategoryManager";
 import DeleteButton from "./DeleteButton";
+import CreateTuitionForm from "./CreateTuitionForm";
+
+const GRADES = ["Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10", "O Levels", "A Levels"];
 
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
@@ -18,6 +22,33 @@ export default async function AdminDashboard() {
   
   const teachers = await prisma.user.findMany({ where: { role: "TEACHER" } });
   const students = await prisma.user.findMany({ where: { role: "STUDENT" } });
+
+  const studentsWithProfile = await prisma.user.findMany({
+    where: { role: "STUDENT" },
+    include: {
+      studentProfile: true,
+      studentClasses: {
+        include: {
+          teacher: true,
+        }
+      }
+    }
+  });
+
+  const teachersWithProfile = await prisma.user.findMany({
+    where: { role: "TEACHER" },
+    include: {
+      teacherProfile: true,
+      teacherClasses: {
+        include: {
+          student: true,
+          sessions: {
+            orderBy: { date: 'asc' }
+          }
+        }
+      }
+    }
+  });
   
   const pendingReschedules = await prisma.classSession.findMany({
     where: { rescheduleStatus: "PENDING" },
@@ -41,50 +72,85 @@ export default async function AdminDashboard() {
     },
   });
 
-  const teachersWithClasses = await prisma.user.findMany({
-    where: { role: "TEACHER" },
-    include: {
-      teacherProfile: true,
-      teacherClasses: {
-        include: {
-          student: true,
-          sessions: {
-            orderBy: { date: 'asc' }
-          }
-        }
-      }
-    }
-  });
-
   return (
-    <div className="space-y-12">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-        <p className="mt-2 text-gray-600">Manage applications, classes, and payments.</p>
+    <div className="space-y-10">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-blue-100/80 pb-6">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
+            Admin <span className="blue-glow-text">Dashboard</span>
+          </h1>
+          <p className="mt-1.5 text-sm text-slate-600">Manage student & teacher applications, grade categorization, tuition scheduling, and payments.</p>
+        </div>
+        <div className="flex items-center space-x-2">
+          <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200/70 shadow-xs">
+            <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping mr-2"></span>
+            System Live
+          </span>
+        </div>
       </div>
+
+      {/* Class & Grade Directory Categorization */}
+      <section className="glass-card glass-card-hover p-7 rounded-2xl">
+        <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          </div>
+          <div>
+            <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">Class & Grade Directory</h2>
+            <p className="text-xs text-slate-500 font-medium">Categorized view of enrolled students and active instructors (Class 2 to A Levels)</p>
+          </div>
+        </div>
+        <GradeCategoryManager students={studentsWithProfile} teachers={teachersWithProfile} />
+      </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Student Applications */}
-        <section className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-900">Student Apps</h2>
-            <span className="bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">{studentApps.length}</span>
+        <section className="glass-card glass-card-hover p-7 rounded-2xl">
+          <div className="flex items-center justify-between mb-6 border-b border-slate-200/70 pb-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200/60 flex items-center justify-center text-blue-600 font-bold text-sm shadow-xs">
+                🎓
+              </div>
+              <h2 className="text-lg font-bold text-slate-900 tracking-wide">Student Applications</h2>
+            </div>
+            <span className="bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold px-3 py-1 rounded-full">
+              {studentApps.length}
+            </span>
           </div>
-          {studentApps.length === 0 ? <div className="p-6 text-center border border-dashed border-gray-200 rounded-xl text-gray-400 text-sm">No pending student applications</div> : (
+          {studentApps.length === 0 ? (
+            <div className="p-8 text-center border border-dashed border-slate-200/80 rounded-xl text-slate-500 text-sm">
+              No pending student applications
+            </div>
+          ) : (
             <div className="space-y-4">
               {studentApps.map(app => (
-                <div key={app.id} className="border border-gray-100 p-5 rounded-xl flex flex-col gap-4 bg-gray-50/50 hover:bg-gray-50 transition-colors">
+                <div key={app.id} className="p-5 rounded-xl flex flex-col gap-4 bg-white/90 border border-slate-200/80 shadow-xs hover:border-blue-300 transition-all">
                   <div>
-                    <p className="font-semibold text-gray-900 text-lg">{app.studentName}</p>
-                    <div className="flex gap-4 mt-1 text-sm text-gray-600">
-                      <p><span className="font-medium text-gray-500">Parent:</span> {app.parentName}</p>
-                      <p><span className="font-medium text-gray-500">Subject:</span> {app.subject}</p>
+                    <div className="flex justify-between items-start">
+                      <p className="font-bold text-slate-900 text-lg">{app.studentName}</p>
+                      <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                        {(app as any).grade || "Class 9"}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-slate-600">
+                      <p><span className="text-slate-500 font-medium">Parent:</span> <span className="text-slate-800 font-semibold">{app.parentName}</span></p>
+                      <p><span className="text-slate-500 font-medium">Subject:</span> <span className="text-blue-600 font-bold">{app.subject}</span></p>
                     </div>
                   </div>
-                  <div className="flex gap-2 items-center pt-2 border-t border-gray-100/60">
-                    <a href={`https://wa.me/${app.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="text-xs font-medium bg-green-50 text-green-700 px-4 py-1.5 rounded-lg hover:bg-green-100 transition-colors">WhatsApp</a>
-                    <form action={acceptStudentApp.bind(null, app.id)} className="flex-1"><button className="w-full text-xs font-medium bg-indigo-600 text-white px-4 py-1.5 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">Accept</button></form>
-                    <form action={rejectStudentApp.bind(null, app.id)} className="flex-1"><button className="w-full text-xs font-medium bg-white border border-gray-200 text-red-600 px-4 py-1.5 rounded-lg hover:bg-red-50 hover:border-red-100 transition-colors">Reject</button></form>
+                  <div className="flex gap-2 items-center pt-3 border-t border-slate-100">
+                    <a href={`https://wa.me/${app.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3.5 py-1.5 rounded-lg hover:bg-emerald-100 transition-all">
+                      WhatsApp
+                    </a>
+                    <form action={acceptStudentApp.bind(null, app.id)} className="flex-1">
+                      <button className="w-full text-xs font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-1.5 rounded-lg shadow-sm border border-blue-500/20 transition-all">
+                        Accept
+                      </button>
+                    </form>
+                    <form action={rejectStudentApp.bind(null, app.id)} className="flex-1">
+                      <button className="w-full text-xs font-semibold bg-white border border-slate-200 text-red-600 px-4 py-1.5 rounded-lg hover:bg-red-50 hover:border-red-200 transition-all">
+                        Reject
+                      </button>
+                    </form>
                   </div>
                 </div>
               ))}
@@ -93,26 +159,47 @@ export default async function AdminDashboard() {
         </section>
 
         {/* Teacher Applications */}
-        <section className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-900">Teacher Apps</h2>
-            <span className="bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">{teacherApps.length}</span>
+        <section className="glass-card glass-card-hover p-7 rounded-2xl">
+          <div className="flex items-center justify-between mb-6 border-b border-slate-200/70 pb-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-200/60 flex items-center justify-center text-indigo-600 font-bold text-sm shadow-xs">
+                👨‍🏫
+              </div>
+              <h2 className="text-lg font-bold text-slate-900 tracking-wide">Teacher Applications</h2>
+            </div>
+            <span className="bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-bold px-3 py-1 rounded-full">
+              {teacherApps.length}
+            </span>
           </div>
-          {teacherApps.length === 0 ? <div className="p-6 text-center border border-dashed border-gray-200 rounded-xl text-gray-400 text-sm">No pending teacher applications</div> : (
+          {teacherApps.length === 0 ? (
+            <div className="p-8 text-center border border-dashed border-slate-200/80 rounded-xl text-slate-500 text-sm">
+              No pending teacher applications
+            </div>
+          ) : (
             <div className="space-y-4">
               {teacherApps.map(app => (
-                <div key={app.id} className="border border-gray-100 p-5 rounded-xl flex flex-col gap-4 bg-gray-50/50 hover:bg-gray-50 transition-colors">
+                <div key={app.id} className="p-5 rounded-xl flex flex-col gap-4 bg-white/90 border border-slate-200/80 shadow-xs hover:border-blue-300 transition-all">
                   <div>
-                    <p className="font-semibold text-gray-900 text-lg">{app.name}</p>
-                    <div className="grid grid-cols-2 gap-y-1 gap-x-4 mt-2 text-sm text-gray-600">
-                      <p className="col-span-2"><span className="font-medium text-gray-500">Subjects:</span> {app.subjects}</p>
-                      <p className="col-span-2"><span className="font-medium text-gray-500">Email:</span> {app.email}</p>
+                    <p className="font-bold text-slate-900 text-lg">{app.name}</p>
+                    <div className="grid grid-cols-2 gap-y-1 gap-x-4 mt-2 text-xs text-slate-600">
+                      <p className="col-span-2"><span className="text-slate-500 font-medium">Subjects:</span> <span className="text-indigo-600 font-bold">{app.subjects}</span></p>
+                      <p className="col-span-2"><span className="text-slate-500 font-medium">Email:</span> <span className="text-slate-800 font-semibold">{app.email}</span></p>
                     </div>
                   </div>
-                  <div className="flex gap-2 items-center pt-2 border-t border-gray-100/60">
-                    <a href={`https://wa.me/${app.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="text-xs font-medium bg-green-50 text-green-700 px-4 py-1.5 rounded-lg hover:bg-green-100 transition-colors">WhatsApp</a>
-                    <form action={acceptTeacherApp.bind(null, app.id)} className="flex-1"><button className="w-full text-xs font-medium bg-indigo-600 text-white px-4 py-1.5 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">Accept</button></form>
-                    <form action={rejectTeacherApp.bind(null, app.id)} className="flex-1"><button className="w-full text-xs font-medium bg-white border border-gray-200 text-red-600 px-4 py-1.5 rounded-lg hover:bg-red-50 hover:border-red-100 transition-colors">Reject</button></form>
+                  <div className="flex gap-2 items-center pt-3 border-t border-slate-100">
+                    <a href={`https://wa.me/${app.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3.5 py-1.5 rounded-lg hover:bg-emerald-100 transition-all">
+                      WhatsApp
+                    </a>
+                    <form action={acceptTeacherApp.bind(null, app.id)} className="flex-1">
+                      <button className="w-full text-xs font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-1.5 rounded-lg shadow-sm border border-blue-500/20 transition-all">
+                        Accept
+                      </button>
+                    </form>
+                    <form action={rejectTeacherApp.bind(null, app.id)} className="flex-1">
+                      <button className="w-full text-xs font-semibold bg-white border border-slate-200 text-red-600 px-4 py-1.5 rounded-lg hover:bg-red-50 hover:border-red-200 transition-all">
+                        Reject
+                      </button>
+                    </form>
                   </div>
                 </div>
               ))}
@@ -123,28 +210,43 @@ export default async function AdminDashboard() {
 
       {/* Pending Reschedules */}
       {pendingReschedules.length > 0 && (
-        <section className="bg-yellow-50/50 p-8 rounded-2xl shadow-sm border border-yellow-200">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-yellow-900">Pending Reschedule Requests</h2>
-            <span className="bg-yellow-200 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full">{pendingReschedules.length}</span>
+        <section className="glass-card p-7 rounded-2xl border-amber-200/80 bg-amber-50/40">
+          <div className="flex items-center justify-between mb-6 border-b border-amber-200/80 pb-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-9 h-9 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-700 font-bold text-sm">
+                ⏳
+              </div>
+              <h2 className="text-lg font-bold text-amber-900">Pending Reschedule Requests</h2>
+            </div>
+            <span className="bg-amber-100 text-amber-800 border border-amber-300 text-xs font-bold px-3 py-1 rounded-full">
+              {pendingReschedules.length}
+            </span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {pendingReschedules.map(session => (
-              <div key={session.id} className="bg-white border border-yellow-200 p-5 rounded-xl flex flex-col gap-4 shadow-sm">
+              <div key={session.id} className="bg-white border border-amber-200 p-5 rounded-xl flex flex-col gap-4 shadow-xs">
                 <div>
-                  <p className="font-semibold text-gray-900">{session.tuition.subject}</p>
-                  <p className="text-sm text-gray-600 mt-1">Teacher: <span className="font-medium">{session.tuition.teacher.name}</span></p>
-                  <p className="text-sm text-gray-600">Student: <span className="font-medium">{session.tuition.student.name}</span></p>
+                  <p className="font-bold text-slate-900">{session.tuition.subject}</p>
+                  <p className="text-xs text-slate-600 mt-1">Teacher: <span className="font-semibold text-slate-800">{session.tuition.teacher.name}</span></p>
+                  <p className="text-xs text-slate-600">Student: <span className="font-semibold text-slate-800">{session.tuition.student.name}</span></p>
                 </div>
-                <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 space-y-1.5">
-                  <p className="text-xs text-gray-500">Original Time: <span className="font-medium text-gray-800">{new Date(session.date).toLocaleString()}</span></p>
-                  <p className="text-xs text-indigo-600 font-bold">Proposed Time: {session.rescheduleProposedTime ? new Date(session.rescheduleProposedTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'N/A'} - {session.rescheduleProposedEndTime ? new Date(session.rescheduleProposedEndTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'N/A'}</p>
-                  <p className="text-xs text-gray-500">Reason: {session.rescheduleReason || "None provided"}</p>
-                  <p className="text-xs text-gray-500">Requested by: <span className="capitalize">{session.rescheduleRequestedBy?.toLowerCase()}</span></p>
+                <div className="bg-slate-50 p-3 rounded-lg border border-slate-200/80 space-y-1.5">
+                  <p className="text-xs text-slate-500">Original: <span className="text-slate-800 font-medium">{new Date(session.date).toLocaleString()}</span></p>
+                  <p className="text-xs text-blue-700 font-bold">Proposed: {session.rescheduleProposedTime ? new Date(session.rescheduleProposedTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'N/A'} - {session.rescheduleProposedEndTime ? new Date(session.rescheduleProposedEndTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'N/A'}</p>
+                  <p className="text-xs text-slate-500">Reason: <span className="text-slate-700">{session.rescheduleReason || "None provided"}</span></p>
+                  <p className="text-xs text-slate-500">By: <span className="capitalize text-slate-800 font-medium">{session.rescheduleRequestedBy?.toLowerCase()}</span></p>
                 </div>
-                <div className="flex gap-2 items-center pt-2 border-t border-gray-100">
-                  <form action={handleRescheduleRequest.bind(null, session.id, 'APPROVE')} className="flex-1"><button className="w-full text-xs font-medium bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-2 rounded-lg hover:bg-emerald-100 transition-colors">Approve</button></form>
-                  <form action={handleRescheduleRequest.bind(null, session.id, 'REJECT')} className="flex-1"><button className="w-full text-xs font-medium bg-white border border-gray-200 text-red-600 px-4 py-2 rounded-lg hover:bg-red-50 hover:border-red-100 transition-colors">Reject</button></form>
+                <div className="flex gap-2 items-center pt-2 border-t border-slate-100">
+                  <form action={handleRescheduleRequest.bind(null, session.id, 'APPROVE')} className="flex-1">
+                    <button className="w-full text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-2 rounded-lg hover:bg-emerald-100 transition-all">
+                      Approve
+                    </button>
+                  </form>
+                  <form action={handleRescheduleRequest.bind(null, session.id, 'REJECT')} className="flex-1">
+                    <button className="w-full text-xs font-semibold bg-white border border-slate-200 text-red-600 px-4 py-2 rounded-lg hover:bg-red-50 transition-all">
+                      Reject
+                    </button>
+                  </form>
                 </div>
               </div>
             ))}
@@ -153,67 +255,68 @@ export default async function AdminDashboard() {
       )}
 
       {/* Assign Tuitions */}
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">Create Tuition Class</h2>
-        <form action={createTuitionClass} className="flex flex-col sm:flex-row gap-4 items-end">
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Teacher</label>
-            <select name="teacherId" className="w-full border-gray-300 rounded-md p-2 border" required>
-              <option value="">Select Teacher</option>
-              {teachers.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
-            </select>
+      <section className="glass-card glass-card-hover p-7 rounded-2xl">
+        <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
           </div>
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Student</label>
-            <select name="studentId" className="w-full border-gray-300 rounded-md p-2 border" required>
-              <option value="">Select Student</option>
-              {students.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-            </select>
+          <div>
+            <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">Create Tuition Class</h2>
+            <p className="text-xs text-slate-500 font-medium">Assign an instructor to a student (Class / Grade auto-detects from student profile)</p>
           </div>
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-            <input type="text" name="subject" className="w-full border-gray-300 rounded-md p-2 border" required />
-          </div>
-          <button type="submit" className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 font-medium">Create</button>
-        </form>
+        </div>
+        <CreateTuitionForm teachers={teachers} students={studentsWithProfile} />
       </section>
 
       {/* Teacher Timetables & Scheduling */}
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">Teacher Timetables & Scheduling</h2>
-        <TimetableManager teachers={teachersWithClasses} />
+      <section className="glass-card p-7 rounded-2xl">
+        <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
+          <div className="w-9 h-9 rounded-xl bg-sky-50 border border-sky-200/60 flex items-center justify-center text-sky-600 font-bold text-sm shadow-xs">
+            📅
+          </div>
+          <h2 className="text-lg font-bold text-slate-900 tracking-wide">Teacher Timetables & Scheduling</h2>
+        </div>
+        <TimetableManager teachers={teachersWithProfile} />
       </section>
 
+
       {/* Active Tuitions & Payments */}
-      <section className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Payment Overview</h2>
-        <div className="border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm">
-          <table className="w-full text-left">
-            <thead className="bg-gray-50/80 border-b border-gray-200">
+      <section className="glass-card glass-card-hover p-7 rounded-2xl">
+        <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
+          <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200/60 flex items-center justify-center text-blue-600 font-bold text-sm shadow-xs">
+            💳
+          </div>
+          <h2 className="text-lg font-bold text-slate-900 tracking-wide">Payment Overview</h2>
+        </div>
+        <div className="border border-slate-200/80 rounded-xl overflow-hidden bg-white/80 shadow-xs">
+          <table className="w-full text-left border-collapse">
+            <thead className="bg-slate-50/90 border-b border-slate-200">
               <tr>
-                <th className="py-3 px-6 text-xs font-semibold tracking-wider text-gray-500 uppercase">Subject</th>
-                <th className="py-3 px-6 text-xs font-semibold tracking-wider text-gray-500 uppercase">Student</th>
-                <th className="py-3 px-6 text-xs font-semibold tracking-wider text-gray-500 uppercase">Payments</th>
-                <th className="py-3 px-6 text-xs font-semibold tracking-wider text-gray-500 uppercase text-right">Actions</th>
+                <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Subject</th>
+                <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Student</th>
+                <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Payments</th>
+                <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-slate-100">
               {tuitions.length === 0 ? (
-                <tr><td colSpan={4} className="py-8 px-6 text-center text-sm text-gray-500">No tuitions created yet.</td></tr>
+                <tr><td colSpan={4} className="py-8 px-6 text-center text-sm text-slate-500">No tuitions created yet.</td></tr>
               ) : tuitions.map(t => (
-                <tr key={t.id} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="py-4 px-6 text-sm font-semibold text-gray-900">{t.subject}</td>
-                  <td className="py-4 px-6 text-sm text-gray-600 font-medium">{t.student.name}</td>
+                <tr key={t.id} className="hover:bg-blue-50/30 transition-colors">
+                  <td className="py-4 px-6 text-sm font-semibold text-slate-900">{t.subject}</td>
+                  <td className="py-4 px-6 text-sm text-slate-700 font-medium">{t.student.name}</td>
                   <td className="py-4 px-6">
-                    {t.payments.length === 0 ? <span className="text-gray-400 text-xs tracking-wider uppercase font-medium">No payments</span> : (
+                    {t.payments.length === 0 ? (
+                      <span className="text-slate-400 text-xs tracking-wider uppercase font-medium">No payments</span>
+                    ) : (
                       <div className="flex flex-col gap-2 text-sm">
                         {t.payments.map(p => (
                           <div key={p.id} className="flex items-center gap-3">
-                            <span className={`px-2.5 py-1 rounded-md font-semibold tracking-wide text-xs ${p.status === "PAID" ? "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20" : "bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20"}`}>
+                            <span className={`px-3 py-1 rounded-lg font-semibold text-xs border ${p.status === "PAID" ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200"}`}>
                               ${p.amount} • {p.status}
                             </span>
                             <form action={togglePaymentStatus.bind(null, p.id, p.status)}>
-                              <button className="text-xs font-medium text-gray-500 hover:text-indigo-600 hover:underline transition-colors">Toggle</button>
+                              <button className="text-xs font-semibold text-slate-500 hover:text-blue-600 underline transition-colors">Toggle</button>
                             </form>
                           </div>
                         ))}
@@ -237,3 +340,4 @@ export default async function AdminDashboard() {
     </div>
   );
 }
+

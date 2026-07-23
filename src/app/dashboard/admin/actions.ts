@@ -15,7 +15,7 @@ export async function acceptStudentApp(id: string) {
   });
 
   const defaultPassword = await bcrypt.hash("student123", 10);
-  const fakeEmail = `${app.studentName.replace(/\s+/g, "").toLowerCase()}@student.nexus.com`;
+  const fakeEmail = `${app.studentName.replace(/\s+/g, "").toLowerCase()}@student.tuitionss.com`;
 
   await prisma.user.upsert({
     where: { email: fakeEmail },
@@ -27,7 +27,7 @@ export async function acceptStudentApp(id: string) {
       password: defaultPassword,
       role: "STUDENT",
       studentProfile: {
-        create: { grade: app.subject }
+        create: { grade: (app as any).grade || "Class 9" }
       }
     }
   });
@@ -64,7 +64,7 @@ export async function acceptTeacherApp(id: string) {
       password: defaultPassword,
       role: "TEACHER",
       teacherProfile: {
-        create: { subjects: app.subjects }
+        create: { subjects: app.subjects, grades: (app as any).grades || "Class 2 to A Levels" } as any
       }
     }
   });
@@ -84,19 +84,53 @@ export async function createTuitionClass(formData: FormData) {
   const teacherId = formData.get("teacherId") as string;
   const studentId = formData.get("studentId") as string;
   const subject = formData.get("subject") as string;
+  let grade = formData.get("grade") as string;
 
   if (!teacherId || !studentId || !subject) return;
+
+  if (!grade) {
+    const studentProfile = await prisma.studentProfile.findUnique({
+      where: { userId: studentId }
+    });
+    grade = studentProfile?.grade || "Class 9";
+  }
 
   await prisma.tuitionClass.create({
     data: {
       teacherId,
       studentId,
       subject,
-    },
+      grade: grade || "Class 9",
+    } as any,
   });
 
   revalidatePath("/dashboard/admin");
 }
+
+export async function updateUserGrade(userId: string, grade: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: { studentProfile: true, teacherProfile: true }
+  });
+  if (!user) return;
+
+  if (user.role === "STUDENT") {
+    await prisma.studentProfile.upsert({
+      where: { userId },
+      update: { grade } as any,
+      create: { userId, grade } as any,
+    });
+  } else if (user.role === "TEACHER") {
+    await prisma.teacherProfile.upsert({
+      where: { userId },
+      update: { grades: grade } as any,
+      create: { userId, grades: grade } as any,
+    });
+  }
+  revalidatePath("/dashboard/admin");
+}
+
+
 
 export async function togglePaymentStatus(id: string, currentStatus: string) {
   await prisma.payment.update({
@@ -111,7 +145,7 @@ export async function rescheduleClass(id: string, newDate: string) {
   await prisma.classSession.update({
     where: { id },
     data: {
-      rescheduledTo: new Date(newDate),
+      date: new Date(newDate),
       status: "RESCHEDULED"
     }
   });
