@@ -195,7 +195,8 @@ export default async function TeacherDashboard() {
                 </div>
               )}
             </div>
-          ))}
+          );
+        })}
         </div>
       </section>
     </div>
