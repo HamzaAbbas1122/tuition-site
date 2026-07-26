@@ -20,10 +20,19 @@ export async function acceptStudentApp(id: string) {
     data: { status: "ACCEPTED" },
   });
 
-  const rawPassword = generatePassword();
-  const defaultPassword = await bcrypt.hash(rawPassword, 10);
   const emailDomain = process.env.STUDENT_EMAIL_DOMAIN || "student.tuitionss.com";
   const targetEmail = (app as any).email || `${app.studentName.replace(/\s+/g, "").toLowerCase()}@${emailDomain}`;
+
+  // Use password set by applicant; fall back to generated if missing (old applications)
+  const storedHash = (app as any).password as string | null;
+  let passwordHash: string;
+  let rawPassword: string | undefined;
+  if (storedHash) {
+    passwordHash = storedHash;
+  } else {
+    rawPassword = generatePassword();
+    passwordHash = await bcrypt.hash(rawPassword, 10);
+  }
 
   await prisma.user.upsert({
     where: { email: targetEmail },
@@ -32,7 +41,7 @@ export async function acceptStudentApp(id: string) {
       name: app.studentName,
       email: targetEmail,
       phone: app.phone,
-      password: defaultPassword,
+      password: passwordHash,
       role: "STUDENT",
       studentProfile: {
         create: { grade: (app as any).grade || "Class 9" }
@@ -46,7 +55,7 @@ export async function acceptStudentApp(id: string) {
       name: app.studentName,
       role: "STUDENT",
       email: targetEmail,
-      defaultPassword: rawPassword,
+      defaultPassword: storedHash ? "the password you chose during registration" : rawPassword,
     });
   }
 
@@ -70,8 +79,16 @@ export async function acceptTeacherApp(id: string) {
     data: { status: "ACCEPTED" },
   });
 
-  const rawPassword = generatePassword();
-  const defaultPassword = await bcrypt.hash(rawPassword, 10);
+  // Use password set by applicant; fall back to generated if missing (old applications)
+  const storedTeacherHash = (app as any).password as string | null;
+  let teacherPasswordHash: string;
+  let teacherRawPassword: string | undefined;
+  if (storedTeacherHash) {
+    teacherPasswordHash = storedTeacherHash;
+  } else {
+    teacherRawPassword = generatePassword();
+    teacherPasswordHash = await bcrypt.hash(teacherRawPassword, 10);
+  }
 
   await prisma.user.upsert({
     where: { email: app.email },
@@ -80,7 +97,7 @@ export async function acceptTeacherApp(id: string) {
       name: app.name,
       email: app.email,
       phone: app.phone,
-      password: defaultPassword,
+      password: teacherPasswordHash,
       role: "TEACHER",
       teacherProfile: {
         create: { subjects: app.subjects, grades: (app as any).grades || "Class 2 to A Levels" } as any
@@ -93,7 +110,7 @@ export async function acceptTeacherApp(id: string) {
     name: app.name,
     role: "TEACHER",
     email: app.email,
-    defaultPassword: rawPassword,
+    defaultPassword: storedTeacherHash ? "the password you chose during registration" : teacherRawPassword,
   });
 
   revalidatePath("/dashboard/admin");

@@ -52,6 +52,7 @@ model StudentApplication {
   parentName  String
   phone       String
   email       String?
+  password    String?
   subject     String
   grade       String?
   status      String    @default("PENDING")
@@ -63,6 +64,7 @@ model TeacherApplication {
   name      String
   phone     String
   email     String
+  password  String?
   subjects  String
   grades    String?
   status    String    @default("PENDING")
