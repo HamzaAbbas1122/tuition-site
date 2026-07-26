@@ -43,10 +43,9 @@ export default async function StudentDashboard() {
       ) : (
         <div className="space-y-8">
           {tuitions.map(t => {
-            const monthlySessions = t.sessions.filter(s => new Date(s.date) >= startOfMonth && new Date(s.date) <= endOfMonth);
-            const attended = monthlySessions.filter(s => s.status === "COMPLETED").length;
-            const missed = monthlySessions.filter(s => s.status === "MISSED").length;
-            const pending = monthlySessions.filter(s => s.status === "SCHEDULED" || s.status === "PENDING" || s.status === "RESCHEDULED").length;
+            const attended = t.sessions.filter(s => s.status === "COMPLETED").length;
+            const missed = t.sessions.filter(s => s.status === "MISSED").length;
+            const upcoming = t.sessions.filter(s => s.status === "SCHEDULED" || s.status === "RESCHEDULED" || s.status === "PENDING").length;
 
             return (
               <div key={t.id} className="glass-card glass-card-hover p-4 sm:p-7 rounded-2xl space-y-6">
@@ -68,7 +67,7 @@ export default async function StudentDashboard() {
                       <span className="text-red-600 font-medium">Missed</span>
                     </div>
                     <div className="text-center px-4 py-2.5 bg-blue-50 border border-blue-200 rounded-xl">
-                      <span className="block font-bold text-blue-700 text-xl">{pending}</span>
+                      <span className="block font-bold text-blue-700 text-xl">{upcoming}</span>
                       <span className="text-blue-600 font-medium">Upcoming</span>
                     </div>
                   </div>
@@ -105,18 +104,23 @@ export default async function StudentDashboard() {
                                   <p className="text-xs text-amber-700 mt-0.5">Pending admin approval.</p>
                                 </div>
                               ) : (
-                                <div className="mt-2 text-right border-t border-slate-100 pt-3">
-                                  <p className="text-xs font-bold mb-2 text-slate-500">Request Reschedule (Same Day)</p>
-                                  <form action={requestReschedule.bind(null, s.id)} className="flex flex-col gap-2 items-end">
+                                <details className="group border-t border-slate-100 pt-2.5 mt-1 text-right">
+                                  <summary className="cursor-pointer text-xs font-bold text-amber-800 hover:text-amber-900 inline-flex items-center gap-1.5 select-none bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200/80 hover:bg-amber-100 transition-all">
+                                    <span>Request Reschedule (Same Day)</span>
+                                    <svg className="w-3.5 h-3.5 transition-transform group-open:rotate-180 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                  </summary>
+                                  <form action={requestReschedule.bind(null, s.id)} className="flex flex-col gap-2 items-end mt-3 bg-amber-50/40 p-3 rounded-xl border border-amber-200/60">
                                     <div className="flex gap-1.5 items-center max-w-[260px] w-full">
                                       <input type="time" name="startTime" required className="glass-input rounded-lg px-2.5 py-1 text-xs w-full" title="Start Time" />
-                                      <span className="text-slate-400 text-xs">to</span>
+                                      <span className="text-slate-400 text-xs font-medium">to</span>
                                       <input type="time" name="endTime" required className="glass-input rounded-lg px-2.5 py-1 text-xs w-full" title="End Time" />
                                     </div>
                                     <input type="text" name="reason" placeholder="Reason (optional)" className="glass-input rounded-lg px-2.5 py-1 text-xs w-full max-w-[260px]" />
-                                    <button className="bg-amber-100 border border-amber-200 text-amber-800 hover:bg-amber-200 px-3.5 py-1 rounded-lg text-xs font-semibold transition-all">Submit Request</button>
+                                    <button className="bg-amber-600 text-white hover:bg-amber-700 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-xs">Submit Request</button>
                                   </form>
-                                </div>
+                                </details>
                               )
                             )}
                           </li>
