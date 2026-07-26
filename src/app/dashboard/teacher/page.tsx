@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { requestReschedule, markClassStatus, updateClassLink } from "./actions";
+import ChangePasswordForm from "@/components/ChangePasswordForm";
 
 export default async function TeacherDashboard() {
   const session = await getServerSession(authOptions);
@@ -199,6 +200,9 @@ export default async function TeacherDashboard() {
         })}
         </div>
       </section>
+
+      {/* Change Password */}
+      <ChangePasswordForm />
     </div>
   );
 }

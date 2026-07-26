@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { requestReschedule } from "./actions";
+import ChangePasswordForm from "@/components/ChangePasswordForm";
 
 export default async function StudentDashboard() {
   const session = await getServerSession(authOptions);
@@ -21,6 +22,9 @@ export default async function StudentDashboard() {
       payments: true,
     }
   });
+
+  const easypaisaName = process.env.EASYPAISA_NAME || "";
+  const easypaisaNumber = process.env.EASYPAISA_NUMBER || "";
 
   // Calculate statistics for the current month
   const now = new Date();
@@ -167,16 +171,23 @@ export default async function StudentDashboard() {
                       </div>
 
                       <div className="bg-white/90 p-4 rounded-xl border border-emerald-100 space-y-2.5 text-xs shadow-2xs">
-                        <div className="flex justify-between items-center">
-                          <span className="text-slate-500 font-medium">Account Title:</span>
-                          <span className="font-extrabold text-slate-900 text-sm">Zarish Asif</span>
-                        </div>
-                        <div className="flex justify-between items-center border-t border-slate-100 pt-2.5">
-                          <span className="text-slate-500 font-medium">Easypaisa Number:</span>
-                          <span className="font-black text-emerald-700 text-sm tracking-wider bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200/60 font-mono select-all">
-                            +923226636595
-                          </span>
-                        </div>
+                        {easypaisaName && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-slate-500 font-medium">Account Title:</span>
+                            <span className="font-extrabold text-slate-900 text-sm">{easypaisaName}</span>
+                          </div>
+                        )}
+                        {easypaisaNumber && (
+                          <div className="flex justify-between items-center border-t border-slate-100 pt-2.5">
+                            <span className="text-slate-500 font-medium">Easypaisa Number:</span>
+                            <span className="font-black text-emerald-700 text-sm tracking-wider bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200/60 font-mono select-all">
+                              {easypaisaNumber}
+                            </span>
+                          </div>
+                        )}
+                        {!easypaisaName && !easypaisaNumber && (
+                          <p className="text-slate-400 text-xs text-center">Payment details not configured.</p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -186,6 +197,9 @@ export default async function StudentDashboard() {
           })}
         </div>
       )}
+
+      {/* Change Password */}
+      <ChangePasswordForm />
     </div>
   );
 }

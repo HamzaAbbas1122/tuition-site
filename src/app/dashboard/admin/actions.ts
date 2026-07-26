@@ -3,7 +3,13 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { sendApplicationApprovedEmail, sendClassAllottedEmail } from "@/lib/email";
+
+/** Generates a secure random password: 10 chars, letters + numbers */
+function generatePassword(length = 10) {
+  return crypto.randomBytes(32).toString("base64").replace(/[^a-zA-Z0-9]/g, "").slice(0, length);
+}
 
 export async function acceptStudentApp(id: string) {
   const app = await prisma.studentApplication.findUnique({ where: { id } });
@@ -14,8 +20,10 @@ export async function acceptStudentApp(id: string) {
     data: { status: "ACCEPTED" },
   });
 
-  const defaultPassword = await bcrypt.hash("student123", 10);
-  const targetEmail = (app as any).email || `${app.studentName.replace(/\s+/g, "").toLowerCase()}@student.tuitionss.com`;
+  const rawPassword = generatePassword();
+  const defaultPassword = await bcrypt.hash(rawPassword, 10);
+  const emailDomain = process.env.STUDENT_EMAIL_DOMAIN || "student.tuitionss.com";
+  const targetEmail = (app as any).email || `${app.studentName.replace(/\s+/g, "").toLowerCase()}@${emailDomain}`;
 
   await prisma.user.upsert({
     where: { email: targetEmail },
@@ -38,7 +46,7 @@ export async function acceptStudentApp(id: string) {
       name: app.studentName,
       role: "STUDENT",
       email: targetEmail,
-      defaultPassword: "student123",
+      defaultPassword: rawPassword,
     });
   }
 
@@ -62,7 +70,8 @@ export async function acceptTeacherApp(id: string) {
     data: { status: "ACCEPTED" },
   });
 
-  const defaultPassword = await bcrypt.hash("teacher123", 10);
+  const rawPassword = generatePassword();
+  const defaultPassword = await bcrypt.hash(rawPassword, 10);
 
   await prisma.user.upsert({
     where: { email: app.email },
@@ -84,7 +93,7 @@ export async function acceptTeacherApp(id: string) {
     name: app.name,
     role: "TEACHER",
     email: app.email,
-    defaultPassword: "teacher123",
+    defaultPassword: rawPassword,
   });
 
   revalidatePath("/dashboard/admin");

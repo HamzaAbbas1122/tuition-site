@@ -195,3 +195,65 @@ export async function sendClassAllottedEmail({
     console.error(`[Email Error] Failed to send email to ${to}:`, error);
   }
 }
+
+/**
+ * 4. Sent when a user requests a password reset
+ */
+export async function sendPasswordResetEmail({
+  to,
+  name,
+  resetUrl,
+}: {
+  to: string;
+  name: string;
+  resetUrl: string;
+}) {
+  if (!smtpUser || !smtpPass) {
+    console.log(`[Email Skipped] SMTP credentials missing in .env. Target: ${to}`);
+    return;
+  }
+
+  const subject = `🔐 Reset Your Password - Tuitionss.com`;
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden;">
+      <div style="background: linear-gradient(135deg, #1e40af, #3b82f6); padding: 32px; text-align: center; color: white;">
+        <h1 style="margin: 0; font-size: 24px; font-weight: 800;">Tuitionss.com</h1>
+        <p style="margin-top: 8px; opacity: 0.9; font-size: 14px;">Password Reset Request</p>
+      </div>
+      <div style="padding: 32px; color: #1e293b;">
+        <h2 style="font-size: 18px; color: #0f172a; margin-top: 0;">Hello ${name},</h2>
+        <p style="line-height: 1.6; color: #475569;">
+          We received a request to reset the password for your Tuitionss.com account. Click the button below to set a new password.
+        </p>
+
+        <div style="text-align: center; margin: 32px 0;">
+          <a href="${resetUrl}" style="background-color: #2563eb; color: white; padding: 14px 32px; font-size: 15px; font-weight: 700; text-decoration: none; border-radius: 10px; display: inline-block;">
+            Reset My Password
+          </a>
+        </div>
+
+        <div style="background-color: #fef9c3; border: 1px solid #fde68a; padding: 16px; border-radius: 10px; margin-bottom: 24px;">
+          <p style="margin: 0; font-size: 13px; color: #713f12;">
+            ⚠️ This link will expire in <strong>1 hour</strong>. If you did not request a password reset, please ignore this email — your account is safe.
+          </p>
+        </div>
+
+        <p style="font-size: 12px; color: #94a3b8; word-break: break-all;">
+          Or copy and paste this URL into your browser:<br/>
+          <a href="${resetUrl}" style="color: #2563eb;">${resetUrl}</a>
+        </p>
+
+        <p style="font-size: 13px; color: #94a3b8; margin-top: 32px; border-t: 1px solid #f1f5f9; padding-top: 16px;">
+          © ${new Date().getFullYear()} Tuitionss.com. Empowering education worldwide.
+        </p>
+      </div>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({ from: smtpFrom, to, subject, html });
+    console.log(`[Email Sent] Password reset email sent to ${to}`);
+  } catch (error) {
+    console.error(`[Email Error] Failed to send reset email to ${to}:`, error);
+  }
+}
