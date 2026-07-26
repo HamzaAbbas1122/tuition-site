@@ -104,9 +104,9 @@ export default async function TeacherDashboard() {
               {t.sessions.length === 0 ? (
                 <p className="text-sm text-slate-500 py-4 text-center">No sessions scheduled for this student.</p>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="flex overflow-x-auto gap-4 pb-4 pt-1 snap-x scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
                   {t.sessions.map(s => (
-                    <div key={s.id} className="border border-slate-200/80 bg-slate-50/70 p-4.5 rounded-xl flex flex-col justify-between gap-3 relative shadow-xs">
+                    <div key={s.id} className="w-[300px] sm:w-[320px] shrink-0 snap-start border border-slate-200/80 bg-slate-50/70 p-4.5 rounded-xl flex flex-col justify-between gap-3 relative shadow-xs">
                       <div className="flex justify-between items-start">
                         <div>
                           <p className="font-semibold text-xs text-slate-900">{new Date(s.date).toLocaleString()}</p>
