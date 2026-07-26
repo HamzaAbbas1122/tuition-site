@@ -2,11 +2,13 @@
 
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { sendApplicationReceivedEmail } from "@/lib/email";
 
 export async function submitStudentApplication(formData: FormData) {
   const studentName = formData.get("studentName") as string;
   const parentName = formData.get("parentName") as string;
   const phone = formData.get("phone") as string;
+  const email = formData.get("email") as string;
   const subject = formData.get("subject") as string;
   const grade = formData.get("grade") as string;
 
@@ -19,10 +21,19 @@ export async function submitStudentApplication(formData: FormData) {
       studentName,
       parentName,
       phone,
+      email: email || null,
       subject,
       grade: grade || "Class 9",
     } as any,
   });
+
+  if (email) {
+    await sendApplicationReceivedEmail({
+      to: email,
+      name: studentName,
+      role: "STUDENT",
+    });
+  }
 
   redirect("/apply/success");
 }
@@ -47,6 +58,12 @@ export async function submitTeacherApplication(formData: FormData) {
       subjects,
       grades: gradesStr,
     } as any,
+  });
+
+  await sendApplicationReceivedEmail({
+    to: email,
+    name,
+    role: "TEACHER",
   });
 
   redirect("/apply/success");

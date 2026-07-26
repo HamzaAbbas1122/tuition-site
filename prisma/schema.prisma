@@ -51,6 +51,7 @@ model StudentApplication {
   studentName String
   parentName  String
   phone       String
+  email       String?
   subject     String
   grade       String?
   status      String    @default("PENDING")

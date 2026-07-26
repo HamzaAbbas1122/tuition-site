@@ -2,8 +2,8 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-
 import bcrypt from "bcryptjs";
+import { sendApplicationApprovedEmail, sendClassAllottedEmail } from "@/lib/email";
 
 export async function acceptStudentApp(id: string) {
   const app = await prisma.studentApplication.findUnique({ where: { id } });
@@ -15,14 +15,14 @@ export async function acceptStudentApp(id: string) {
   });
 
   const defaultPassword = await bcrypt.hash("student123", 10);
-  const fakeEmail = `${app.studentName.replace(/\s+/g, "").toLowerCase()}@student.tuitionss.com`;
+  const targetEmail = (app as any).email || `${app.studentName.replace(/\s+/g, "").toLowerCase()}@student.tuitionss.com`;
 
   await prisma.user.upsert({
-    where: { email: fakeEmail },
+    where: { email: targetEmail },
     update: {},
     create: {
       name: app.studentName,
-      email: fakeEmail,
+      email: targetEmail,
       phone: app.phone,
       password: defaultPassword,
       role: "STUDENT",
@@ -31,6 +31,16 @@ export async function acceptStudentApp(id: string) {
       }
     }
   });
+
+  if (targetEmail) {
+    await sendApplicationApprovedEmail({
+      to: targetEmail,
+      name: app.studentName,
+      role: "STUDENT",
+      email: targetEmail,
+      defaultPassword: "student123",
+    });
+  }
 
   revalidatePath("/dashboard/admin");
 }
@@ -69,6 +79,14 @@ export async function acceptTeacherApp(id: string) {
     }
   });
 
+  await sendApplicationApprovedEmail({
+    to: app.email,
+    name: app.name,
+    role: "TEACHER",
+    email: app.email,
+    defaultPassword: "teacher123",
+  });
+
   revalidatePath("/dashboard/admin");
 }
 
@@ -103,6 +121,32 @@ export async function createTuitionClass(formData: FormData) {
       grade: grade || "Class 9",
     } as any,
   });
+
+  // Fetch teacher and student details to send allotment emails
+  const teacher = await prisma.user.findUnique({ where: { id: teacherId } });
+  const student = await prisma.user.findUnique({ where: { id: studentId } });
+
+  if (student?.email) {
+    await sendClassAllottedEmail({
+      to: student.email,
+      recipientName: student.name,
+      subjectName: subject,
+      partnerName: teacher?.name || "Your Teacher",
+      partnerRole: "Instructor",
+      grade: grade || undefined,
+    });
+  }
+
+  if (teacher?.email) {
+    await sendClassAllottedEmail({
+      to: teacher.email,
+      recipientName: teacher.name,
+      subjectName: subject,
+      partnerName: student?.name || "Your Student",
+      partnerRole: "Student",
+      grade: grade || undefined,
+    });
+  }
 
   revalidatePath("/dashboard/admin");
 }

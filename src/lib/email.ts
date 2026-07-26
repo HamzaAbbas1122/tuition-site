@@ -1,0 +1,197 @@
+import nodemailer from "nodemailer";
+
+const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
+const smtpPort = Number(process.env.SMTP_PORT) || 465;
+const smtpUser = process.env.SMTP_USER;
+const smtpPass = process.env.SMTP_PASS;
+const smtpFrom = process.env.SMTP_FROM || `Tuitionss.com <${smtpUser || "noreply@tuitionss.com"}>`;
+
+const transporter = nodemailer.createTransport({
+  host: smtpHost,
+  port: smtpPort,
+  secure: smtpPort === 465, // true for 465, false for 587
+  auth: smtpUser && smtpPass ? { user: smtpUser, pass: smtpPass } : undefined,
+});
+
+/**
+ * 1. Sent when a Student or Teacher submits an application
+ */
+export async function sendApplicationReceivedEmail({
+  to,
+  name,
+  role,
+}: {
+  to: string;
+  name: string;
+  role: "STUDENT" | "TEACHER";
+}) {
+  if (!smtpUser || !smtpPass) {
+    console.log(`[Email Skipped] SMTP credentials missing in .env. Target: ${to}`);
+    return;
+  }
+
+  const subject = `Application Received - Tuitionss.com`;
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e2e8f0; rounded: 16px; overflow: hidden;">
+      <div style="background: linear-gradient(135deg, #2563eb, #4f46e5); padding: 32px; text-align: center; color: white;">
+        <h1 style="margin: 0; font-size: 24px; font-weight: 800;">Tuitionss.com</h1>
+        <p style="margin-top: 8px; opacity: 0.9; font-size: 14px;">Application Confirmation</p>
+      </div>
+      <div style="padding: 32px; color: #1e293b;">
+        <h2 style="font-size: 18px; color: #0f172a; margin-top: 0;">Hello ${name},</h2>
+        <p style="line-height: 1.6; color: #475569;">
+          Thank you for applying as a <strong>${role === "TEACHER" ? "Teacher" : "Student"}</strong> at Tuitionss.com!
+        </p>
+        <p style="line-height: 1.6; color: #475569;">
+          We have safely received your application details. Our admissions team is currently reviewing your profile and will get back to you shortly.
+        </p>
+        <div style="background-color: #f8fafc; border-left: 4px solid #2563eb; padding: 16px; margin: 24px 0; border-radius: 8px;">
+          <p style="margin: 0; font-size: 13px; color: #334155;">
+            <strong>Status:</strong> Under Review ⏳<br/>
+            You will receive a follow-up email with your portal credentials once approved!
+          </p>
+        </div>
+        <p style="font-size: 13px; color: #94a3b8; margin-top: 32px; border-t: 1px solid #f1f5f9; padding-top: 16px;">
+          © ${new Date().getFullYear()} Tuitionss.com. All rights reserved.
+        </p>
+      </div>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({ from: smtpFrom, to, subject, html });
+    console.log(`[Email Sent] Application received notification sent to ${to}`);
+  } catch (error) {
+    console.error(`[Email Error] Failed to send email to ${to}:`, error);
+  }
+}
+
+/**
+ * 2. Sent when Admin approves an application (provides login credentials)
+ */
+export async function sendApplicationApprovedEmail({
+  to,
+  name,
+  role,
+  email,
+  defaultPassword,
+}: {
+  to: string;
+  name: string;
+  role: "STUDENT" | "TEACHER";
+  email: string;
+  defaultPassword?: string;
+}) {
+  if (!smtpUser || !smtpPass) {
+    console.log(`[Email Skipped] SMTP credentials missing in .env. Target: ${to}`);
+    return;
+  }
+
+  const loginUrl = process.env.NEXTAUTH_URL ? `${process.env.NEXTAUTH_URL}/login` : "https://www.tuitionss.com/login";
+  const subject = `🎉 Congratulations! Your ${role === "TEACHER" ? "Teacher" : "Student"} Application Approved - Tuitionss.com`;
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden;">
+      <div style="background: linear-gradient(135deg, #059669, #10b981); padding: 32px; text-align: center; color: white;">
+        <h1 style="margin: 0; font-size: 24px; font-weight: 800;">Tuitionss.com</h1>
+        <p style="margin-top: 8px; opacity: 0.9; font-size: 14px;">Application Accepted!</p>
+      </div>
+      <div style="padding: 32px; color: #1e293b;">
+        <h2 style="font-size: 18px; color: #0f172a; margin-top: 0;">Welcome, ${name}!</h2>
+        <p style="line-height: 1.6; color: #475569;">
+          We are thrilled to inform you that your application as a <strong>${role === "TEACHER" ? "Teacher" : "Student"}</strong> has been officially approved!
+        </p>
+        
+        <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 20px; margin: 24px 0; border-radius: 12px;">
+          <h3 style="margin-top: 0; font-size: 15px; color: #166534;">🔑 Your Portal Access Credentials</h3>
+          <p style="margin: 6px 0; font-size: 14px; color: #15803d;"><strong>Email:</strong> ${email}</p>
+          ${defaultPassword ? `<p style="margin: 6px 0; font-size: 14px; color: #15803d;"><strong>Default Password:</strong> ${defaultPassword}</p>` : ""}
+          <p style="margin-top: 12px; font-size: 12px; color: #166534;"><em>Please log in and update your password if needed.</em></p>
+        </div>
+
+        <div style="text-align: center; margin: 32px 0;">
+          <a href="${loginUrl}" style="background-color: #2563eb; color: white; padding: 14px 28px; font-size: 14px; font-weight: 700; text-decoration: none; border-radius: 10px; display: inline-block;">
+            Log in to Your Portal
+          </a>
+        </div>
+
+        <p style="font-size: 13px; color: #94a3b8; margin-top: 32px; border-t: 1px solid #f1f5f9; padding-top: 16px;">
+          © ${new Date().getFullYear()} Tuitionss.com. Empowering education worldwide.
+        </p>
+      </div>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({ from: smtpFrom, to, subject, html });
+    console.log(`[Email Sent] Application approval email sent to ${to}`);
+  } catch (error) {
+    console.error(`[Email Error] Failed to send email to ${to}:`, error);
+  }
+}
+
+/**
+ * 3. Sent when Admin creates & allots a Tuition Class to Student & Teacher
+ */
+export async function sendClassAllottedEmail({
+  to,
+  recipientName,
+  subjectName,
+  partnerName,
+  partnerRole,
+  grade,
+}: {
+  to: string;
+  recipientName: string;
+  subjectName: string;
+  partnerName: string;
+  partnerRole: "Instructor" | "Student";
+  grade?: string;
+}) {
+  if (!smtpUser || !smtpPass) {
+    console.log(`[Email Skipped] SMTP credentials missing in .env. Target: ${to}`);
+    return;
+  }
+
+  const dashboardUrl = process.env.NEXTAUTH_URL ? `${process.env.NEXTAUTH_URL}/login` : "https://www.tuitionss.com/login";
+  const subject = `📚 New Class Assigned: ${subjectName} - Tuitionss.com`;
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden;">
+      <div style="background: linear-gradient(135deg, #4f46e5, #7c3aed); padding: 32px; text-align: center; color: white;">
+        <h1 style="margin: 0; font-size: 24px; font-weight: 800;">Tuitionss.com</h1>
+        <p style="margin-top: 8px; opacity: 0.9; font-size: 14px;">New Tuition Class Assigned</p>
+      </div>
+      <div style="padding: 32px; color: #1e293b;">
+        <h2 style="font-size: 18px; color: #0f172a; margin-top: 0;">Hello ${recipientName},</h2>
+        <p style="line-height: 1.6; color: #475569;">
+          A new tuition class for <strong>${subjectName}</strong> has been successfully assigned to your account!
+        </p>
+
+        <div style="background-color: #f5f3ff; border: 1px solid #ddd6fe; padding: 20px; margin: 24px 0; border-radius: 12px;">
+          <h3 style="margin-top: 0; font-size: 15px; color: #5b21b6;">📖 Class Details</h3>
+          <p style="margin: 6px 0; font-size: 14px; color: #6d28d9;"><strong>Subject:</strong> ${subjectName}</p>
+          ${grade ? `<p style="margin: 6px 0; font-size: 14px; color: #6d28d9;"><strong>Grade / Class:</strong> ${grade}</p>` : ""}
+          <p style="margin: 6px 0; font-size: 14px; color: #6d28d9;"><strong>${partnerRole}:</strong> ${partnerName}</p>
+        </div>
+
+        <div style="text-align: center; margin: 32px 0;">
+          <a href="${dashboardUrl}" style="background-color: #4f46e5; color: white; padding: 14px 28px; font-size: 14px; font-weight: 700; text-decoration: none; border-radius: 10px; display: inline-block;">
+            View Class & Schedule
+          </a>
+        </div>
+
+        <p style="font-size: 13px; color: #94a3b8; margin-top: 32px; border-t: 1px solid #f1f5f9; padding-top: 16px;">
+          © ${new Date().getFullYear()} Tuitionss.com. Empowering education worldwide.
+        </p>
+      </div>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({ from: smtpFrom, to, subject, html });
+    console.log(`[Email Sent] Class allotted notification sent to ${to}`);
+  } catch (error) {
+    console.error(`[Email Error] Failed to send email to ${to}:`, error);
+  }
+}
