@@ -90,16 +90,37 @@ export default async function TeacherDashboard() {
         <div className="space-y-6">
           {tuitions.length === 0 ? (
             <p className="text-sm text-slate-500 text-center py-6">No active classes found.</p>
-          ) : tuitions.map(t => (
-            <div key={t.id} className="border border-slate-200/80 rounded-2xl p-6 bg-white/80 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <h3 className="font-extrabold text-slate-900 text-lg">
-                  {t.student.name} <span className="text-blue-600 font-bold ml-1.5">• {t.subject}</span>
-                </h3>
-                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                  {t.sessions.length} Session{t.sessions.length !== 1 ? 's' : ''}
-                </span>
-              </div>
+          ) : tuitions.map(t => {
+            const attended = t.sessions.filter(s => s.status === "COMPLETED").length;
+            const missed = t.sessions.filter(s => s.status === "MISSED").length;
+            const upcoming = t.sessions.filter(s => s.status === "SCHEDULED" || s.status === "RESCHEDULED" || s.status === "PENDING").length;
+
+            return (
+              <div key={t.id} className="border border-slate-200/80 rounded-2xl p-6 bg-white/80 shadow-xs space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 gap-3">
+                  <div>
+                    <h3 className="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+                      {t.student.name}
+                      {(t as any).grade && <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">{(t as any).grade}</span>}
+                    </h3>
+                    <p className="text-xs font-bold text-blue-600 mt-0.5">{t.subject}</p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2 text-xs">
+                    <div className="px-3 py-1.5 bg-emerald-50 border border-emerald-200/80 rounded-xl flex items-center gap-1.5">
+                      <span className="font-extrabold text-emerald-700 text-sm">{attended}</span>
+                      <span className="text-emerald-600 font-medium">Completed</span>
+                    </div>
+                    <div className="px-3 py-1.5 bg-red-50 border border-red-200/80 rounded-xl flex items-center gap-1.5">
+                      <span className="font-extrabold text-red-700 text-sm">{missed}</span>
+                      <span className="text-red-600 font-medium">Missed</span>
+                    </div>
+                    <div className="px-3 py-1.5 bg-blue-50 border border-blue-200/80 rounded-xl flex items-center gap-1.5">
+                      <span className="font-extrabold text-blue-700 text-sm">{upcoming}</span>
+                      <span className="text-blue-600 font-medium">Upcoming</span>
+                    </div>
+                  </div>
+                </div>
 
               {t.sessions.length === 0 ? (
                 <p className="text-sm text-slate-500 py-4 text-center">No sessions scheduled for this student.</p>
