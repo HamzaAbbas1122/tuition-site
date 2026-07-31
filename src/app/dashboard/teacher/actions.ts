@@ -6,20 +6,35 @@ import { revalidatePath } from "next/cache";
 export async function requestReschedule(sessionId: string, formData: FormData) {
   const startTime = formData.get("startTime") as string;
   const endTime = formData.get("endTime") as string;
+  const dateStr = formData.get("date") as string;
   const reason = formData.get("reason") as string;
-  if (!startTime || !endTime) return;
+  if (!startTime || !endTime || !dateStr) return;
 
-  const session = await prisma.classSession.findUnique({ where: { id: sessionId } });
+  const session = await prisma.classSession.findUnique({
+    where: { id: sessionId },
+    include: { tuition: { include: { sessions: true } } }
+  });
   if (!session) return;
 
   const [startHours, startMinutes] = startTime.split(':').map(Number);
   const [endHours, endMinutes] = endTime.split(':').map(Number);
 
-  const proposedStart = new Date(session.date);
+  const proposedStart = new Date(dateStr);
   proposedStart.setHours(startHours, startMinutes, 0, 0);
 
-  const proposedEnd = new Date(session.date);
+  const proposedEnd = new Date(dateStr);
   proposedEnd.setHours(endHours, endMinutes, 0, 0);
+
+  // Check for conflicts with other scheduled sessions in the same tuition
+  const hasConflict = session.tuition.sessions.some(s => {
+    if (s.id === sessionId) return false;
+    if (!["SCHEDULED", "RESCHEDULED"].includes(s.status)) return false;
+    const sStart = new Date(s.date);
+    const sEnd = new Date(s.endTime);
+    return proposedStart < sEnd && proposedEnd > sStart;
+  });
+
+  if (hasConflict) return; // silently skip conflicting requests
 
   await prisma.classSession.update({
     where: { id: sessionId },
@@ -32,6 +47,7 @@ export async function requestReschedule(sessionId: string, formData: FormData) {
     }
   });
   revalidatePath("/dashboard/teacher");
+  revalidatePath("/dashboard/student");
 }
 
 export async function markClassStatus(sessionId: string, status: "COMPLETED" | "MISSED" | "PENDING") {

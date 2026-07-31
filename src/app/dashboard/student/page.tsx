@@ -125,7 +125,38 @@ export default async function StudentDashboard() {
                 </div>
 
                 {/* Schedule Table */}
-                <div className="p-5 sm:p-6">
+                <div className="p-5 sm:p-6 space-y-5">
+                  {/* Pending Reschedule Requests Widget */}
+                  {(() => {
+                    const pendingReschedules = t.sessions.filter(s => s.rescheduleStatus === 'PENDING');
+                    if (pendingReschedules.length === 0) return null;
+                    return (
+                      <div className="rounded-xl border border-amber-200 bg-amber-50/60 overflow-hidden">
+                        <div className="px-4 py-3 border-b border-amber-200/80 flex items-center gap-2">
+                          <span className="text-base">⏳</span>
+                          <h4 className="text-xs font-bold text-amber-900 uppercase tracking-wider">Pending Reschedule Requests</h4>
+                          <span className="ml-auto text-[10px] font-bold text-amber-700 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-full">{pendingReschedules.length}</span>
+                        </div>
+                        <ul className="divide-y divide-amber-100">
+                          {pendingReschedules.map(s => (
+                            <li key={s.id} className="px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                              <div>
+                                <p className="text-xs font-bold text-slate-800">
+                                  Original: {new Date(s.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} · {new Date(s.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} – {new Date(s.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </p>
+                                <p className="text-xs text-amber-800 font-semibold mt-0.5">
+                                  Proposed: {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : ''} · {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''} – {s.rescheduleProposedEndTime ? new Date(s.rescheduleProposedEndTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}
+                                </p>
+                              </div>
+                              <span className="text-[10px] font-bold text-amber-700 bg-amber-100 border border-amber-300 px-2 py-1 rounded-lg shrink-0">Awaiting Admin</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  })()}
+
+                  {/* Schedule Table */}
                   {t.sessions.length === 0 ? (
                     <p className="text-sm text-slate-500 py-4 text-center">No classes scheduled yet.</p>
                   ) : (
@@ -166,6 +197,17 @@ export default async function StudentDashboard() {
                                           </svg>
                                         </summary>
                                         <form action={requestReschedule.bind(null, s.id)} className="flex flex-col gap-1.5 mt-2 bg-amber-50/60 p-2.5 rounded-lg border border-amber-200/60 w-fit">
+                                          <div>
+                                            <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">New Date (same month)</label>
+                                            <input
+                                              type="date"
+                                              name="date"
+                                              required
+                                              min={new Date(s.date).toISOString().slice(0, 8) + '01'}
+                                              max={new Date(new Date(s.date).getFullYear(), new Date(s.date).getMonth() + 1, 0).toISOString().slice(0, 10)}
+                                              className="glass-input rounded-md px-2 py-1 text-[10px] w-full"
+                                            />
+                                          </div>
                                           <div className="flex gap-1.5 items-center">
                                             <input type="time" name="startTime" required className="glass-input rounded-md px-2 py-1 text-[10px] w-[85px]" title="Start Time" />
                                             <span className="text-slate-400 text-[10px]">to</span>
