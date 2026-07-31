@@ -40,6 +40,44 @@ export default async function StudentDashboard() {
         <p className="mt-1.5 text-sm text-slate-600">Welcome back, <span className="text-slate-900 font-bold">{session.user.name}</span>.</p>
       </div>
 
+      {/* Global Easypaisa Payment Card */}
+      <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-50/90 to-teal-50/70 border border-emerald-200/80 shadow-xs space-y-3.5 max-w-2xl">
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-xl bg-white p-1 shadow-sm border border-emerald-200 flex items-center justify-center shrink-0">
+            <img src="/easypaisa.png" alt="Easypaisa Logo" className="w-full h-full object-contain" />
+          </div>
+          <div>
+            <h4 className="font-extrabold text-slate-900 text-sm tracking-tight flex items-center gap-1.5">
+              Easypaisa Payment
+              <span className="text-[10px] uppercase font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-md">Official</span>
+            </h4>
+            <p className="text-xs text-slate-600 mt-0.5">Send all tuition fees directly via Easypaisa App</p>
+          </div>
+        </div>
+
+        <div className="bg-white/90 p-4 rounded-xl border border-emerald-100 space-y-2.5 text-xs shadow-2xs">
+          {easypaisaName && (
+            <div className="flex justify-between items-center">
+              <span className="text-slate-500 font-medium">Account Title:</span>
+              <span className="font-extrabold text-slate-900 text-sm">{easypaisaName}</span>
+            </div>
+          )}
+          {easypaisaNumber && (
+            <div className="flex justify-between items-center border-t border-slate-100 pt-2.5">
+              <span className="text-slate-500 font-medium">Easypaisa Number:</span>
+              <span className="font-black text-emerald-700 text-sm tracking-wider bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200/60 font-mono select-all">
+                {easypaisaNumber}
+              </span>
+            </div>
+          )}
+          {!easypaisaName && !easypaisaNumber && (
+            <p className="text-emerald-700 font-medium text-center py-2">
+              Please contact admin for payment details.
+            </p>
+          )}
+        </div>
+      </div>
+
       {tuitions.length === 0 ? (
         <div className="glass-card p-6 sm:p-10 rounded-2xl text-center">
           <p className="text-slate-500 text-sm font-medium">You don't have any active classes assigned yet.</p>
@@ -176,42 +214,6 @@ export default async function StudentDashboard() {
                         ))}
                       </ul>
                     )}
-
-                    {/* Easypaisa Payment Card */}
-                    <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-50/90 to-teal-50/70 border border-emerald-200/80 shadow-xs space-y-3.5">
-                      <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-xl bg-white p-1 shadow-sm border border-emerald-200 flex items-center justify-center shrink-0">
-                          <img src="/easypaisa.png" alt="Easypaisa Logo" className="w-full h-full object-contain" />
-                        </div>
-                        <div>
-                          <h4 className="font-extrabold text-slate-900 text-sm tracking-tight flex items-center gap-1.5">
-                            Easypaisa Payment
-                            <span className="text-[10px] uppercase font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-md">Official</span>
-                          </h4>
-                          <p className="text-xs text-slate-600 mt-0.5">Send tuition fees directly via Easypaisa App</p>
-                        </div>
-                      </div>
-
-                      <div className="bg-white/90 p-4 rounded-xl border border-emerald-100 space-y-2.5 text-xs shadow-2xs">
-                        {easypaisaName && (
-                          <div className="flex justify-between items-center">
-                            <span className="text-slate-500 font-medium">Account Title:</span>
-                            <span className="font-extrabold text-slate-900 text-sm">{easypaisaName}</span>
-                          </div>
-                        )}
-                        {easypaisaNumber && (
-                          <div className="flex justify-between items-center border-t border-slate-100 pt-2.5">
-                            <span className="text-slate-500 font-medium">Easypaisa Number:</span>
-                            <span className="font-black text-emerald-700 text-sm tracking-wider bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200/60 font-mono select-all">
-                              {easypaisaNumber}
-                            </span>
-                          </div>
-                        )}
-                        {!easypaisaName && !easypaisaNumber && (
-                          <p className="text-slate-400 text-xs text-center">Payment details not configured.</p>
-                        )}
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
