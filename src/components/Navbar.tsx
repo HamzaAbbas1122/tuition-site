@@ -26,12 +26,16 @@ export default function Navbar() {
 
           {/* Desktop Links */}
           <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
-            <Link href="/apply/student" className="text-slate-600 hover:text-blue-600 px-3 py-2 rounded-xl text-sm font-semibold transition-colors hover:bg-blue-50/60">
-              Apply as Student
-            </Link>
-            <Link href="/apply/teacher" className="text-slate-600 hover:text-blue-600 px-3 py-2 rounded-xl text-sm font-semibold transition-colors hover:bg-blue-50/60">
-              Apply as Teacher
-            </Link>
+            {!session && (
+              <>
+                <Link href="/apply/student" className="text-slate-600 hover:text-blue-600 px-3 py-2 rounded-xl text-sm font-semibold transition-colors hover:bg-blue-50/60">
+                  Apply as Student
+                </Link>
+                <Link href="/apply/teacher" className="text-slate-600 hover:text-blue-600 px-3 py-2 rounded-xl text-sm font-semibold transition-colors hover:bg-blue-50/60">
+                  Apply as Teacher
+                </Link>
+              </>
+            )}
             
             {session ? (
               <div className="flex items-center space-x-3">
@@ -82,20 +86,24 @@ export default function Navbar() {
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden border-b border-blue-100/80 bg-white/95 backdrop-blur-2xl px-4 pt-3 pb-6 space-y-3 animate-in slide-in-from-top duration-200">
-          <Link 
-            href="/apply/student" 
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-slate-700 hover:text-blue-600 font-semibold text-sm px-4 py-2.5 rounded-xl hover:bg-blue-50/80 transition-colors"
-          >
-            👨‍🎓 Apply as Student
-          </Link>
-          <Link 
-            href="/apply/teacher" 
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-slate-700 hover:text-blue-600 font-semibold text-sm px-4 py-2.5 rounded-xl hover:bg-blue-50/80 transition-colors"
-          >
-            👨‍🏫 Apply as Teacher
-          </Link>
+          {!session && (
+            <>
+              <Link 
+                href="/apply/student" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-slate-700 hover:text-blue-600 font-semibold text-sm px-4 py-2.5 rounded-xl hover:bg-blue-50/80 transition-colors"
+              >
+                👨‍🎓 Apply as Student
+              </Link>
+              <Link 
+                href="/apply/teacher" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-slate-700 hover:text-blue-600 font-semibold text-sm px-4 py-2.5 rounded-xl hover:bg-blue-50/80 transition-colors"
+              >
+                👨‍🏫 Apply as Teacher
+              </Link>
+            </>
+          )}
           
           <div className="pt-2 border-t border-slate-100">
             {session ? (
