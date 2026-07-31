@@ -7,7 +7,7 @@ import TeacherScheduleView from "./TeacherScheduleView";
 
 export default async function TeacherDashboard() {
   const session = await getServerSession(authOptions);
-  
+
   if (session?.user?.role !== "TEACHER") {
     redirect("/");
   }
@@ -43,9 +43,8 @@ export default async function TeacherDashboard() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-blue-100/80 pb-6">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
-            Teacher <span className="blue-glow-text">Dashboard</span>
+            {session.user.name}'s <span className="blue-glow-text">Dashboard</span>
           </h1>
-          <p className="mt-1.5 text-sm text-slate-500">Welcome back, <span className="text-slate-800 font-bold">{session.user.name}</span>. Here is your teaching overview.</p>
         </div>
         <div className="flex gap-2 flex-wrap">
           <div className="text-center px-4 py-2.5 bg-emerald-50 border border-emerald-200 rounded-xl min-w-[70px]">

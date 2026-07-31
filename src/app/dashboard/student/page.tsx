@@ -7,7 +7,7 @@ import ChangePasswordForm from "@/components/ChangePasswordForm";
 
 export default async function StudentDashboard() {
   const session = await getServerSession(authOptions);
-  
+
   if (session?.user?.role !== "STUDENT") {
     redirect("/");
   }
@@ -38,9 +38,8 @@ export default async function StudentDashboard() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-blue-100/80 pb-6">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
-            Student <span className="blue-glow-text">Dashboard</span>
+            {session.user.name}'s <span className="blue-glow-text">Dashboard</span>
           </h1>
-          <p className="mt-1.5 text-sm text-slate-500">Welcome back, <span className="text-slate-800 font-bold">{session.user.name}</span>.</p>
         </div>
         {/* Global Stats */}
         <div className="flex gap-2 flex-wrap">
@@ -146,7 +145,7 @@ export default async function StudentDashboard() {
                               <tr key={s.id} className="hover:bg-blue-50/30 transition-colors">
                                 <td className="py-3.5 px-4 align-top">
                                   <div className="font-bold text-slate-900 text-sm">
-                                    {daysOfWeek[new Date(s.date).getDay()].substring(0,3)}, {new Date(s.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                                    {daysOfWeek[new Date(s.date).getDay()].substring(0, 3)}, {new Date(s.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                                   </div>
                                   <div className="text-xs text-slate-500 font-medium mt-0.5">
                                     {new Date(s.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} – {new Date(s.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -155,7 +154,7 @@ export default async function StudentDashboard() {
                                   {s.status === "SCHEDULED" && (
                                     s.rescheduleStatus === 'PENDING' ? (
                                       <div className="mt-2 p-2 bg-amber-50 rounded-md border border-amber-200 w-fit">
-                                        <p className="text-[10px] text-amber-900 font-semibold">Reschedule pending: {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : ''} – {s.rescheduleProposedEndTime ? new Date(s.rescheduleProposedEndTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'N/A'}</p>
+                                        <p className="text-[10px] text-amber-900 font-semibold">Reschedule pending: {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''} – {s.rescheduleProposedEndTime ? new Date(s.rescheduleProposedEndTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}</p>
                                         <p className="text-[10px] text-amber-600 mt-0.5">Awaiting admin approval.</p>
                                       </div>
                                     ) : (
