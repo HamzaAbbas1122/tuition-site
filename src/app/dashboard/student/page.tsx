@@ -147,9 +147,9 @@ export default async function StudentDashboard() {
                                 <p className="text-xs text-amber-800 font-semibold mt-0.5">
                                   Proposed: {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) : ''} · {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''} – {s.rescheduleProposedEndTime ? new Date(s.rescheduleProposedEndTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}
                                 </p>
-                                {s.rescheduleReason && (
-                                  <p className="text-[10px] text-slate-500 mt-1 italic">&ldquo;{s.rescheduleReason}&rdquo;</p>
-                                )}
+                                <p className="text-[10px] text-slate-500 mt-1 italic">
+                                  Reason: {s.rescheduleReason ? `"${s.rescheduleReason}"` : "None provided"}
+                                </p>
                               </div>
                               <span className="text-[10px] font-bold text-amber-700 bg-amber-100 border border-amber-300 px-2 py-1 rounded-lg shrink-0">Awaiting Admin</span>
                             </li>
@@ -180,9 +180,9 @@ export default async function StudentDashboard() {
                                 <p className="text-sm font-bold text-violet-900 mt-0.5">
                                   Now: {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) : '—'} · {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''} – {s.rescheduleProposedEndTime ? new Date(s.rescheduleProposedEndTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}
                                 </p>
-                                {s.rescheduleReason && (
-                                  <p className="text-[10px] text-slate-500 mt-1 italic">&ldquo;{s.rescheduleReason}&rdquo;</p>
-                                )}
+                                <p className="text-[10px] text-slate-500 mt-1 italic">
+                                  Reason: {s.rescheduleReason ? `"${s.rescheduleReason}"` : "None provided"}
+                                </p>
                               </div>
                               <div className="flex items-center gap-2 shrink-0">
                                 <span className="text-[10px] font-bold text-violet-700 bg-violet-100 border border-violet-300 px-2 py-1 rounded-lg">Rescheduled</span>

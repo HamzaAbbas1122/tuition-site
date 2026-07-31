@@ -200,33 +200,34 @@ export default function TeacherScheduleView({ tuitions }: { tuitions: Tuition[] 
                               Reason: {s.rescheduleReason ? `"${s.rescheduleReason}"` : "None provided"}
                             </p>
                           </div>
-                          <div className="flex items-center gap-3 shrink-0">
-                            <div className="w-[160px]">
-                              <form action={updateClassLink.bind(null, s.id)} className="flex gap-1">
-                                <input type="url" name="link" defaultValue={s.classLink || ""} placeholder="Paste link..." className="flex-1 glass-input rounded-md px-2 py-1 text-[10px]" />
-                                <button className="bg-slate-800 text-white hover:bg-slate-700 px-2 py-1 rounded-md text-[10px] font-semibold transition-colors">Save</button>
-                              </form>
-                            </div>
+                          <div className="flex flex-col sm:items-end gap-2.5 shrink-0 w-full sm:w-auto mt-3 sm:mt-0">
                             
-                            <div className="flex flex-col gap-1.5 w-[100px]">
+                            <div className="flex items-center gap-2">
+                              <form action={updateClassLink.bind(null, s.id)} className="flex gap-1">
+                                <input type="url" name="link" defaultValue={s.classLink || ""} placeholder="Paste meeting link..." className="w-[140px] glass-input rounded-md px-2 py-1.5 text-[10px]" />
+                                <button className="bg-slate-800 text-white hover:bg-slate-700 px-2 py-1.5 rounded-md text-[10px] font-semibold transition-colors">Save</button>
+                              </form>
+                              {s.classLink && (
+                                <a href={s.classLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-1.5 rounded-md text-[10px] font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all shadow-sm">
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                  Join
+                                </a>
+                              )}
+                            </div>
+
+                            <div className="flex items-center gap-2">
                               <form action={markClassStatus.bind(null, s.id, "COMPLETED")}>
-                                <button className="w-full text-[10px] font-semibold bg-emerald-50 border border-emerald-200 text-emerald-700 px-2 py-1 rounded-md hover:bg-emerald-100 transition-all">
+                                <button className="text-[10px] font-semibold bg-emerald-50 border border-emerald-200 text-emerald-700 px-3 py-1.5 rounded-md hover:bg-emerald-100 transition-all">
                                   ✓ Completed
                                 </button>
                               </form>
                               <form action={markClassStatus.bind(null, s.id, "MISSED")}>
-                                <button className="w-full text-[10px] font-semibold bg-red-50 border border-red-200 text-red-700 px-2 py-1 rounded-md hover:bg-red-100 transition-all">
+                                <button className="text-[10px] font-semibold bg-red-50 border border-red-200 text-red-700 px-3 py-1.5 rounded-md hover:bg-red-100 transition-all">
                                   ✗ Missed
                                 </button>
                               </form>
                             </div>
 
-                            {s.classLink && (
-                              <a href={s.classLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all shadow-sm">
-                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                                Join
-                              </a>
-                            )}
                           </div>
                         </li>
                       ))}
