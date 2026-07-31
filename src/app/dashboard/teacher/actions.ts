@@ -42,7 +42,8 @@ export async function markClassStatus(sessionId: string, status: "COMPLETED" | "
   revalidatePath("/dashboard/teacher");
 }
 
-export async function updateClassLink(sessionId: string, link: string) {
+export async function updateClassLink(sessionId: string, formData: FormData) {
+  const link = formData.get("link") as string;
   await prisma.classSession.update({
     where: { id: sessionId },
     data: { classLink: link },
