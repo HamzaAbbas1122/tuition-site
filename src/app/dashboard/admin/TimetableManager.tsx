@@ -168,7 +168,7 @@ export default function TimetableManager({ teachers }: { teachers: Teacher[] }) 
                         <div key={session.id} className="bg-white p-4 rounded-xl border border-amber-200 flex justify-between items-center shadow-xs">
                           <div>
                             <p className="text-xs text-slate-700 font-medium">Original: {new Date(session.date).toLocaleString()}</p>
-                            <p className="text-xs text-blue-700 font-bold mt-0.5">Proposed: {session.rescheduleProposedTime ? new Date(session.rescheduleProposedTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'N/A'} - {session.rescheduleProposedEndTime ? new Date(session.rescheduleProposedEndTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'N/A'}</p>
+                            <p className="text-xs text-blue-700 font-bold mt-0.5">Proposed: {session.rescheduleProposedTime ? new Date(session.rescheduleProposedTime).toLocaleDateString(undefined, {weekday: 'short', month: 'short', day: 'numeric'}) : 'N/A'} · {session.rescheduleProposedTime ? new Date(session.rescheduleProposedTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : ''} – {session.rescheduleProposedEndTime ? new Date(session.rescheduleProposedEndTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'N/A'}</p>
                             <p className="text-xs text-slate-500 mt-1">Requested by: {session.rescheduleRequestedBy} | Reason: {session.rescheduleReason || "None"}</p>
                           </div>
                           <div className="flex gap-2">

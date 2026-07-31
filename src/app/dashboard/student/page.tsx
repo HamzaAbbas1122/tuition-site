@@ -145,8 +145,11 @@ export default async function StudentDashboard() {
                                   Original: {new Date(s.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} · {new Date(s.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} – {new Date(s.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </p>
                                 <p className="text-xs text-amber-800 font-semibold mt-0.5">
-                                  Proposed: {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : ''} · {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''} – {s.rescheduleProposedEndTime ? new Date(s.rescheduleProposedEndTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}
+                                  Proposed: {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) : ''} · {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''} – {s.rescheduleProposedEndTime ? new Date(s.rescheduleProposedEndTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}
                                 </p>
+                                {s.rescheduleReason && (
+                                  <p className="text-[10px] text-slate-500 mt-1 italic">&ldquo;{s.rescheduleReason}&rdquo;</p>
+                                )}
                               </div>
                               <span className="text-[10px] font-bold text-amber-700 bg-amber-100 border border-amber-300 px-2 py-1 rounded-lg shrink-0">Awaiting Admin</span>
                             </li>
@@ -228,7 +231,8 @@ export default async function StudentDashboard() {
                                   {s.status === "SCHEDULED" && (
                                     s.rescheduleStatus === 'PENDING' ? (
                                       <div className="mt-2 p-2 bg-amber-50 rounded-md border border-amber-200 w-fit">
-                                        <p className="text-[10px] text-amber-900 font-semibold">Reschedule pending: {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''} – {s.rescheduleProposedEndTime ? new Date(s.rescheduleProposedEndTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}</p>
+                                        <p className="text-[10px] text-amber-900 font-semibold">Proposed: {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) : ''} · {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''} – {s.rescheduleProposedEndTime ? new Date(s.rescheduleProposedEndTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}</p>
+                                        {s.rescheduleReason && <p className="text-[10px] text-slate-500 mt-0.5 italic">&ldquo;{s.rescheduleReason}&rdquo;</p>}
                                         <p className="text-[10px] text-amber-600 mt-0.5">Awaiting admin approval.</p>
                                       </div>
                                     ) : (
