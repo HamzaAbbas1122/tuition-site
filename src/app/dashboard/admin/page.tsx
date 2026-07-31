@@ -97,7 +97,7 @@ export default async function AdminDashboard() {
         directoryTab={
           <>
             {/* Class & Grade Directory Categorization */}
-      <section className="glass-card glass-card-hover p-7 rounded-2xl">
+      <section className="glass-card glass-card-hover p-4 sm:p-7 rounded-2xl">
         <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
@@ -114,7 +114,7 @@ export default async function AdminDashboard() {
         studentAppsTab={
           <>
             {/* Student Applications */}
-        <section className="glass-card glass-card-hover p-7 rounded-2xl">
+        <section className="glass-card glass-card-hover p-4 sm:p-7 rounded-2xl">
           <div className="flex items-center justify-between mb-6 border-b border-slate-200/70 pb-4">
             <div className="flex items-center space-x-3">
               <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200/60 flex items-center justify-center text-blue-600 font-bold text-sm shadow-xs">
@@ -146,7 +146,7 @@ export default async function AdminDashboard() {
                       <p><span className="text-slate-500 font-medium">Subject:</span> <span className="text-blue-600 font-bold">{app.subject}</span></p>
                     </div>
                   </div>
-                  <div className="flex gap-2 items-center pt-3 border-t border-slate-100">
+                  <div className="flex flex-col sm:flex-row gap-2 sm:items-center pt-3 border-t border-slate-100">
                     <a href={`https://wa.me/${app.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3.5 py-1.5 rounded-lg hover:bg-emerald-100 transition-all">
                       WhatsApp
                     </a>
@@ -171,7 +171,7 @@ export default async function AdminDashboard() {
         teacherAppsTab={
           <>
             {/* Teacher Applications */}
-        <section className="glass-card glass-card-hover p-7 rounded-2xl">
+        <section className="glass-card glass-card-hover p-4 sm:p-7 rounded-2xl">
           <div className="flex items-center justify-between mb-6 border-b border-slate-200/70 pb-4">
             <div className="flex items-center space-x-3">
               <div className="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-200/60 flex items-center justify-center text-indigo-600 font-bold text-sm shadow-xs">
@@ -198,7 +198,7 @@ export default async function AdminDashboard() {
                       <p className="col-span-2"><span className="text-slate-500 font-medium">Email:</span> <span className="text-slate-800 font-semibold">{app.email}</span></p>
                     </div>
                   </div>
-                  <div className="flex gap-2 items-center pt-3 border-t border-slate-100">
+                  <div className="flex flex-col sm:flex-row gap-2 sm:items-center pt-3 border-t border-slate-100">
                     <a href={`https://wa.me/${app.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3.5 py-1.5 rounded-lg hover:bg-emerald-100 transition-all">
                       WhatsApp
                     </a>
@@ -223,7 +223,7 @@ export default async function AdminDashboard() {
         createTuitionTab={
           <>
             {/* Assign Tuitions */}
-      <section className="glass-card glass-card-hover p-7 rounded-2xl">
+      <section className="glass-card glass-card-hover p-4 sm:p-7 rounded-2xl">
         <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -240,7 +240,7 @@ export default async function AdminDashboard() {
         scheduleTab={
           <>
             {/* Teacher Timetables & Scheduling */}
-      <section id="timetable-section" className="glass-card p-7 rounded-2xl">
+      <section id="timetable-section" className="glass-card p-4 sm:p-7 rounded-2xl">
         <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
           <div className="w-9 h-9 rounded-xl bg-sky-50 border border-sky-200/60 flex items-center justify-center text-sky-600 font-bold text-sm shadow-xs">
             📅
@@ -255,7 +255,7 @@ export default async function AdminDashboard() {
           <>
             {/* Pending Reschedules */}
       {pendingReschedules.length > 0 && (
-        <section className="glass-card p-7 rounded-2xl border-amber-200/80 bg-amber-50/40">
+        <section className="glass-card p-4 sm:p-7 rounded-2xl border-amber-200/80 bg-amber-50/40">
           <div className="flex items-center justify-between mb-6 border-b border-amber-200/80 pb-4">
             <div className="flex items-center space-x-3">
               <div className="w-9 h-9 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-700 font-bold text-sm">
@@ -281,7 +281,7 @@ export default async function AdminDashboard() {
                   <p className="text-xs text-slate-500">Reason: <span className="text-slate-700">{session.rescheduleReason || "None provided"}</span></p>
                   <p className="text-xs text-slate-500">By: <span className="capitalize text-slate-800 font-medium">{session.rescheduleRequestedBy?.toLowerCase()}</span></p>
                 </div>
-                <div className="flex gap-2 items-center pt-2 border-t border-slate-100">
+                <div className="flex flex-col sm:flex-row gap-2 sm:items-center pt-2 border-t border-slate-100">
                   <form action={handleRescheduleRequest.bind(null, session.id, 'APPROVE')} className="flex-1">
                     <button className="w-full text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-2 rounded-lg hover:bg-emerald-100 transition-all">
                       Approve
@@ -308,7 +308,7 @@ export default async function AdminDashboard() {
         paymentsTab={
           <>
             {/* Active Tuitions & Payments */}
-      <section className="glass-card glass-card-hover p-7 rounded-2xl">
+      <section className="glass-card glass-card-hover p-4 sm:p-7 rounded-2xl">
         <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
           <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200/60 flex items-center justify-center text-blue-600 font-bold text-sm shadow-xs">
             💳

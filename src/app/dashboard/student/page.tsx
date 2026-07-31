@@ -41,7 +41,7 @@ export default async function StudentDashboard() {
       </div>
 
       {tuitions.length === 0 ? (
-        <div className="glass-card p-10 rounded-2xl text-center">
+        <div className="glass-card p-6 sm:p-10 rounded-2xl text-center">
           <p className="text-slate-500 text-sm font-medium">You don't have any active classes assigned yet.</p>
         </div>
       ) : (
@@ -61,7 +61,7 @@ export default async function StudentDashboard() {
                     </h2>
                     <p className="text-sm text-slate-600 mt-1">Instructor: <span className="text-blue-600 font-bold">{t.teacher.name}</span></p>
                   </div>
-                  <div className="flex gap-3 text-xs">
+                  <div className="flex flex-wrap sm:flex-nowrap gap-2 sm:gap-3 text-xs w-full sm:w-auto">
                     <div className="text-center px-4 py-2.5 bg-emerald-50 border border-emerald-200 rounded-xl">
                       <span className="block font-bold text-emerald-700 text-xl">{attended}</span>
                       <span className="text-emerald-600 font-medium">Attended</span>
@@ -88,7 +88,7 @@ export default async function StudentDashboard() {
                       <ul className="space-y-3 max-h-96 overflow-y-auto pr-2">
                         {t.sessions.map(s => (
                           <li key={s.id} className="p-4 border border-slate-200/80 rounded-xl bg-white/90 shadow-xs flex flex-col gap-3">
-                            <div className="flex justify-between items-center">
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                               <div>
                                 <p className="font-semibold text-slate-900 text-sm">{new Date(s.date).toLocaleString()}</p>
                                 <div className="mt-2">
@@ -142,7 +142,7 @@ export default async function StudentDashboard() {
                     {t.payments.length === 0 ? <p className="text-sm text-slate-500 mb-4">No active invoice records found.</p> : (
                       <ul className="space-y-3 max-h-96 overflow-y-auto pr-2 mb-5">
                         {t.payments.map(p => (
-                          <li key={p.id} className="p-4 border border-slate-200/80 rounded-xl bg-white/90 shadow-xs flex justify-between items-center">
+                          <li key={p.id} className="p-4 border border-slate-200/80 rounded-xl bg-white/90 shadow-xs flex flex-col sm:flex-row justify-between sm:items-center gap-3">
                             <div>
                               <p className="font-bold text-slate-900 text-base">${p.amount}</p>
                               <p className="text-xs text-slate-500 mt-0.5">Due Date: {new Date(p.dueDate).toLocaleDateString()}</p>

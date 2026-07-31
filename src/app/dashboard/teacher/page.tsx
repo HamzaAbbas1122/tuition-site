@@ -128,7 +128,7 @@ export default async function TeacherDashboard() {
               ) : (
                 <div className="flex overflow-x-auto gap-4 pb-4 pt-1 snap-x scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
                   {t.sessions.map(s => (
-                    <div key={s.id} className="w-[300px] sm:w-[320px] shrink-0 snap-start border border-slate-200/80 bg-slate-50/70 p-4.5 rounded-xl flex flex-col justify-between gap-3 relative shadow-xs">
+                    <div key={s.id} className="w-[280px] sm:w-[320px] shrink-0 snap-start border border-slate-200/80 bg-slate-50/70 p-4.5 rounded-xl flex flex-col justify-between gap-3 relative shadow-xs">
                       <div className="flex justify-between items-start">
                         <div>
                           <p className="font-semibold text-xs text-slate-900">{new Date(s.date).toLocaleString()}</p>
@@ -152,8 +152,8 @@ export default async function TeacherDashboard() {
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                             </svg>
                           </summary>
-                          <form action={requestReschedule.bind(null, s.id)} className="flex flex-col gap-2 items-end mt-2 bg-amber-50/50 p-2.5 rounded-xl border border-amber-200/60">
-                            <div className="flex gap-1.5 items-center max-w-[250px] w-full">
+                          <form action={requestReschedule.bind(null, s.id)} className="flex flex-col gap-2 sm:items-end mt-2 bg-amber-50/50 p-2.5 rounded-xl border border-amber-200/60">
+                            <div className="flex flex-col sm:flex-row gap-1.5 sm:items-center max-w-[250px] w-full">
                               <input type="time" name="startTime" required className="glass-input rounded-lg px-2 py-1 text-xs w-full" title="Start Time" />
                               <span className="text-slate-400 text-xs font-medium">to</span>
                               <input type="time" name="endTime" required className="glass-input rounded-lg px-2 py-1 text-xs w-full" title="End Time" />
@@ -179,7 +179,7 @@ export default async function TeacherDashboard() {
                         </a>
                       )}
 
-                      <div className="flex gap-2 mt-2 pt-2.5 border-t border-slate-200/80">
+                      <div className="flex flex-col sm:flex-row gap-2 mt-2 pt-2.5 border-t border-slate-200/80">
                         <form action={markClassStatus.bind(null, s.id, "COMPLETED")} className="flex-1">
                           <button className="w-full text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-700 px-2 py-1.5 rounded-lg hover:bg-emerald-100 transition-all">
                             Mark Completed

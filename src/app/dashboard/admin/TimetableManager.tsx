@@ -54,7 +54,7 @@ export default function TimetableManager({ teachers }: { teachers: Teacher[] }) 
   return (
     <div className="flex flex-col md:flex-row gap-6 border border-slate-200/80 rounded-2xl bg-white/70 shadow-xs overflow-hidden min-h-[500px]">
       {/* Left Sidebar: Teachers */}
-      <div className="w-full md:w-1/4 bg-slate-50/80 border-r border-slate-200/80 p-5 overflow-y-auto">
+      <div className="w-full md:w-1/4 bg-slate-50/80 border-b md:border-b-0 md:border-r border-slate-200/80 p-5 overflow-y-auto max-h-[250px] md:max-h-none">
         <h3 className="text-xs font-bold tracking-wider text-slate-500 uppercase mb-4 pb-2 border-b border-slate-200">Instructors</h3>
         <ul className="space-y-1.5">
           {teachers.map((teacher) => (
@@ -87,7 +87,7 @@ export default function TimetableManager({ teachers }: { teachers: Teacher[] }) 
           </div>
         ) : (
           <div className="animate-in fade-in duration-300">
-            <div className="flex items-baseline gap-3 mb-8 pb-4 border-b border-slate-200/80">
+            <div className="flex flex-col sm:flex-row sm:items-baseline gap-3 mb-8 pb-4 border-b border-slate-200/80">
               <h2 className="text-2xl font-bold text-slate-900">
                 {selectedTeacher.name}
               </h2>
@@ -182,9 +182,9 @@ export default function TimetableManager({ teachers }: { teachers: Teacher[] }) 
                 )}
 
                 {/* Timetable Table */}
-                <div className="border border-slate-200/80 rounded-2xl overflow-x-auto bg-white/80 shadow-xs">
+                <div className="border border-slate-200/80 rounded-2xl overflow-auto bg-white/80 shadow-xs max-h-[550px]">
                   <table className="w-full text-left border-collapse min-w-[500px]">
-                    <thead className="bg-slate-50/90 border-b border-slate-200">
+                    <thead className="bg-slate-50/90 border-b border-slate-200 sticky top-0 z-10">
                       <tr>
                         <th className="py-3.5 px-4 text-xs font-bold tracking-wider text-slate-600 uppercase">Day</th>
                         <th className="py-3.5 px-4 text-xs font-bold tracking-wider text-slate-600 uppercase">Date & Time</th>
