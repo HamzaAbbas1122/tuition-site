@@ -156,8 +156,51 @@ export default async function StudentDashboard() {
                     );
                   })()}
 
-                  {/* Schedule Table */}
-                  {t.sessions.length === 0 ? (
+                  {/* Rescheduled Classes Widget */}
+                  {(() => {
+                    const rescheduled = t.sessions.filter(s => s.status === 'RESCHEDULED');
+                    if (rescheduled.length === 0) return null;
+                    return (
+                      <div className="rounded-xl border border-violet-200 bg-violet-50/60 overflow-hidden">
+                        <div className="px-4 py-3 border-b border-violet-200/80 flex items-center gap-2">
+                          <span className="text-base">🔄</span>
+                          <h4 className="text-xs font-bold text-violet-900 uppercase tracking-wider">Rescheduled Classes</h4>
+                          <span className="ml-auto text-[10px] font-bold text-violet-700 bg-violet-100 border border-violet-200 px-2 py-0.5 rounded-full">{rescheduled.length}</span>
+                        </div>
+                        <ul className="divide-y divide-violet-100">
+                          {rescheduled.map(s => (
+                            <li key={s.id} className="px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                              <div>
+                                <p className="text-[10px] text-slate-500 font-medium line-through">
+                                  Was: {new Date(s.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} · {new Date(s.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </p>
+                                <p className="text-sm font-bold text-violet-900 mt-0.5">
+                                  Now: {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) : '—'} · {s.rescheduleProposedTime ? new Date(s.rescheduleProposedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''} – {s.rescheduleProposedEndTime ? new Date(s.rescheduleProposedEndTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}
+                                </p>
+                                {s.rescheduleReason && (
+                                  <p className="text-[10px] text-slate-500 mt-1 italic">&ldquo;{s.rescheduleReason}&rdquo;</p>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2 shrink-0">
+                                <span className="text-[10px] font-bold text-violet-700 bg-violet-100 border border-violet-300 px-2 py-1 rounded-lg">Rescheduled</span>
+                                {s.classLink && (
+                                  <a href={s.classLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all shadow-sm">
+                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                    Join
+                                  </a>
+                                )}
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  })()}
+
+                  {/* Schedule Table — excludes RESCHEDULED sessions */}
+                  {(() => {
+                    const mainSessions = t.sessions.filter(s => s.status !== 'RESCHEDULED');
+                    return mainSessions.length === 0 ? (
                     <p className="text-sm text-slate-500 py-4 text-center">No classes scheduled yet.</p>
                   ) : (
                     <div className="border border-slate-200/80 rounded-xl overflow-auto bg-white/90 shadow-xs max-h-96">
@@ -170,7 +213,7 @@ export default async function StudentDashboard() {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
-                          {t.sessions.map(s => {
+                            {mainSessions.map(s => {
                             const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
                             return (
                               <tr key={s.id} className="hover:bg-blue-50/30 transition-colors">
@@ -241,7 +284,8 @@ export default async function StudentDashboard() {
                         </tbody>
                       </table>
                     </div>
-                  )}
+                    );
+                  })()}
                 </div>
               </section>
             );
