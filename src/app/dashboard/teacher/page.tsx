@@ -136,9 +136,11 @@ export default async function TeacherDashboard() {
                             <td className="py-3.5 px-4 text-xs font-bold text-blue-600 align-top pt-5">{daysOfWeek[new Date(s.date).getDay()].substring(0,3)}</td>
                             <td className="py-3.5 px-4 align-top pt-5">
                               <div className="text-sm font-semibold text-slate-900">
+                                {new Date(s.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                              </div>
+                              <div className="text-xs text-slate-500 mt-0.5">
                                 {new Date(s.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {new Date(s.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                               </div>
-                              <div className="text-xs text-slate-500 mt-0.5">{new Date(s.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</div>
                               
                               {/* Reschedule Details */}
                               {s.rescheduleStatus === 'PENDING' ? (
