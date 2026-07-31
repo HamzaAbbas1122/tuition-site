@@ -77,6 +77,12 @@ export default function GradeCategoryManager({ students, teachers }: Props) {
     }
   };
 
+  const handleStudentClick = (studentId: string, studentGrade?: string | null) => {
+    setActiveTab("students");
+    setSelectedGrade(studentGrade || "All Classes");
+    setExpandedStudentId(studentId);
+  };
+
   // Filter students based on selected grade
   const filteredStudents = students.filter((s) => {
     if (selectedGrade === "All Classes") return true;
@@ -346,12 +352,23 @@ export default function GradeCategoryManager({ students, teachers }: Props) {
                     {t.teacherClasses.length === 0 ? (
                       <p className="text-xs text-slate-400 italic py-1">No assigned students</p>
                     ) : (
-                      <ul className="flex flex-wrap gap-2 max-h-24 overflow-y-auto">
+                      <ul className="flex flex-col gap-2 max-h-40 overflow-y-auto">
                         {t.teacherClasses.map((c) => (
-                          <li key={c.id} className="text-xs text-slate-800 bg-white px-3 py-1.5 rounded-xl border border-slate-200/70 shadow-xs inline-flex items-center gap-1.5">
-                            <span className="font-bold text-slate-900">{c.student.name}</span>
-                            <span className="text-slate-300">|</span>
-                            <span className="font-medium text-indigo-700 truncate max-w-[100px]">{c.subject}</span>
+                          <li key={c.id} className="text-xs text-slate-800 bg-white p-3 rounded-xl border border-slate-200/70 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                              <span className="font-bold text-indigo-700 block mb-0.5">{c.subject}</span>
+                              <span className="text-slate-500">Subject</span>
+                            </div>
+                            <div className="sm:text-right">
+                              <button 
+                                type="button"
+                                onClick={() => handleStudentClick(c.student.id, c.grade)}
+                                className="font-bold text-blue-700 hover:text-blue-800 hover:underline flex items-center gap-1 sm:justify-end w-full sm:w-auto"
+                              >
+                                🎓 {c.student.name}
+                              </button>
+                              <span className="text-slate-500">Student <span className="font-bold text-slate-700 text-[10px] ml-1 bg-slate-100 px-1.5 py-0.5 rounded-full border border-slate-200">{c.grade || "Unassigned"}</span></span>
+                            </div>
                           </li>
                         ))}
                       </ul>
