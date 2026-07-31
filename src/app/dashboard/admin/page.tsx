@@ -269,7 +269,7 @@ export default async function AdminDashboard() {
       </section>
 
       {/* Teacher Timetables & Scheduling */}
-      <section className="glass-card p-7 rounded-2xl">
+      <section id="timetable-section" className="glass-card p-7 rounded-2xl">
         <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
           <div className="w-9 h-9 rounded-xl bg-sky-50 border border-sky-200/60 flex items-center justify-center text-sky-600 font-bold text-sm shadow-xs">
             📅

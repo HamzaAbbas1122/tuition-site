@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { generateMonthSchedule, handleRescheduleRequest, deleteSession, deleteTuition, deleteUser } from "./actions";
 
 type Session = {
@@ -33,6 +33,18 @@ type Teacher = {
 export default function TimetableManager({ teachers }: { teachers: Teacher[] }) {
   const [selectedTeacherId, setSelectedTeacherId] = useState<string | null>(null);
   const [selectedTuitionId, setSelectedTuitionId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleSelectTeacher = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail?.teacherId) {
+        setSelectedTeacherId(customEvent.detail.teacherId);
+        setSelectedTuitionId(null);
+      }
+    };
+    window.addEventListener('select-teacher-timetable', handleSelectTeacher);
+    return () => window.removeEventListener('select-teacher-timetable', handleSelectTeacher);
+  }, []);
 
   const selectedTeacher = teachers.find(t => t.id === selectedTeacherId);
   const selectedTuition = selectedTeacher?.teacherClasses.find(t => t.id === selectedTuitionId);
