@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { acceptStudentApp, rejectStudentApp, acceptTeacherApp, rejectTeacherApp, createTuitionClass, togglePaymentStatus, rescheduleClass, deleteUser, handleRescheduleRequest } from "./actions";
+import AdminTabs from "./AdminTabs";
 import TimetableManager from "./TimetableManager";
 import GradeCategoryManager from "./GradeCategoryManager";
 import DeleteButton from "./DeleteButton";
@@ -89,7 +90,13 @@ export default async function AdminDashboard() {
         </div>
       </div>
 
-      {/* Class & Grade Directory Categorization */}
+            <AdminTabs
+        pendingStudentAppsCount={studentApps.length}
+        pendingTeacherAppsCount={teacherApps.length}
+        pendingReschedulesCount={pendingReschedules.length}
+        directoryTab={
+          <>
+            {/* Class & Grade Directory Categorization */}
       <section className="glass-card glass-card-hover p-7 rounded-2xl">
         <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
@@ -102,9 +109,11 @@ export default async function AdminDashboard() {
         </div>
         <GradeCategoryManager students={studentsWithProfile} teachers={teachersWithProfile} />
       </section>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Student Applications */}
+          </>
+        }
+        studentAppsTab={
+          <>
+            {/* Student Applications */}
         <section className="glass-card glass-card-hover p-7 rounded-2xl">
           <div className="flex items-center justify-between mb-6 border-b border-slate-200/70 pb-4">
             <div className="flex items-center space-x-3">
@@ -157,8 +166,11 @@ export default async function AdminDashboard() {
             </div>
           )}
         </section>
-
-        {/* Teacher Applications */}
+          </>
+        }
+        teacherAppsTab={
+          <>
+            {/* Teacher Applications */}
         <section className="glass-card glass-card-hover p-7 rounded-2xl">
           <div className="flex items-center justify-between mb-6 border-b border-slate-200/70 pb-4">
             <div className="flex items-center space-x-3">
@@ -206,9 +218,42 @@ export default async function AdminDashboard() {
             </div>
           )}
         </section>
-      </div>
-
-      {/* Pending Reschedules */}
+          </>
+        }
+        createTuitionTab={
+          <>
+            {/* Assign Tuitions */}
+      <section className="glass-card glass-card-hover p-7 rounded-2xl">
+        <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <div>
+            <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">Create Tuition Class</h2>
+            <p className="text-xs text-slate-500 font-medium">Assign an instructor to a student (Class / Grade auto-detects from student profile)</p>
+          </div>
+        </div>
+        <CreateTuitionForm teachers={teachers} students={studentsWithProfile} />
+      </section>
+          </>
+        }
+        scheduleTab={
+          <>
+            {/* Teacher Timetables & Scheduling */}
+      <section id="timetable-section" className="glass-card p-7 rounded-2xl">
+        <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
+          <div className="w-9 h-9 rounded-xl bg-sky-50 border border-sky-200/60 flex items-center justify-center text-sky-600 font-bold text-sm shadow-xs">
+            📅
+          </div>
+          <h2 className="text-lg font-bold text-slate-900 tracking-wide">Teacher Timetables & Scheduling</h2>
+        </div>
+        <TimetableManager teachers={teachersWithProfile} />
+      </section>
+          </>
+        }
+        rescheduleTab={
+          <>
+            {/* Pending Reschedules */}
       {pendingReschedules.length > 0 && (
         <section className="glass-card p-7 rounded-2xl border-amber-200/80 bg-amber-50/40">
           <div className="flex items-center justify-between mb-6 border-b border-amber-200/80 pb-4">
@@ -253,34 +298,16 @@ export default async function AdminDashboard() {
           </div>
         </section>
       )}
-
-      {/* Assign Tuitions */}
-      <section className="glass-card glass-card-hover p-7 rounded-2xl">
-        <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          </div>
-          <div>
-            <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">Create Tuition Class</h2>
-            <p className="text-xs text-slate-500 font-medium">Assign an instructor to a student (Class / Grade auto-detects from student profile)</p>
-          </div>
-        </div>
-        <CreateTuitionForm teachers={teachers} students={studentsWithProfile} />
-      </section>
-
-      {/* Teacher Timetables & Scheduling */}
-      <section id="timetable-section" className="glass-card p-7 rounded-2xl">
-        <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
-          <div className="w-9 h-9 rounded-xl bg-sky-50 border border-sky-200/60 flex items-center justify-center text-sky-600 font-bold text-sm shadow-xs">
-            📅
-          </div>
-          <h2 className="text-lg font-bold text-slate-900 tracking-wide">Teacher Timetables & Scheduling</h2>
-        </div>
-        <TimetableManager teachers={teachersWithProfile} />
-      </section>
-
-
-      {/* Active Tuitions & Payments */}
+            {pendingReschedules.length === 0 && (
+              <div className="glass-card p-8 text-center rounded-2xl border-dashed border-slate-200/80 text-slate-500 text-sm">
+                No pending reschedule requests
+              </div>
+            )}
+          </>
+        }
+        paymentsTab={
+          <>
+            {/* Active Tuitions & Payments */}
       <section className="glass-card glass-card-hover p-7 rounded-2xl">
         <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
           <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200/60 flex items-center justify-center text-blue-600 font-bold text-sm shadow-xs">
@@ -337,7 +364,10 @@ export default async function AdminDashboard() {
           </table>
         </div>
       </section>
-    </div>
+          </>
+        }
+      />
+</div>
   );
 }
 
