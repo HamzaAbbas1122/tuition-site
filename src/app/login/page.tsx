@@ -1,6 +1,6 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -27,7 +27,9 @@ export default function LoginPage() {
       setError("Invalid credentials. Please try again.");
       setIsLoading(false);
     } else {
-      router.push("/");
+      const session = await getSession();
+      const role = session?.user?.role?.toLowerCase() ?? "";
+      router.push(role ? `/dashboard/${role}` : "/");
       router.refresh();
     }
   };
