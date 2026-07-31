@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ReactNode } from "react";
 
 interface AdminTabsProps {
@@ -31,6 +31,16 @@ export default function AdminTabs({
   pendingReschedulesCount,
 }: AdminTabsProps) {
   const [activeTab, setActiveTab] = useState<TabType>("directory");
+
+  useEffect(() => {
+    const handleSwitchTab = (e: CustomEvent) => {
+      if (e.detail && e.detail.tab) {
+        setActiveTab(e.detail.tab as TabType);
+      }
+    };
+    window.addEventListener('switch-admin-tab', handleSwitchTab as EventListener);
+    return () => window.removeEventListener('switch-admin-tab', handleSwitchTab as EventListener);
+  }, []);
 
   const tabs: { id: TabType; label: string; icon: string; count?: number }[] = [
     { id: "directory", label: "Directory", icon: "👥" },

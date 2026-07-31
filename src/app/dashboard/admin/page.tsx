@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { acceptStudentApp, rejectStudentApp, acceptTeacherApp, rejectTeacherApp, createTuitionClass, togglePaymentStatus, rescheduleClass, deleteUser, handleRescheduleRequest } from "./actions";
+import { acceptStudentApp, rejectStudentApp, acceptTeacherApp, rejectTeacherApp, createTuitionClass, togglePaymentStatus, rescheduleClass, deleteUser, deleteTuition, handleRescheduleRequest } from "./actions";
 import AdminTabs from "./AdminTabs";
 import TimetableManager from "./TimetableManager";
 import GradeCategoryManager from "./GradeCategoryManager";
@@ -352,10 +352,10 @@ export default async function AdminDashboard() {
                   </td>
                   <td className="py-4 px-6 text-right">
                     <DeleteButton 
-                      action={deleteUser.bind(null, t.student.id)} 
-                      confirmMessage="Are you sure you want to delete this student? All their classes and payments will be deleted permanently."
+                      action={deleteTuition.bind(null, t.id)} 
+                      confirmMessage="Are you sure you want to delete this class? All sessions and payments for this class will be deleted permanently."
                     >
-                      Delete Student
+                      Delete Class
                     </DeleteButton>
                   </td>
                 </tr>
