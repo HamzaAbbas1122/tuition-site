@@ -83,9 +83,9 @@ export default function GradeCategoryManager({ students, teachers }: Props) {
   });
 
   return (
-    <div className="space-y-6">
-      {/* Grade Selector Pills */}
-      <div className="flex overflow-x-auto pb-3 sm:pb-2 flex-nowrap sm:flex-wrap gap-2 sm:gap-2.5 max-w-full">
+    <div className="flex flex-col md:flex-row gap-6">
+      {/* Grade Selector Vertical List */}
+      <div className="flex flex-col gap-2 min-w-[240px]">
         {GRADES.map((g) => {
           const count = g === "All Classes" 
             ? (activeTab === "students" ? students.length : teachers.length)
@@ -100,14 +100,14 @@ export default function GradeCategoryManager({ students, teachers }: Props) {
             <button
               key={g}
               onClick={() => setSelectedGrade(g)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 flex items-center shadow-xs hover:-translate-y-0.5 ${
+              className={`px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-between shadow-xs hover:-translate-y-0.5 w-full ${
                 isActive
                   ? "bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 text-white shadow-md shadow-blue-500/20 border border-blue-500/30"
                   : "bg-white/90 border border-slate-200/80 text-slate-700 hover:bg-blue-50/60 hover:border-blue-300 hover:text-blue-700"
               }`}
             >
               <span>{g}</span>
-              <span className={`ml-2 px-2 py-0.5 rounded-full text-[11px] font-extrabold ${
+              <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-extrabold ${
                 isActive ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200/60"
               }`}>
                 {count}
@@ -117,7 +117,8 @@ export default function GradeCategoryManager({ students, teachers }: Props) {
         })}
       </div>
 
-      {/* Directory Sub-Header & Segmented Control Switcher */}
+      <div className="flex-1 space-y-6">
+        {/* Directory Sub-Header & Segmented Control Switcher */}
       <div className="bg-gradient-to-r from-slate-50/90 via-white to-blue-50/40 p-5 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-xs">
         <div>
           <div className="flex items-center space-x-2">
@@ -354,6 +355,7 @@ export default function GradeCategoryManager({ students, teachers }: Props) {
           )}
         </div>
       )}
+      </div>
     </div>
   );
 }
