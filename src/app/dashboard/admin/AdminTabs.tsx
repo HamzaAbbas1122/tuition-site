@@ -44,12 +44,12 @@ export default function AdminTabs({
 
   const tabs: { id: TabType; label: string; icon: string; count?: number }[] = [
     { id: "directory", label: "Directory", icon: "👥" },
-    { id: "studentApps", label: "Student Apps", icon: "🎓", count: pendingStudentAppsCount },
-    { id: "teacherApps", label: "Teacher Apps", icon: "👨‍🏫", count: pendingTeacherAppsCount },
+    { id: "studentApps", label: "Student Req", icon: "🎓", count: pendingStudentAppsCount },
+    { id: "teacherApps", label: "Teacher Req", icon: "👨‍🏫", count: pendingTeacherAppsCount },
     { id: "createTuition", label: "Create Tuition", icon: "➕" },
-    { id: "schedule", label: "Teacher Schedule", icon: "📅" },
-    { id: "reschedules", label: "Reschedule Requests", icon: "⏳", count: pendingReschedulesCount },
-    { id: "payments", label: "Classes & Payments", icon: "💳" },
+    { id: "schedule", label: "Schedule", icon: "📅" },
+    { id: "reschedules", label: "Reschedule Req", icon: "⏳", count: pendingReschedulesCount },
+    { id: "payments", label: "Payments", icon: "💳" },
   ];
 
   return (
