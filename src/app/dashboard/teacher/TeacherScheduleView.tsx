@@ -207,7 +207,20 @@ export default function TeacherScheduleView({ tuitions }: { tuitions: Tuition[] 
                                 <button className="bg-slate-800 text-white hover:bg-slate-700 px-2 py-1 rounded-md text-[10px] font-semibold transition-colors">Save</button>
                               </form>
                             </div>
-                            <span className="text-[10px] font-bold text-violet-700 bg-violet-100 border border-violet-300 px-2 py-1.5 rounded-lg">Rescheduled</span>
+                            
+                            <div className="flex flex-col gap-1.5 w-[100px]">
+                              <form action={markClassStatus.bind(null, s.id, "COMPLETED")}>
+                                <button className="w-full text-[10px] font-semibold bg-emerald-50 border border-emerald-200 text-emerald-700 px-2 py-1 rounded-md hover:bg-emerald-100 transition-all">
+                                  ✓ Completed
+                                </button>
+                              </form>
+                              <form action={markClassStatus.bind(null, s.id, "MISSED")}>
+                                <button className="w-full text-[10px] font-semibold bg-red-50 border border-red-200 text-red-700 px-2 py-1 rounded-md hover:bg-red-100 transition-all">
+                                  ✗ Missed
+                                </button>
+                              </form>
+                            </div>
+
                             {s.classLink && (
                               <a href={s.classLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all shadow-sm">
                                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
