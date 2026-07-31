@@ -85,7 +85,7 @@ export default function GradeCategoryManager({ students, teachers }: Props) {
   return (
     <div className="flex flex-col md:flex-row gap-6">
       {/* Grade Selector Vertical List */}
-      <div className="flex flex-col gap-2 min-w-[240px]">
+      <div className="flex flex-row md:flex-col overflow-x-auto md:overflow-visible pb-2 md:pb-0 flex-nowrap md:flex-wrap gap-2 min-w-full md:min-w-[240px]">
         {GRADES.map((g) => {
           const count = g === "All Classes" 
             ? (activeTab === "students" ? students.length : teachers.length)
@@ -100,13 +100,13 @@ export default function GradeCategoryManager({ students, teachers }: Props) {
             <button
               key={g}
               onClick={() => setSelectedGrade(g)}
-              className={`px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-between shadow-xs hover:-translate-y-0.5 w-full ${
+              className={`flex-none px-4 py-2 md:py-3 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-between gap-3 md:gap-0 shadow-xs hover:-translate-y-0.5 w-auto md:w-full ${
                 isActive
                   ? "bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 text-white shadow-md shadow-blue-500/20 border border-blue-500/30"
                   : "bg-white/90 border border-slate-200/80 text-slate-700 hover:bg-blue-50/60 hover:border-blue-300 hover:text-blue-700"
               }`}
             >
-              <span>{g}</span>
+              <span className="whitespace-nowrap">{g}</span>
               <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-extrabold ${
                 isActive ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200/60"
               }`}>

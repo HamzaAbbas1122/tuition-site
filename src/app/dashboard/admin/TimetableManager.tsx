@@ -170,8 +170,8 @@ export default function TimetableManager({ teachers }: { teachers: Teacher[] }) 
                 )}
 
                 {/* Timetable Table */}
-                <div className="border border-slate-200/80 rounded-2xl overflow-hidden bg-white/80 shadow-xs">
-                  <table className="w-full text-left border-collapse">
+                <div className="border border-slate-200/80 rounded-2xl overflow-x-auto bg-white/80 shadow-xs">
+                  <table className="w-full text-left border-collapse min-w-[500px]">
                     <thead className="bg-slate-50/90 border-b border-slate-200">
                       <tr>
                         <th className="py-3.5 px-4 text-xs font-bold tracking-wider text-slate-600 uppercase">Day</th>
