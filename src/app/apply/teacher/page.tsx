@@ -145,9 +145,10 @@ export default function TeacherApplicationPage() {
                   required
                   pattern="^\+?[0-9\s\-\(\)]{7,20}$"
                   title="Please enter a valid phone number, e.g., +1 234 567 890"
-                  placeholder="+1 234 567 890"
+                  placeholder="+92 300 1234567"
                   className="glass-input block w-full rounded-xl px-4 py-2.5 text-sm"
                 />
+                <p className="text-xs text-slate-400 mt-1">Include country code, e.g. +92 300 1234567</p>
               </div>
             </div>
 
