@@ -109,7 +109,7 @@ export default async function Home() {
               <span className="text-blue-600 text-base">✓</span> Attendance tracked for you
             </div>
             <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 shadow-xs flex items-center justify-center gap-2 text-emerald-800">
-              <span className="text-emerald-600 text-base">🎁</span> 3 demo classes, free
+              <span className="text-emerald-600 text-base">🎁</span> 3 Demo Classes, Free
             </div>
           </div>
         </div>
