@@ -15,7 +15,7 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2.5 group">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-sky-500 flex items-center justify-center shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-700 flex items-center justify-center shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
                 <span className="text-white font-extrabold text-sm tracking-wider">T</span>
               </div>
               <span className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">

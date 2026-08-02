@@ -45,10 +45,10 @@ export default function TeacherScheduleView({ tuitions }: { tuitions: Tuition[] 
   }
 
   return (
-    <div className="glass-card rounded-2xl overflow-hidden shadow-xs flex min-h-[600px]">
+    <div className="glass-card rounded-2xl overflow-hidden shadow-xs flex flex-col md:flex-row min-h-[600px]">
 
       {/* ── Left Sidebar: Student List ── */}
-      <aside className="w-64 shrink-0 border-r border-slate-200/80 bg-white/70 flex flex-col">
+      <aside className="md:w-64 shrink-0 border-b md:border-b-0 md:border-r border-slate-200/80 bg-white/70 flex flex-col">
         {/* Sidebar header */}
         <div className="flex items-center gap-2.5 px-4 py-4 border-b border-slate-200/80 bg-white/60">
           <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200/60 flex items-center justify-center text-base shadow-xs shrink-0">👨‍🎓</div>
@@ -58,8 +58,8 @@ export default function TeacherScheduleView({ tuitions }: { tuitions: Tuition[] 
           </div>
         </div>
 
-        {/* Student list */}
-        <ul className="flex-1 overflow-y-auto divide-y divide-slate-100">
+        {/* Student list — horizontal on mobile, vertical on md+ */}
+        <ul className="flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible md:flex-1 divide-x md:divide-x-0 md:divide-y divide-slate-100">
           {tuitions.map(t => {
             const isSelected = t.id === selectedId;
             const s = stats(t.sessions);

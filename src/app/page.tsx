@@ -60,7 +60,7 @@ export default async function Home() {
   ];
 
   return (
-    <div className="flex flex-col items-center w-full space-y-24 py-12">
+    <div className="flex flex-col items-center w-full space-y-12 md:space-y-24 py-12">
 
       {/* ── Hero ── */}
       <section className="w-full relative overflow-hidden text-center px-6 lg:px-8 pt-8 pb-12">
@@ -68,7 +68,7 @@ export default async function Home() {
 
           <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200/80 text-xs font-bold text-blue-700 shadow-xs">
             <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse"></span>
-            <span>Online Home Tuition · O &amp; A-Levels · Class 6–12</span>
+            <span>3 Free Demo Classes · O &amp; A-Levels · Class 2–12</span>
           </div>
 
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold text-slate-900 tracking-tight leading-tight">
@@ -97,7 +97,7 @@ export default async function Home() {
             </Link>
           </div>
 
-          {/* Factual trust signals — no inflated stats */}
+          {/* Factual trust signals */}
           <div className="pt-10 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-semibold text-slate-600 max-w-3xl mx-auto">
             <div className="p-3 rounded-xl bg-white/70 border border-slate-200/60 shadow-xs flex items-center justify-center gap-2">
               <span className="text-blue-600 text-base">✓</span> All teachers reviewed by us
@@ -108,8 +108,8 @@ export default async function Home() {
             <div className="p-3 rounded-xl bg-white/70 border border-slate-200/60 shadow-xs flex items-center justify-center gap-2">
               <span className="text-blue-600 text-base">✓</span> Attendance tracked for you
             </div>
-            <div className="p-3 rounded-xl bg-white/70 border border-slate-200/60 shadow-xs flex items-center justify-center gap-2">
-              <span className="text-blue-600 text-base">✓</span> Reschedule through dashboard
+            <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 shadow-xs flex items-center justify-center gap-2 text-emerald-800">
+              <span className="text-emerald-600 text-base">🎁</span> 3 demo classes, free
             </div>
           </div>
         </div>
@@ -168,6 +168,50 @@ export default async function Home() {
               <p className="text-sm text-slate-600 leading-relaxed">{step.desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ── 3 Free Demo Classes ── */}
+      <section className="w-full max-w-7xl px-6 lg:px-8">
+        <div className="relative rounded-3xl overflow-hidden border border-emerald-200/80 bg-gradient-to-br from-emerald-50/70 to-white/80 glass-card p-10 sm:p-14">
+          {/* Decorative background number */}
+          <span className="absolute right-8 top-6 text-[120px] font-extrabold text-emerald-100/70 select-none leading-none pointer-events-none">3</span>
+
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-10">
+            {/* Left: copy */}
+            <div className="flex-1 space-y-5">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-100 border border-emerald-300 text-xs font-bold text-emerald-800">
+                <span>🎁</span> No payment required
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+                Try 3 Classes <span className="text-emerald-600">Free</span> Before You Commit
+              </h2>
+              <p className="text-slate-600 text-sm leading-relaxed max-w-lg">
+                Not sure if online tuition is right for your child? We give every new student <strong>3 full demo sessions</strong> with their assigned teacher — completely free. No payment, no pressure. If you&apos;re not happy after the demo, you don&apos;t continue.
+              </p>
+              <ul className="space-y-2 text-sm text-slate-700">
+                <li className="flex items-center gap-2"><span className="text-emerald-500 font-bold">✓</span> Real sessions with your actual assigned teacher</li>
+                <li className="flex items-center gap-2"><span className="text-emerald-500 font-bold">✓</span> Full 1-on-1 format — same as paid classes</li>
+                <li className="flex items-center gap-2"><span className="text-emerald-500 font-bold">✓</span> Decide to continue only if you&apos;re satisfied</li>
+              </ul>
+            </div>
+
+            {/* Right: CTA card */}
+            <div className="w-full md:shrink-0 md:w-auto flex flex-col items-center gap-4 bg-white/90 border border-emerald-200 rounded-2xl p-8 shadow-md text-center md:min-w-[220px]">
+              <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-4xl shadow-xs">🎓</div>
+              <div>
+                <p className="text-2xl font-extrabold text-slate-900">3 Classes</p>
+                <p className="text-sm text-emerald-700 font-bold">Completely Free</p>
+              </div>
+              <Link
+                href="/apply/student"
+                className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 px-6 py-3 text-sm font-bold text-white shadow-md shadow-emerald-600/20 transition-all hover:scale-105 text-center"
+              >
+                Start Free Demo
+              </Link>
+              <p className="text-[11px] text-slate-400">No card needed. Apply and we&apos;ll contact you.</p>
+            </div>
+          </div>
         </div>
       </section>
 
