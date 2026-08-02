@@ -32,10 +32,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col bg-[#faf8f5] text-slate-800 relative overflow-x-hidden selection:bg-blue-100 selection:text-blue-900">
-        {/* Ambient warm creamy & blue soft glows */}
-        <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-blue-200/25 rounded-full blur-[150px] pointer-events-none -z-10 animate-pulse" />
-        <div className="fixed bottom-10 right-1/4 w-[600px] h-[600px] bg-amber-100/35 rounded-full blur-[170px] pointer-events-none -z-10" />
-        <div className="fixed top-1/2 left-2/3 w-[450px] h-[450px] bg-indigo-100/20 rounded-full blur-[140px] pointer-events-none -z-10" />
+        {/* Ambient background glows */}
+        <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-blue-200/20 rounded-full blur-[150px] pointer-events-none -z-10" />
+        <div className="fixed bottom-10 right-1/4 w-[600px] h-[600px] bg-indigo-100/25 rounded-full blur-[170px] pointer-events-none -z-10" />
+        <div className="fixed top-1/2 left-2/3 w-[450px] h-[450px] bg-indigo-100/15 rounded-full blur-[140px] pointer-events-none -z-10" />
 
         <Providers>
           <Navbar />
@@ -48,7 +48,7 @@ export default function RootLayout({
                 </div>
                 <span className="font-extrabold text-slate-800 tracking-tight text-sm">Tuitionss.com</span>
               </div>
-              <p className="text-slate-500">© {new Date().getFullYear()} Tuitionss.com. Empowering education worldwide.</p>
+              <p className="text-slate-500">© {new Date().getFullYear()} Tuitionss.com. Private 1-on-1 tuition for O &amp; A-Level students.</p>
               <div className="flex space-x-6 text-slate-600 font-medium">
                 <a href="/apply/student" className="hover:text-blue-600 transition-colors">Apply Student</a>
                 <a href="/apply/teacher" className="hover:text-blue-600 transition-colors">Apply Teacher</a>

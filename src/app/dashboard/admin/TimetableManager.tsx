@@ -143,7 +143,7 @@ export default function TimetableManager({ teachers }: { teachers: Teacher[] }) 
                           <span className="text-slate-500 text-sm">to</span>
                           <input type="time" name="endTime" required className="glass-input rounded-xl px-3.5 py-2 text-sm text-slate-900" title="End Time" />
                         </div>
-                        <button type="submit" className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 hover:from-blue-700 hover:to-indigo-700 text-white px-5 py-2 rounded-xl font-semibold text-sm whitespace-nowrap transition-all shadow-md shadow-blue-600/20 border border-blue-500/20 flex items-center gap-2">
+                        <button type="submit" className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-700 text-white px-5 py-2 rounded-xl font-semibold text-sm whitespace-nowrap transition-all shadow-md shadow-blue-600/20 border border-blue-500/20 flex items-center gap-2">
                           Schedule Month
                         </button>
                       </div>

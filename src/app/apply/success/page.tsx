@@ -15,7 +15,7 @@ export default function SuccessPage() {
         </p>
         <Link
           href="/"
-          className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-3.5 rounded-xl font-semibold transition-all shadow-md shadow-blue-600/20 border border-blue-500/20 inline-block"
+          className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-3.5 rounded-xl font-semibold transition-all shadow-md shadow-blue-600/20 border border-blue-500/20 inline-block"
         >
           Return Home
         </Link>

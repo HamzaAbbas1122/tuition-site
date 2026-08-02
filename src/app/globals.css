@@ -50,7 +50,7 @@ body {
 }
 
 .blue-glow-text {
-  background: linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #0284c7 100%);
+  background: linear-gradient(to right, #1d4ed8 0%, #4f46e5 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -68,7 +68,7 @@ body {
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.6);
+  background: rgba(79, 70, 229, 0.65);
 }
 
 

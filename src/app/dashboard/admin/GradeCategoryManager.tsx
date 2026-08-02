@@ -99,7 +99,7 @@ export default function GradeCategoryManager({ students }: Props) {
               onClick={() => setSelectedGrade(g)}
               className={`flex-none px-4 py-2 md:py-3 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-between gap-3 md:gap-0 shadow-xs hover:-translate-y-0.5 w-auto md:w-full ${
                 isActive
-                  ? "bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 text-white shadow-md shadow-blue-500/20 border border-blue-500/30"
+                  ? "bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-md shadow-blue-500/20 border border-blue-500/30"
                   : "bg-white/90 border border-slate-200/80 text-slate-700 hover:bg-blue-50/60 hover:border-blue-300 hover:text-blue-700"
               }`}
             >

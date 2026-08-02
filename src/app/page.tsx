@@ -83,7 +83,7 @@ export default async function Home() {
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/apply/student"
-              className="w-full sm:w-auto rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 hover:from-blue-700 hover:to-indigo-700 px-8 py-3.5 text-sm font-semibold text-white shadow-md shadow-blue-600/20 border border-blue-500/20 transition-all hover:scale-105 flex items-center justify-center gap-2"
+              className="w-full sm:w-auto rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-700 px-8 py-3.5 text-sm font-semibold text-white shadow-md shadow-blue-600/20 border border-blue-500/20 transition-all hover:scale-105 flex items-center justify-center gap-2"
             >
               <span>Enrol as a Student</span>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
@@ -253,7 +253,7 @@ export default async function Home() {
 
       {/* ── CTA ── */}
       <section className="w-full max-w-7xl px-6 lg:px-8 pb-12">
-        <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 rounded-3xl p-10 sm:p-14 text-white text-center shadow-xl relative overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-10 sm:p-14 text-white text-center shadow-xl relative overflow-hidden">
           <div className="max-w-2xl mx-auto space-y-6 relative z-10">
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">Start Learning This Month</h2>
             <p className="text-blue-100 text-sm sm:text-base leading-relaxed">

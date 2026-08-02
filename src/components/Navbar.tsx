@@ -15,7 +15,7 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2.5 group">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-500 flex items-center justify-center shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-sky-500 flex items-center justify-center shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
                 <span className="text-white font-extrabold text-sm tracking-wider">T</span>
               </div>
               <span className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">
@@ -55,7 +55,7 @@ export default function Navbar() {
             ) : (
               <Link 
                 href="/login"
-                className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 hover:from-blue-700 hover:to-indigo-700 text-white px-5 py-2 rounded-xl text-sm font-semibold shadow-md shadow-blue-600/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-700 text-white px-5 py-2 rounded-xl text-sm font-semibold shadow-md shadow-blue-600/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 Login
               </Link>
@@ -129,7 +129,7 @@ export default function Navbar() {
               <Link 
                 href="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block text-center bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 text-white font-bold text-sm px-4 py-2.5 rounded-xl shadow-md shadow-blue-600/20"
+                className="block text-center bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-bold text-sm px-4 py-2.5 rounded-xl shadow-md shadow-blue-600/20"
               >
                 Login to Portal
               </Link>

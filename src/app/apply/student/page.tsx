@@ -52,7 +52,7 @@ export default function StudentApplicationPage() {
     <div className="py-16 px-4 sm:px-6 lg:px-8 flex justify-center items-center">
       <div className="max-w-md w-full space-y-8 glass-card glass-card-hover p-10 rounded-3xl">
         <div className="text-center">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-500 mx-auto flex items-center justify-center shadow-md shadow-blue-500/20 mb-4">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-sky-500 mx-auto flex items-center justify-center shadow-md shadow-blue-500/20 mb-4">
             <span className="text-white font-extrabold text-xl">🎓</span>
           </div>
           <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Apply as a Student</h2>
@@ -163,7 +163,7 @@ export default function StudentApplicationPage() {
               type="submit"
               id="student-apply-submit"
               disabled={isLoading || !passwordsMatch || !passwordStrong}
-              className="w-full flex justify-center rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 hover:from-blue-700 hover:to-indigo-700 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-blue-600/20 border border-blue-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex justify-center rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-700 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-blue-600/20 border border-blue-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "Submitting..." : "Submit Application"}
             </button>
