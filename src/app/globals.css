@@ -52,6 +52,7 @@ body {
 .blue-glow-text {
   background: linear-gradient(to right, #1d4ed8 0%, #4f46e5 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
