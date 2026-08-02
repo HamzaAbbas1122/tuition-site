@@ -62,11 +62,11 @@ export default async function Home() {
   const faqs = [
     {
       q: "What happens if I'm not satisfied after the 3 demo classes?",
-      a: "You simply don't pay anything. The demo is completely risk-free. You only proceed if you're happy with your assigned teacher."
+      a: "You simply don't pay anything. The demo is completely risk-free. If you are not satisfied with your assigned tutor, we will reassign a new tutor for you."
     },
     {
       q: "How does payment work?",
-      a: "We charge a fixed monthly fee based on the number of subjects and grade level. Payments can be easily made via bank transfer or Easypaisa."
+      a: "We charge a fixed monthly fee based on the number of subjects and grade level. Payments can be easily made via online bank transfer or Easypaisa."
     },
     {
       q: "What if I need to miss a class?",
