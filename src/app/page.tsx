@@ -59,6 +59,25 @@ export default async function Home() {
     },
   ];
 
+  const faqs = [
+    {
+      q: "What happens if I'm not satisfied after the 3 demo classes?",
+      a: "You simply don't pay anything. The demo is completely risk-free. You only proceed if you're happy with your assigned teacher."
+    },
+    {
+      q: "How does payment work?",
+      a: "We charge a fixed monthly fee based on the number of subjects and grade level. Payments can be easily made via bank transfer or Easypaisa."
+    },
+    {
+      q: "What if I need to miss a class?",
+      a: "No problem. You can request a reschedule directly from your student dashboard, and we'll arrange a make-up class with your teacher."
+    },
+    {
+      q: "Are the classes group or individual?",
+      a: "All our classes are strictly 1-on-1. You get 100% of the teacher's attention to focus on exactly what you need help with."
+    }
+  ];
+
   return (
     <div className="flex flex-col items-center w-full space-y-12 md:space-y-24 py-12">
 
@@ -292,6 +311,34 @@ export default async function Home() {
               Teacher profiles are being set up. Check back soon.
             </div>
           )}
+        </div>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section className="w-full max-w-4xl mx-auto px-6 lg:px-8 mb-12">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+            Frequently Asked <span className="blue-glow-text">Questions</span>
+          </h2>
+          <p className="mt-3 text-sm text-slate-600">
+            Everything you need to know before you start.
+          </p>
+        </div>
+        
+        <div className="space-y-4">
+          {faqs.map((faq, i) => (
+            <details key={i} className="group glass-card rounded-2xl overflow-hidden [&_summary::-webkit-details-marker]:hidden">
+              <summary className="flex items-center justify-between p-6 cursor-pointer select-none font-bold text-slate-900 list-none">
+                {faq.q}
+                <span className="transition group-open:rotate-180 text-blue-600">
+                  <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                </span>
+              </summary>
+              <div className="px-6 pb-6 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-4">
+                {faq.a}
+              </div>
+            </details>
+          ))}
         </div>
       </section>
 
