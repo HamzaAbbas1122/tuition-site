@@ -111,6 +111,8 @@ export default function TeacherApplicationPage() {
                 name="name"
                 type="text"
                 required
+                minLength={2}
+                maxLength={50}
                 placeholder="Dr. Alex Smith"
                 className="glass-input block w-full rounded-xl px-4 py-2.5 text-sm"
               />
@@ -126,6 +128,7 @@ export default function TeacherApplicationPage() {
                   name="email"
                   type="email"
                   required
+                  maxLength={100}
                   placeholder="alex@tuitionss.com"
                   className="glass-input block w-full rounded-xl px-4 py-2.5 text-sm"
                 />
@@ -140,6 +143,8 @@ export default function TeacherApplicationPage() {
                   name="phone"
                   type="tel"
                   required
+                  pattern="^\+?[0-9\s\-\(\)]{7,20}$"
+                  title="Please enter a valid phone number, e.g., +1 234 567 890"
                   placeholder="+1 234 567 890"
                   className="glass-input block w-full rounded-xl px-4 py-2.5 text-sm"
                 />
