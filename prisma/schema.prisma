@@ -79,6 +79,7 @@ model TuitionClass {
   subjects  String[]
   grade     String?
   fee       Float    @default(0)
+  teacherFee Float   @default(0)
   isActive  Boolean  @default(true)
 
   

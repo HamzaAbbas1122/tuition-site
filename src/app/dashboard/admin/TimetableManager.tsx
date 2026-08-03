@@ -18,7 +18,7 @@ type Session = {
 
 type Tuition = {
   id: string;
-  subject: string;
+  subjects: string[];
   student: { name: string, grade?: string | null };
   sessions: Session[];
 };
@@ -104,7 +104,7 @@ export default function TimetableManager({ teachers }: { teachers: Teacher[] }) 
                     onClick={() => setSelectedTuitionId(tuition.id)}
                     className={`px-4 py-2 rounded-xl border text-sm font-semibold transition-all pr-8 ${selectedTuitionId === tuition.id ? 'border-blue-300 bg-blue-50 text-blue-800 shadow-xs' : 'border-slate-200 text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-300'}`}
                   >
-                    {tuition.student.name} <span className="opacity-60 font-normal ml-1">• {tuition.subject}</span>
+                    {tuition.student.name} <span className="opacity-60 font-normal ml-1">• {tuition.subjects?.join(", ")}</span>
                   </button>
                   <form action={deleteTuition.bind(null, tuition.id)} onSubmit={(e) => { if(!confirm("Are you sure you want to delete this class? All sessions and payments will be deleted permanently.")) e.preventDefault(); }} className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button type="submit" className="text-slate-400 hover:text-red-600 p-1 rounded-full hover:bg-red-50" title="Delete Class">

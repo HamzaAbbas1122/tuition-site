@@ -129,6 +129,7 @@ export async function createTuitionClass(formData: FormData) {
   const studentId = formData.get("studentId") as string;
   const subjects = formData.getAll("subjects") as string[];
   const fee = parseFloat((formData.get("fee") as string) || "0");
+  const teacherFee = parseFloat((formData.get("teacherFee") as string) || "0");
   let grade = formData.get("grade") as string;
 
   if (!teacherId || !studentId || subjects.length === 0) return;
@@ -152,6 +153,7 @@ export async function createTuitionClass(formData: FormData) {
       subjects,
       grade: grade || "Class 9",
       fee,
+      teacherFee,
     } as any,
   });
 

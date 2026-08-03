@@ -28,7 +28,7 @@ interface StudentItem {
   } | null;
   studentClasses: Array<{
     id: string;
-    subject: string;
+    subjects: string[];
     grade?: string | null;
     teacher: {
       id: string;
@@ -48,7 +48,7 @@ interface TeacherItem {
   } | null;
   teacherClasses: Array<{
     id: string;
-    subject: string;
+    subjects: string[];
     grade?: string | null;
     student: {
       id: string;
@@ -194,8 +194,8 @@ export default function GradeCategoryManager({ students }: Props) {
                                 {s.studentClasses.map((c) => (
                                   <li key={c.id} className="text-xs text-slate-800 bg-white p-3 rounded-xl border border-slate-200/70 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                     <div>
-                                      <span className="font-bold text-blue-700 block mb-0.5">{c.subject}</span>
-                                      <span className="text-slate-500">Subject</span>
+                                      <span className="font-bold text-blue-700 block mb-0.5">{c.subjects?.join(", ")}</span>
+                                      <span className="text-slate-500">Subjects</span>
                                     </div>
                                     <div className="sm:text-right">
                                       <button 

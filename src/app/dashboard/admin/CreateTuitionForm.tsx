@@ -38,7 +38,7 @@ export default function CreateTuitionForm({ teachers, students }: Props) {
   };
 
   return (
-    <form action={createTuitionClass} className="grid grid-cols-1 sm:grid-cols-5 gap-4 items-end">
+    <form action={createTuitionClass} className="grid grid-cols-1 sm:grid-cols-6 gap-4 items-end">
       <div>
         <label className="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Teacher</label>
         <select name="teacherId" className="glass-input w-full rounded-xl p-2.5 text-sm bg-white" required>
@@ -100,6 +100,11 @@ export default function CreateTuitionForm({ teachers, students }: Props) {
       <div>
         <label className="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Monthly Fee (Rs/Mo)</label>
         <input type="number" name="fee" min="0" defaultValue="0" className="glass-input w-full rounded-xl p-2.5 text-sm bg-white font-medium text-slate-800" required />
+      </div>
+
+      <div>
+        <label className="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Teacher Fee</label>
+        <input type="number" name="teacherFee" min="0" defaultValue="0" className="glass-input w-full rounded-xl p-2.5 text-sm bg-white font-medium text-slate-800" required />
       </div>
 
       <button type="submit" className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-md shadow-blue-600/20 border border-blue-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] sm:col-span-2">

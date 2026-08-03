@@ -362,7 +362,8 @@ export default async function AdminDashboard() {
                   <td className="py-4 px-6 text-sm font-bold text-blue-700">{t.tuitionCode}</td>
                   <td className="py-4 px-6">
                     <div className="text-sm font-semibold text-slate-900">{t.subjects?.join(", ")}</div>
-                    <div className="text-xs text-slate-500 font-medium mt-0.5">Rs {t.fee}/mo</div>
+                    <div className="text-xs text-slate-500 font-medium mt-0.5">Student Fee: Rs {t.fee}/mo</div>
+                    <div className="text-xs text-indigo-600 font-medium mt-0.5">Teacher Fee: Rs {t.teacherFee}/mo</div>
                   </td>
                   <td className="py-4 px-6 text-sm text-slate-700 font-medium">{t.student.name}</td>
                   <td className="py-4 px-6">
