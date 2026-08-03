@@ -15,6 +15,13 @@ type Session = {
   rescheduleReason: string | null;
 };
 
+type Payment = {
+  id: string;
+  type: string;
+  monthYear: string;
+  status: string;
+};
+
 type Tuition = {
   id: string;
   subjects: string[];
@@ -22,6 +29,7 @@ type Tuition = {
   teacherFee?: number;
   student: { id: string; name: string };
   sessions: Session[];
+  payments: Payment[];
 };
 
 export default function TeacherScheduleView({ tuitions }: { tuitions: Tuition[] }) {
@@ -29,6 +37,9 @@ export default function TeacherScheduleView({ tuitions }: { tuitions: Tuition[] 
 
   const selected = tuitions.find(t => t.id === selectedId);
   const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  
+  // Current month for checking payment status
+  const currentMonth = new Date().toISOString().slice(0, 7);
 
   const stats = (sessions: Session[]) => ({
     attended: sessions.filter(s => s.status === "COMPLETED").length,
@@ -131,7 +142,12 @@ export default function TeacherScheduleView({ tuitions }: { tuitions: Tuition[] 
                     {(selected.teacherFee !== undefined && selected.teacherFee > 0) ? (
                       <>
                         <span className="text-slate-300 text-[10px]">•</span>
-                        <p className="text-xs font-bold text-emerald-600">Rs {selected.teacherFee}/mo</p>
+                        <p className="text-xs font-bold text-slate-600">Rs {selected.teacherFee}/mo</p>
+                        {selected.payments.some(p => p.type === "SALARY" && p.monthYear === currentMonth && p.status === "PAID") ? (
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700">Salary Dispatched</span>
+                        ) : (
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">Salary Pending</span>
+                        )}
                       </>
                     ) : null}
                   </div>

@@ -27,7 +27,8 @@ export default async function TeacherDashboard() {
       student: true,
       sessions: {
         orderBy: { date: "asc" }
-      }
+      },
+      payments: true,
     }
   });
 

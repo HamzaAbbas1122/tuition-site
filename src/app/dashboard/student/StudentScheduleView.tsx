@@ -41,6 +41,9 @@ export default function StudentScheduleView({ tuitions }: { tuitions: Tuition[] 
   const [selectedId, setSelectedId] = useState<string>(tuitions[0]?.id ?? "");
   const selected = tuitions.find(t => t.id === selectedId);
 
+  // Current month for checking payment status
+  const currentMonth = new Date().toISOString().slice(0, 7);
+
   if (tuitions.length === 0) {
     return (
       <div className="glass-card p-10 rounded-2xl text-center">
@@ -136,7 +139,12 @@ export default function StudentScheduleView({ tuitions }: { tuitions: Tuition[] 
                     {(selected.fee !== undefined && selected.fee > 0) ? (
                       <>
                         <span className="text-slate-300 text-[10px]">•</span>
-                        <p className="text-xs font-bold text-emerald-600">Fee: Rs {selected.fee}/mo</p>
+                        <p className="text-xs font-bold text-slate-600">Fee: Rs {selected.fee}/mo</p>
+                        {selected.payments.some(p => p.type === "FEE" && p.monthYear === currentMonth && p.status === "PAID") ? (
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700">Fee Received</span>
+                        ) : (
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">Fee Pending</span>
+                        )}
                       </>
                     ) : null}
                   </div>
