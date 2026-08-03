@@ -48,56 +48,58 @@ export default function CreateTuitionForm({ teachers, students }: Props) {
   };
 
   return (
-    <form action={createTuitionClass} className="grid grid-cols-1 sm:grid-cols-6 gap-4 items-end">
-      <div>
-        <label className="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Teacher</label>
-        <select name="teacherId" className="glass-input w-full rounded-xl p-2.5 text-sm bg-white" required>
-          <option value="">Select Teacher</option>
-          {teachers.map(t => (
-            <option key={t.id} value={t.id}>{t.name}</option>
-          ))}
-        </select>
+    <form action={createTuitionClass} className="space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label className="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Teacher</label>
+          <select name="teacherId" className="glass-input w-full rounded-xl p-2.5 text-sm bg-white" required>
+            <option value="">Select Teacher</option>
+            {teachers.map(t => (
+              <option key={t.id} value={t.id}>{t.name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Student</label>
+          <select
+            name="studentId"
+            value={selectedStudentId}
+            onChange={handleStudentChange}
+            className="glass-input w-full rounded-xl p-2.5 text-sm bg-white"
+            required
+          >
+            <option value="">Select Student</option>
+            {students.map(s => (
+              <option key={s.id} value={s.id}>
+                {s.name} {s.studentProfile?.grade ? `(${s.studentProfile.grade})` : ""}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider flex items-center justify-between">
+            <span>Class / Grade</span>
+            {selectedStudentId && (
+              <span className="text-[10px] text-blue-600 font-extrabold lowercase">(auto)</span>
+            )}
+          </label>
+          <select
+            name="grade"
+            value={selectedGrade}
+            onChange={(e) => setSelectedGrade(e.target.value)}
+            className="glass-input w-full rounded-xl p-2.5 text-sm bg-white font-semibold text-blue-700"
+            required
+          >
+            {GRADES.map(g => (
+              <option key={g} value={g}>{g}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div>
-        <label className="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Student</label>
-        <select
-          name="studentId"
-          value={selectedStudentId}
-          onChange={handleStudentChange}
-          className="glass-input w-full rounded-xl p-2.5 text-sm bg-white"
-          required
-        >
-          <option value="">Select Student</option>
-          {students.map(s => (
-            <option key={s.id} value={s.id}>
-              {s.name} {s.studentProfile?.grade ? `(${s.studentProfile.grade})` : ""}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label className="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider flex items-center justify-between">
-          <span>Class / Grade</span>
-          {selectedStudentId && (
-            <span className="text-[10px] text-blue-600 font-extrabold lowercase">(auto)</span>
-          )}
-        </label>
-        <select
-          name="grade"
-          value={selectedGrade}
-          onChange={(e) => setSelectedGrade(e.target.value)}
-          className="glass-input w-full rounded-xl p-2.5 text-sm bg-white font-semibold text-blue-700"
-          required
-        >
-          {GRADES.map(g => (
-            <option key={g} value={g}>{g}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className="sm:col-span-2">
         <label className="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Subjects</label>
         <div className="space-y-2">
           <select
@@ -146,19 +148,23 @@ export default function CreateTuitionForm({ teachers, students }: Props) {
         )}
       </div>
 
-      <div>
-        <label className="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Student Fee (Rs/Mo)</label>
-        <input type="number" name="fee" min="0" defaultValue="0" className="glass-input w-full rounded-xl p-2.5 text-sm bg-white font-medium text-slate-800" required />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Student Fee (Rs/Mo)</label>
+          <input type="number" name="fee" min="0" defaultValue="0" className="glass-input w-full rounded-xl p-2.5 text-sm bg-white font-medium text-slate-800" required />
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Teacher Fee</label>
+          <input type="number" name="teacherFee" min="0" defaultValue="0" className="glass-input w-full rounded-xl p-2.5 text-sm bg-white font-medium text-slate-800" required />
+        </div>
       </div>
 
-      <div>
-        <label className="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Teacher Fee</label>
-        <input type="number" name="teacherFee" min="0" defaultValue="0" className="glass-input w-full rounded-xl p-2.5 text-sm bg-white font-medium text-slate-800" required />
+      <div className="pt-2">
+        <button type="submit" className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-3 rounded-xl font-bold text-sm shadow-md shadow-blue-600/20 border border-blue-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
+          Create Class
+        </button>
       </div>
-
-      <button type="submit" className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-md shadow-blue-600/20 border border-blue-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] sm:col-span-2">
-        Create Class
-      </button>
     </form>
   );
 }
