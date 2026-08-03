@@ -13,14 +13,14 @@ const GRADES = ["Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7"
 
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
-  
+
   if (session?.user?.role !== "ADMIN") {
     redirect("/");
   }
 
   const studentApps = await prisma.studentApplication.findMany({ where: { status: "PENDING" } });
   const teacherApps = await prisma.teacherApplication.findMany({ where: { status: "PENDING" } });
-  
+
   const teachers = await prisma.user.findMany({ where: { role: "TEACHER" } });
   const students = await prisma.user.findMany({ where: { role: "STUDENT" } });
 
@@ -50,7 +50,7 @@ export default async function AdminDashboard() {
       }
     }
   });
-  
+
   const pendingReschedules = await prisma.classSession.findMany({
     where: { rescheduleStatus: "PENDING" },
     include: {
@@ -63,7 +63,7 @@ export default async function AdminDashboard() {
     },
     orderBy: { date: 'asc' }
   });
-  
+
   const tuitions = await prisma.tuitionClass.findMany({
     include: {
       teacher: true,
@@ -74,11 +74,11 @@ export default async function AdminDashboard() {
   });
 
   const siteVisitsToday = await prisma.siteVisit.count({
-    where: { date: { gte: new Date(new Date().setHours(0,0,0,0)) } }
+    where: { date: { gte: new Date(new Date().setHours(0, 0, 0, 0)) } }
   });
   const totalSiteVisits = await prisma.siteVisit.count();
-  
-  const expectedRevenue = tuitions.reduce((sum, t) => sum + (t.isActive ? (t as any).fee || 0 : 0), 0);
+
+  const expectedRevenue = tuitions.reduce((sum, t) => sum + (t.isActive ? ((t.fee || 0) - (t.teacherFee || 0)) : 0), 0);
   const totalClasses = tuitions.length;
   const ongoingClasses = tuitions.filter(t => t.isActive).length;
 
@@ -118,214 +118,214 @@ export default async function AdminDashboard() {
         </div>
       </div>
 
-            <AdminTabs
+      <AdminTabs
         pendingStudentAppsCount={studentApps.length}
         pendingTeacherAppsCount={teacherApps.length}
         pendingReschedulesCount={pendingReschedules.length}
         directoryTab={
           <>
             {/* Class & Grade Directory Categorization */}
-      <section className="glass-card glass-card-hover p-4 sm:p-7 rounded-2xl">
-        <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-sky-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-          </div>
-          <div>
-            <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">Class & Grade Directory</h2>
-            <p className="text-xs text-slate-500 font-medium">Categorized view of enrolled students and active instructors (Class 2 to A Levels)</p>
-          </div>
-        </div>
-        <GradeCategoryManager students={studentsWithProfile} teachers={teachersWithProfile} />
-      </section>
+            <section className="glass-card glass-card-hover p-4 sm:p-7 rounded-2xl">
+              <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-sky-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                </div>
+                <div>
+                  <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">Class & Grade Directory</h2>
+                  <p className="text-xs text-slate-500 font-medium">Categorized view of enrolled students and active instructors (Class 2 to A Levels)</p>
+                </div>
+              </div>
+              <GradeCategoryManager students={studentsWithProfile} teachers={teachersWithProfile} />
+            </section>
           </>
         }
         studentAppsTab={
           <>
             {/* Student Applications */}
-        <section className="glass-card glass-card-hover p-4 sm:p-7 rounded-2xl">
-          <div className="flex items-center justify-between mb-6 border-b border-slate-200/70 pb-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200/60 flex items-center justify-center text-blue-600 font-bold text-sm shadow-xs">
-                🎓
-              </div>
-              <h2 className="text-lg font-bold text-slate-900 tracking-wide">Student Applications</h2>
-            </div>
-            <span className="bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold px-3 py-1 rounded-full">
-              {studentApps.length}
-            </span>
-          </div>
-          {studentApps.length === 0 ? (
-            <div className="p-8 text-center border border-dashed border-slate-200/80 rounded-xl text-slate-500 text-sm">
-              No pending student applications
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {studentApps.map(app => (
-                <div key={app.id} className="p-5 rounded-xl flex flex-col gap-4 bg-white/90 border border-slate-200/80 shadow-xs hover:border-blue-300 transition-all">
-                  <div>
-                    <div className="flex justify-between items-start">
-                      <p className="font-bold text-slate-900 text-lg">{app.studentName}</p>
-                      <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                        {(app as any).grade || "Class 9"}
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-slate-600">
-                      <p><span className="text-slate-500 font-medium">Parent:</span> <span className="text-slate-800 font-semibold">{app.parentName}</span></p>
-                      <p><span className="text-slate-500 font-medium">Subject:</span> <span className="text-blue-600 font-bold">{app.subject}</span></p>
-                    </div>
+            <section className="glass-card glass-card-hover p-4 sm:p-7 rounded-2xl">
+              <div className="flex items-center justify-between mb-6 border-b border-slate-200/70 pb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200/60 flex items-center justify-center text-blue-600 font-bold text-sm shadow-xs">
+                    🎓
                   </div>
-                  <div className="flex flex-col sm:flex-row gap-2 sm:items-center pt-3 border-t border-slate-100">
-                    <a href={`https://wa.me/${app.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3.5 py-1.5 rounded-lg hover:bg-emerald-100 transition-all">
-                      WhatsApp
-                    </a>
-                    <form action={acceptStudentApp.bind(null, app.id)} className="flex-1">
-                      <button className="w-full text-xs font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-1.5 rounded-lg shadow-sm border border-blue-500/20 transition-all">
-                        Accept
-                      </button>
-                    </form>
-                    <form action={rejectStudentApp.bind(null, app.id)} className="flex-1">
-                      <button className="w-full text-xs font-semibold bg-white border border-slate-200 text-red-600 px-4 py-1.5 rounded-lg hover:bg-red-50 hover:border-red-200 transition-all">
-                        Reject
-                      </button>
-                    </form>
-                  </div>
+                  <h2 className="text-lg font-bold text-slate-900 tracking-wide">Student Applications</h2>
                 </div>
-              ))}
-            </div>
-          )}
-        </section>
+                <span className="bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold px-3 py-1 rounded-full">
+                  {studentApps.length}
+                </span>
+              </div>
+              {studentApps.length === 0 ? (
+                <div className="p-8 text-center border border-dashed border-slate-200/80 rounded-xl text-slate-500 text-sm">
+                  No pending student applications
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {studentApps.map(app => (
+                    <div key={app.id} className="p-5 rounded-xl flex flex-col gap-4 bg-white/90 border border-slate-200/80 shadow-xs hover:border-blue-300 transition-all">
+                      <div>
+                        <div className="flex justify-between items-start">
+                          <p className="font-bold text-slate-900 text-lg">{app.studentName}</p>
+                          <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                            {(app as any).grade || "Class 9"}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-slate-600">
+                          <p><span className="text-slate-500 font-medium">Parent:</span> <span className="text-slate-800 font-semibold">{app.parentName}</span></p>
+                          <p><span className="text-slate-500 font-medium">Subject:</span> <span className="text-blue-600 font-bold">{app.subject}</span></p>
+                        </div>
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-2 sm:items-center pt-3 border-t border-slate-100">
+                        <a href={`https://wa.me/${app.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3.5 py-1.5 rounded-lg hover:bg-emerald-100 transition-all">
+                          WhatsApp
+                        </a>
+                        <form action={acceptStudentApp.bind(null, app.id)} className="flex-1">
+                          <button className="w-full text-xs font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-1.5 rounded-lg shadow-sm border border-blue-500/20 transition-all">
+                            Accept
+                          </button>
+                        </form>
+                        <form action={rejectStudentApp.bind(null, app.id)} className="flex-1">
+                          <button className="w-full text-xs font-semibold bg-white border border-slate-200 text-red-600 px-4 py-1.5 rounded-lg hover:bg-red-50 hover:border-red-200 transition-all">
+                            Reject
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
           </>
         }
         teacherAppsTab={
           <>
             {/* Teacher Applications */}
-        <section className="glass-card glass-card-hover p-4 sm:p-7 rounded-2xl">
-          <div className="flex items-center justify-between mb-6 border-b border-slate-200/70 pb-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-200/60 flex items-center justify-center text-indigo-600 font-bold text-sm shadow-xs">
-                👨‍🏫
-              </div>
-              <h2 className="text-lg font-bold text-slate-900 tracking-wide">Teacher Applications</h2>
-            </div>
-            <span className="bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-bold px-3 py-1 rounded-full">
-              {teacherApps.length}
-            </span>
-          </div>
-          {teacherApps.length === 0 ? (
-            <div className="p-8 text-center border border-dashed border-slate-200/80 rounded-xl text-slate-500 text-sm">
-              No pending teacher applications
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {teacherApps.map(app => (
-                <div key={app.id} className="p-5 rounded-xl flex flex-col gap-4 bg-white/90 border border-slate-200/80 shadow-xs hover:border-blue-300 transition-all">
-                  <div>
-                    <p className="font-bold text-slate-900 text-lg">{app.name}</p>
-                    <div className="grid grid-cols-2 gap-y-1 gap-x-4 mt-2 text-xs text-slate-600">
-                      <p className="col-span-2"><span className="text-slate-500 font-medium">Subjects:</span> <span className="text-indigo-600 font-bold">{app.subjects}</span></p>
-                      <p className="col-span-2"><span className="text-slate-500 font-medium">Email:</span> <span className="text-slate-800 font-semibold">{app.email}</span></p>
-                    </div>
+            <section className="glass-card glass-card-hover p-4 sm:p-7 rounded-2xl">
+              <div className="flex items-center justify-between mb-6 border-b border-slate-200/70 pb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-200/60 flex items-center justify-center text-indigo-600 font-bold text-sm shadow-xs">
+                    👨‍🏫
                   </div>
-                  <div className="flex flex-col sm:flex-row gap-2 sm:items-center pt-3 border-t border-slate-100">
-                    <a href={`https://wa.me/${app.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3.5 py-1.5 rounded-lg hover:bg-emerald-100 transition-all">
-                      WhatsApp
-                    </a>
-                    <form action={acceptTeacherApp.bind(null, app.id)} className="flex-1">
-                      <button className="w-full text-xs font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-1.5 rounded-lg shadow-sm border border-blue-500/20 transition-all">
-                        Accept
-                      </button>
-                    </form>
-                    <form action={rejectTeacherApp.bind(null, app.id)} className="flex-1">
-                      <button className="w-full text-xs font-semibold bg-white border border-slate-200 text-red-600 px-4 py-1.5 rounded-lg hover:bg-red-50 hover:border-red-200 transition-all">
-                        Reject
-                      </button>
-                    </form>
-                  </div>
+                  <h2 className="text-lg font-bold text-slate-900 tracking-wide">Teacher Applications</h2>
                 </div>
-              ))}
-            </div>
-          )}
-        </section>
+                <span className="bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-bold px-3 py-1 rounded-full">
+                  {teacherApps.length}
+                </span>
+              </div>
+              {teacherApps.length === 0 ? (
+                <div className="p-8 text-center border border-dashed border-slate-200/80 rounded-xl text-slate-500 text-sm">
+                  No pending teacher applications
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {teacherApps.map(app => (
+                    <div key={app.id} className="p-5 rounded-xl flex flex-col gap-4 bg-white/90 border border-slate-200/80 shadow-xs hover:border-blue-300 transition-all">
+                      <div>
+                        <p className="font-bold text-slate-900 text-lg">{app.name}</p>
+                        <div className="grid grid-cols-2 gap-y-1 gap-x-4 mt-2 text-xs text-slate-600">
+                          <p className="col-span-2"><span className="text-slate-500 font-medium">Subjects:</span> <span className="text-indigo-600 font-bold">{app.subjects}</span></p>
+                          <p className="col-span-2"><span className="text-slate-500 font-medium">Email:</span> <span className="text-slate-800 font-semibold">{app.email}</span></p>
+                        </div>
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-2 sm:items-center pt-3 border-t border-slate-100">
+                        <a href={`https://wa.me/${app.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3.5 py-1.5 rounded-lg hover:bg-emerald-100 transition-all">
+                          WhatsApp
+                        </a>
+                        <form action={acceptTeacherApp.bind(null, app.id)} className="flex-1">
+                          <button className="w-full text-xs font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-1.5 rounded-lg shadow-sm border border-blue-500/20 transition-all">
+                            Accept
+                          </button>
+                        </form>
+                        <form action={rejectTeacherApp.bind(null, app.id)} className="flex-1">
+                          <button className="w-full text-xs font-semibold bg-white border border-slate-200 text-red-600 px-4 py-1.5 rounded-lg hover:bg-red-50 hover:border-red-200 transition-all">
+                            Reject
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
           </>
         }
         createTuitionTab={
           <>
             {/* Assign Tuitions */}
-      <section className="glass-card glass-card-hover p-4 sm:p-7 rounded-2xl">
-        <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-sky-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          </div>
-          <div>
-            <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">Create Tuition Class</h2>
-            <p className="text-xs text-slate-500 font-medium">Assign an instructor to a student (Class / Grade auto-detects from student profile)</p>
-          </div>
-        </div>
-        <CreateTuitionForm teachers={teachers} students={studentsWithProfile} />
-      </section>
+            <section className="glass-card glass-card-hover p-4 sm:p-7 rounded-2xl">
+              <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-sky-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <div>
+                  <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">Create Tuition Class</h2>
+                  <p className="text-xs text-slate-500 font-medium">Assign an instructor to a student (Class / Grade auto-detects from student profile)</p>
+                </div>
+              </div>
+              <CreateTuitionForm teachers={teachers} students={studentsWithProfile} />
+            </section>
           </>
         }
         scheduleTab={
           <>
             {/* Teacher Timetables & Scheduling */}
-      <section id="timetable-section" className="glass-card p-4 sm:p-7 rounded-2xl">
-        <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
-          <div className="w-9 h-9 rounded-xl bg-sky-50 border border-sky-200/60 flex items-center justify-center text-sky-600 font-bold text-sm shadow-xs">
-            📅
-          </div>
-          <h2 className="text-lg font-bold text-slate-900 tracking-wide">Teacher Timetables & Scheduling</h2>
-        </div>
-        <TimetableManager teachers={teachersWithProfile} />
-      </section>
+            <section id="timetable-section" className="glass-card p-4 sm:p-7 rounded-2xl">
+              <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
+                <div className="w-9 h-9 rounded-xl bg-sky-50 border border-sky-200/60 flex items-center justify-center text-sky-600 font-bold text-sm shadow-xs">
+                  📅
+                </div>
+                <h2 className="text-lg font-bold text-slate-900 tracking-wide">Teacher Timetables & Scheduling</h2>
+              </div>
+              <TimetableManager teachers={teachersWithProfile} />
+            </section>
           </>
         }
         rescheduleTab={
           <>
             {/* Pending Reschedules */}
-      {pendingReschedules.length > 0 && (
-        <section className="glass-card p-4 sm:p-7 rounded-2xl border-amber-200/80 bg-amber-50/40">
-          <div className="flex items-center justify-between mb-6 border-b border-amber-200/80 pb-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-700 font-bold text-sm">
-                ⏳
-              </div>
-              <h2 className="text-lg font-bold text-amber-900">Pending Reschedule Requests</h2>
-            </div>
-            <span className="bg-amber-100 text-amber-800 border border-amber-300 text-xs font-bold px-3 py-1 rounded-full">
-              {pendingReschedules.length}
-            </span>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {pendingReschedules.map(session => (
-              <div key={session.id} className="bg-white border border-amber-200 p-5 rounded-xl flex flex-col gap-4 shadow-xs">
-                <div>
-                  <p className="font-bold text-slate-900">{session.tuition.subjects?.join(", ")}</p>
-                  <p className="text-xs text-slate-600 mt-1">Teacher: <span className="font-semibold text-slate-800">{session.tuition.teacher.name}</span></p>
-                  <p className="text-xs text-slate-600">Student: <span className="font-semibold text-slate-800">{session.tuition.student.name}</span></p>
+            {pendingReschedules.length > 0 && (
+              <section className="glass-card p-4 sm:p-7 rounded-2xl border-amber-200/80 bg-amber-50/40">
+                <div className="flex items-center justify-between mb-6 border-b border-amber-200/80 pb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-9 h-9 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-700 font-bold text-sm">
+                      ⏳
+                    </div>
+                    <h2 className="text-lg font-bold text-amber-900">Pending Reschedule Requests</h2>
+                  </div>
+                  <span className="bg-amber-100 text-amber-800 border border-amber-300 text-xs font-bold px-3 py-1 rounded-full">
+                    {pendingReschedules.length}
+                  </span>
                 </div>
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-200/80 space-y-1.5">
-                  <p className="text-xs text-slate-500">Original: <span className="text-slate-800 font-medium">{new Date(session.date).toLocaleString()}</span></p>
-                  <p className="text-xs text-blue-700 font-bold">Proposed: {session.rescheduleProposedTime ? new Date(session.rescheduleProposedTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'N/A'} - {session.rescheduleProposedEndTime ? new Date(session.rescheduleProposedEndTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'N/A'}</p>
-                  <p className="text-xs text-slate-500">Reason: <span className="text-slate-700">{session.rescheduleReason || "None provided"}</span></p>
-                  <p className="text-xs text-slate-500">By: <span className="capitalize text-slate-800 font-medium">{session.rescheduleRequestedBy?.toLowerCase()}</span></p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {pendingReschedules.map(session => (
+                    <div key={session.id} className="bg-white border border-amber-200 p-5 rounded-xl flex flex-col gap-4 shadow-xs">
+                      <div>
+                        <p className="font-bold text-slate-900">{session.tuition.subjects?.join(", ")}</p>
+                        <p className="text-xs text-slate-600 mt-1">Teacher: <span className="font-semibold text-slate-800">{session.tuition.teacher.name}</span></p>
+                        <p className="text-xs text-slate-600">Student: <span className="font-semibold text-slate-800">{session.tuition.student.name}</span></p>
+                      </div>
+                      <div className="bg-slate-50 p-3 rounded-lg border border-slate-200/80 space-y-1.5">
+                        <p className="text-xs text-slate-500">Original: <span className="text-slate-800 font-medium">{new Date(session.date).toLocaleString()}</span></p>
+                        <p className="text-xs text-blue-700 font-bold">Proposed: {session.rescheduleProposedTime ? new Date(session.rescheduleProposedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'} - {session.rescheduleProposedEndTime ? new Date(session.rescheduleProposedEndTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}</p>
+                        <p className="text-xs text-slate-500">Reason: <span className="text-slate-700">{session.rescheduleReason || "None provided"}</span></p>
+                        <p className="text-xs text-slate-500">By: <span className="capitalize text-slate-800 font-medium">{session.rescheduleRequestedBy?.toLowerCase()}</span></p>
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-2 sm:items-center pt-2 border-t border-slate-100">
+                        <form action={handleRescheduleRequest.bind(null, session.id, 'APPROVE')} className="flex-1">
+                          <button className="w-full text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-2 rounded-lg hover:bg-emerald-100 transition-all">
+                            Approve
+                          </button>
+                        </form>
+                        <form action={handleRescheduleRequest.bind(null, session.id, 'REJECT')} className="flex-1">
+                          <button className="w-full text-xs font-semibold bg-white border border-slate-200 text-red-600 px-4 py-2 rounded-lg hover:bg-red-50 transition-all">
+                            Reject
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex flex-col sm:flex-row gap-2 sm:items-center pt-2 border-t border-slate-100">
-                  <form action={handleRescheduleRequest.bind(null, session.id, 'APPROVE')} className="flex-1">
-                    <button className="w-full text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-2 rounded-lg hover:bg-emerald-100 transition-all">
-                      Approve
-                    </button>
-                  </form>
-                  <form action={handleRescheduleRequest.bind(null, session.id, 'REJECT')} className="flex-1">
-                    <button className="w-full text-xs font-semibold bg-white border border-slate-200 text-red-600 px-4 py-2 rounded-lg hover:bg-red-50 transition-all">
-                      Reject
-                    </button>
-                  </form>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+              </section>
+            )}
             {pendingReschedules.length === 0 && (
               <div className="glass-card p-8 text-center rounded-2xl border-dashed border-slate-200/80 text-slate-500 text-sm">
                 No pending reschedule requests
@@ -336,72 +336,72 @@ export default async function AdminDashboard() {
         paymentsTab={
           <>
             {/* Active Tuitions & Payments */}
-      <section className="glass-card glass-card-hover p-4 sm:p-7 rounded-2xl">
-        <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
-          <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200/60 flex items-center justify-center text-blue-600 font-bold text-sm shadow-xs">
-            💳
-          </div>
-          <h2 className="text-lg font-bold text-slate-900 tracking-wide">Payment Overview</h2>
-        </div>
-        <div className="border border-slate-200/80 rounded-xl overflow-x-auto bg-white/80 shadow-xs">
-          <table className="w-full text-left border-collapse min-w-[600px]">
-            <thead className="bg-slate-50/90 border-b border-slate-200">
-              <tr>
-                <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Code</th>
-                <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Subjects & Fee</th>
-                <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Student</th>
-                <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Payments</th>
-                <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {tuitions.length === 0 ? (
-                <tr><td colSpan={4} className="py-8 px-6 text-center text-sm text-slate-500">No tuitions created yet.</td></tr>
-              ) : tuitions.map(t => (
-                <tr key={t.id} className="hover:bg-blue-50/30 transition-colors">
-                  <td className="py-4 px-6 text-sm font-bold text-blue-700">{t.tuitionCode}</td>
-                  <td className="py-4 px-6">
-                    <div className="text-sm font-semibold text-slate-900">{t.subjects?.join(", ")}</div>
-                    <div className="text-xs text-slate-500 font-medium mt-0.5">Student Fee: Rs {t.fee}/mo</div>
-                    <div className="text-xs text-indigo-600 font-medium mt-0.5">Teacher Fee: Rs {t.teacherFee}/mo</div>
-                  </td>
-                  <td className="py-4 px-6 text-sm text-slate-700 font-medium">{t.student.name}</td>
-                  <td className="py-4 px-6">
-                    {t.payments.length === 0 ? (
-                      <span className="text-slate-400 text-xs tracking-wider uppercase font-medium">No payments</span>
-                    ) : (
-                      <div className="flex flex-col gap-2 text-sm">
-                        {t.payments.map(p => (
-                          <div key={p.id} className="flex items-center gap-3">
-                            <span className={`px-3 py-1 rounded-lg font-semibold text-xs border ${p.status === "PAID" ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200"}`}>
-                              ${p.amount} • {p.status}
-                            </span>
-                            <form action={togglePaymentStatus.bind(null, p.id, p.status)}>
-                              <button className="text-xs font-semibold text-slate-500 hover:text-blue-600 underline transition-colors">Toggle</button>
-                            </form>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </td>
-                  <td className="py-4 px-6 text-right">
-                    <DeleteButton 
-                      action={deleteTuition.bind(null, t.id)} 
-                      confirmMessage="Are you sure you want to delete this class? All sessions and payments for this class will be deleted permanently."
-                    >
-                      Delete Class
-                    </DeleteButton>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+            <section className="glass-card glass-card-hover p-4 sm:p-7 rounded-2xl">
+              <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
+                <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200/60 flex items-center justify-center text-blue-600 font-bold text-sm shadow-xs">
+                  💳
+                </div>
+                <h2 className="text-lg font-bold text-slate-900 tracking-wide">Payment Overview</h2>
+              </div>
+              <div className="border border-slate-200/80 rounded-xl overflow-x-auto bg-white/80 shadow-xs">
+                <table className="w-full text-left border-collapse min-w-[600px]">
+                  <thead className="bg-slate-50/90 border-b border-slate-200">
+                    <tr>
+                      <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Code</th>
+                      <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Subjects & Fee</th>
+                      <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Student</th>
+                      <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Payments</th>
+                      <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {tuitions.length === 0 ? (
+                      <tr><td colSpan={4} className="py-8 px-6 text-center text-sm text-slate-500">No tuitions created yet.</td></tr>
+                    ) : tuitions.map(t => (
+                      <tr key={t.id} className="hover:bg-blue-50/30 transition-colors">
+                        <td className="py-4 px-6 text-sm font-bold text-blue-700">{t.tuitionCode}</td>
+                        <td className="py-4 px-6">
+                          <div className="text-sm font-semibold text-slate-900">{t.subjects?.join(", ")}</div>
+                          <div className="text-xs text-slate-500 font-medium mt-0.5">Student Fee: Rs {t.fee}/mo</div>
+                          <div className="text-xs text-indigo-600 font-medium mt-0.5">Teacher Fee: Rs {t.teacherFee}/mo</div>
+                        </td>
+                        <td className="py-4 px-6 text-sm text-slate-700 font-medium">{t.student.name}</td>
+                        <td className="py-4 px-6">
+                          {t.payments.length === 0 ? (
+                            <span className="text-slate-400 text-xs tracking-wider uppercase font-medium">No payments</span>
+                          ) : (
+                            <div className="flex flex-col gap-2 text-sm">
+                              {t.payments.map(p => (
+                                <div key={p.id} className="flex items-center gap-3">
+                                  <span className={`px-3 py-1 rounded-lg font-semibold text-xs border ${p.status === "PAID" ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200"}`}>
+                                    ${p.amount} • {p.status}
+                                  </span>
+                                  <form action={togglePaymentStatus.bind(null, p.id, p.status)}>
+                                    <button className="text-xs font-semibold text-slate-500 hover:text-blue-600 underline transition-colors">Toggle</button>
+                                  </form>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </td>
+                        <td className="py-4 px-6 text-right">
+                          <DeleteButton
+                            action={deleteTuition.bind(null, t.id)}
+                            confirmMessage="Are you sure you want to delete this class? All sessions and payments for this class will be deleted permanently."
+                          >
+                            Delete Class
+                          </DeleteButton>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
           </>
         }
       />
-</div>
+    </div>
   );
 }
 
