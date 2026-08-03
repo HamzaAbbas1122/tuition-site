@@ -21,6 +21,7 @@ type Tuition = {
   id: string;
   subjects: string[];
   grade?: string | null;
+  fee?: number;
   teacher: { name: string };
   sessions: Session[];
   payments: Payment[];
@@ -130,7 +131,15 @@ export default function StudentScheduleView({ tuitions }: { tuitions: Tuition[] 
                       <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">{selected.grade}</span>
                     )}
                   </h3>
-                  <p className="text-xs font-bold text-blue-600 mt-0.5">{selected.teacher.name}</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <p className="text-xs font-bold text-blue-600">{selected.teacher.name}</p>
+                    {(selected.fee !== undefined && selected.fee > 0) ? (
+                      <>
+                        <span className="text-slate-300 text-[10px]">•</span>
+                        <p className="text-xs font-bold text-emerald-600">Fee: Rs {selected.fee}/mo</p>
+                      </>
+                    ) : null}
+                  </div>
                 </div>
               </div>
               {/* FIX: Label "Completed" to match teacher */}

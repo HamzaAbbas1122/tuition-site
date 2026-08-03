@@ -19,6 +19,7 @@ type Tuition = {
   id: string;
   subjects: string[];
   grade?: string | null;
+  teacherFee?: number;
   student: { id: string; name: string };
   sessions: Session[];
 };
@@ -125,7 +126,15 @@ export default function TeacherScheduleView({ tuitions }: { tuitions: Tuition[] 
                       <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">{selected.grade}</span>
                     )}
                   </h3>
-                  <p className="text-xs font-bold text-blue-600 mt-0.5">{selected.subjects?.join(", ")}</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <p className="text-xs font-bold text-blue-600">{selected.subjects?.join(", ")}</p>
+                    {(selected.teacherFee !== undefined && selected.teacherFee > 0) ? (
+                      <>
+                        <span className="text-slate-300 text-[10px]">•</span>
+                        <p className="text-xs font-bold text-emerald-600">Rs {selected.teacherFee}/mo</p>
+                      </>
+                    ) : null}
+                  </div>
                 </div>
               </div>
               <div className="flex gap-2 flex-wrap">
