@@ -17,7 +17,7 @@ type Session = {
 
 type Tuition = {
   id: string;
-  subject: string;
+  subjects: string[];
   grade?: string | null;
   student: { id: string; name: string };
   sessions: Session[];
@@ -59,7 +59,7 @@ export default function TeacherScheduleView({ tuitions }: { tuitions: Tuition[] 
         </div>
 
         {/* Student list — horizontal on mobile, vertical on md+ */}
-        <ul className="flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible md:flex-1 divide-x md:divide-x-0 md:divide-y divide-slate-100">
+        <ul className="flex flex-row md:flex-col overflow-x-auto overflow-y-hidden md:overflow-x-hidden md:overflow-y-auto md:flex-1 divide-x md:divide-x-0 md:divide-y divide-slate-100">
           {tuitions.map(t => {
             const isSelected = t.id === selectedId;
             const s = stats(t.sessions);
@@ -87,7 +87,7 @@ export default function TeacherScheduleView({ tuitions }: { tuitions: Tuition[] 
                     <p className={`text-xs font-bold truncate ${isSelected ? "text-blue-900" : "text-slate-800"}`}>
                       {t.student.name}
                     </p>
-                    <p className="text-[10px] text-blue-500 font-semibold truncate">{t.subject}{t.grade ? ` · ${t.grade}` : ""}</p>
+                    <p className="text-[10px] text-blue-500 font-semibold truncate">{t.subjects?.join(", ")}{t.grade ? ` · ${t.grade}` : ""}</p>
                     <div className="flex gap-2 mt-1">
                       <span className="text-[9px] font-bold text-emerald-600">{s.attended}✓</span>
                       <span className="text-[9px] font-bold text-red-400">{s.missed}✗</span>
@@ -125,7 +125,7 @@ export default function TeacherScheduleView({ tuitions }: { tuitions: Tuition[] 
                       <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">{selected.grade}</span>
                     )}
                   </h3>
-                  <p className="text-xs font-bold text-blue-600 mt-0.5">{selected.subject}</p>
+                  <p className="text-xs font-bold text-blue-600 mt-0.5">{selected.subjects?.join(", ")}</p>
                 </div>
               </div>
               <div className="flex gap-2 flex-wrap">

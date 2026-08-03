@@ -73,6 +73,15 @@ export default async function AdminDashboard() {
     },
   });
 
+  const siteVisitsToday = await prisma.siteVisit.count({
+    where: { date: { gte: new Date(new Date().setHours(0,0,0,0)) } }
+  });
+  const totalSiteVisits = await prisma.siteVisit.count();
+  
+  const expectedRevenue = tuitions.reduce((sum, t) => sum + (t.isActive ? (t as any).fee || 0 : 0), 0);
+  const totalClasses = tuitions.length;
+  const ongoingClasses = tuitions.filter(t => t.isActive).length;
+
   return (
     <div className="space-y-10">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-blue-100/80 pb-6">
@@ -87,6 +96,25 @@ export default async function AdminDashboard() {
             <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping mr-2"></span>
             System Live
           </span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="glass-card p-4 rounded-xl flex flex-col justify-center">
+          <p className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Site Visits (Today / Total)</p>
+          <p className="text-2xl font-extrabold text-blue-600">{siteVisitsToday} <span className="text-sm text-slate-400 font-medium">/ {totalSiteVisits}</span></p>
+        </div>
+        <div className="glass-card p-4 rounded-xl flex flex-col justify-center">
+          <p className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Users (Students / Teachers)</p>
+          <p className="text-2xl font-extrabold text-indigo-600">{students.length} <span className="text-sm text-slate-400 font-medium">/ {teachers.length}</span></p>
+        </div>
+        <div className="glass-card p-4 rounded-xl flex flex-col justify-center">
+          <p className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Classes (Active / Total)</p>
+          <p className="text-2xl font-extrabold text-emerald-600">{ongoingClasses} <span className="text-sm text-slate-400 font-medium">/ {totalClasses}</span></p>
+        </div>
+        <div className="glass-card p-4 rounded-xl flex flex-col justify-center bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200/60">
+          <p className="text-[10px] uppercase tracking-wider text-amber-700 font-bold mb-1">Expected Revenue / Mo</p>
+          <p className="text-2xl font-extrabold text-amber-600">Rs {expectedRevenue.toLocaleString()}</p>
         </div>
       </div>
 
@@ -271,7 +299,7 @@ export default async function AdminDashboard() {
             {pendingReschedules.map(session => (
               <div key={session.id} className="bg-white border border-amber-200 p-5 rounded-xl flex flex-col gap-4 shadow-xs">
                 <div>
-                  <p className="font-bold text-slate-900">{session.tuition.subject}</p>
+                  <p className="font-bold text-slate-900">{session.tuition.subjects?.join(", ")}</p>
                   <p className="text-xs text-slate-600 mt-1">Teacher: <span className="font-semibold text-slate-800">{session.tuition.teacher.name}</span></p>
                   <p className="text-xs text-slate-600">Student: <span className="font-semibold text-slate-800">{session.tuition.student.name}</span></p>
                 </div>
@@ -319,7 +347,8 @@ export default async function AdminDashboard() {
           <table className="w-full text-left border-collapse min-w-[600px]">
             <thead className="bg-slate-50/90 border-b border-slate-200">
               <tr>
-                <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Subject</th>
+                <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Code</th>
+                <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Subjects & Fee</th>
                 <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Student</th>
                 <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Payments</th>
                 <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase text-right">Actions</th>
@@ -330,7 +359,11 @@ export default async function AdminDashboard() {
                 <tr><td colSpan={4} className="py-8 px-6 text-center text-sm text-slate-500">No tuitions created yet.</td></tr>
               ) : tuitions.map(t => (
                 <tr key={t.id} className="hover:bg-blue-50/30 transition-colors">
-                  <td className="py-4 px-6 text-sm font-semibold text-slate-900">{t.subject}</td>
+                  <td className="py-4 px-6 text-sm font-bold text-blue-700">{t.tuitionCode}</td>
+                  <td className="py-4 px-6">
+                    <div className="text-sm font-semibold text-slate-900">{t.subjects?.join(", ")}</div>
+                    <div className="text-xs text-slate-500 font-medium mt-0.5">Rs {t.fee}/mo</div>
+                  </td>
                   <td className="py-4 px-6 text-sm text-slate-700 font-medium">{t.student.name}</td>
                   <td className="py-4 px-6">
                     {t.payments.length === 0 ? (

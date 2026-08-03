@@ -5,6 +5,7 @@ import { Providers } from "@/components/Providers";
 import Navbar from "@/components/Navbar";
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import SiteVisitTracker from "@/components/SiteVisitTracker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,6 +60,7 @@ export default function RootLayout({
         </Providers>
         <Analytics />
         <SpeedInsights />
+        <SiteVisitTracker />
         
         {/* WhatsApp Floating Button */}
         <a 

@@ -72,11 +72,13 @@ model TeacherApplication {
 }
 
 model TuitionClass {
-  id        String   @id @default(cuid())
-  teacherId String
+  id          String   @id @default(cuid())
+  tuitionCode String   @unique @default(dbgenerated("gen_random_uuid()"))
+  teacherId   String
   studentId String
-  subject   String
+  subjects  String[]
   grade     String?
+  fee       Float    @default(0)
   isActive  Boolean  @default(true)
 
   
@@ -123,3 +125,10 @@ model PasswordResetToken {
   createdAt DateTime @default(now())
 }
 
+model SiteVisit {
+  id        String   @id @default(cuid())
+  date      DateTime @default(now())
+  ipHash    String?
+  country   String?
+  userAgent String?
+}

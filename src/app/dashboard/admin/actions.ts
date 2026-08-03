@@ -127,10 +127,11 @@ export async function rejectTeacherApp(id: string) {
 export async function createTuitionClass(formData: FormData) {
   const teacherId = formData.get("teacherId") as string;
   const studentId = formData.get("studentId") as string;
-  const subject = formData.get("subject") as string;
+  const subjects = formData.getAll("subjects") as string[];
+  const fee = parseFloat((formData.get("fee") as string) || "0");
   let grade = formData.get("grade") as string;
 
-  if (!teacherId || !studentId || !subject) return;
+  if (!teacherId || !studentId || subjects.length === 0) return;
 
   if (!grade) {
     const studentProfile = await prisma.studentProfile.findUnique({
@@ -139,12 +140,18 @@ export async function createTuitionClass(formData: FormData) {
     grade = studentProfile?.grade || "Class 9";
   }
 
+  // Generate unique tuition code like T-101
+  const count = await prisma.tuitionClass.count();
+  const tuitionCode = `T-${101 + count}`;
+
   await prisma.tuitionClass.create({
     data: {
+      tuitionCode,
       teacherId,
       studentId,
-      subject,
+      subjects,
       grade: grade || "Class 9",
+      fee,
     } as any,
   });
 
@@ -156,7 +163,7 @@ export async function createTuitionClass(formData: FormData) {
     await sendClassAllottedEmail({
       to: student.email,
       recipientName: student.name,
-      subjectName: subject,
+      subjectName: subjects.join(", "),
       partnerName: teacher?.name || "Your Teacher",
       partnerRole: "Instructor",
       grade: grade || undefined,
@@ -167,7 +174,7 @@ export async function createTuitionClass(formData: FormData) {
     await sendClassAllottedEmail({
       to: teacher.email,
       recipientName: teacher.name,
-      subjectName: subject,
+      subjectName: subjects.join(", "),
       partnerName: student?.name || "Your Student",
       partnerRole: "Student",
       grade: grade || undefined,

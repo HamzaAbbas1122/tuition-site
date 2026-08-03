@@ -19,7 +19,7 @@ type Payment = { id: string; amount: number; status: string };
 
 type Tuition = {
   id: string;
-  subject: string;
+  subjects: string[];
   grade?: string | null;
   teacher: { name: string };
   sessions: Session[];
@@ -64,7 +64,7 @@ export default function StudentScheduleView({ tuitions }: { tuitions: Tuition[] 
         </div>
 
         {/* Class list — horizontal on mobile, vertical on md+ */}
-        <ul className="flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible md:flex-1 divide-x md:divide-x-0 md:divide-y divide-slate-100">
+        <ul className="flex flex-row md:flex-col overflow-x-auto overflow-y-hidden md:overflow-x-hidden md:overflow-y-auto md:flex-1 divide-x md:divide-x-0 md:divide-y divide-slate-100">
           {tuitions.map(t => {
             const isSelected = t.id === selectedId;
             const s = stats(t.sessions);
@@ -84,13 +84,13 @@ export default function StudentScheduleView({ tuitions }: { tuitions: Tuition[] 
                       ? "bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-md shadow-blue-200"
                       : "bg-gradient-to-br from-blue-100 to-indigo-100 text-blue-700"
                   }`}>
-                    {t.subject.charAt(0).toUpperCase()}
+                    {t.subjects?.[0]?.charAt(0).toUpperCase() || 'C'}
                   </div>
 
                   {/* Info */}
                   <div className="min-w-0 flex-1">
                     <p className={`text-xs font-bold truncate ${isSelected ? "text-blue-900" : "text-slate-800"}`}>
-                      {t.subject}
+                      {t.subjects?.join(", ")}
                     </p>
                     <p className="text-[10px] text-blue-500 font-semibold truncate">{t.teacher.name}{t.grade ? ` · ${t.grade}` : ""}</p>
                     <div className="flex gap-2 mt-1">
@@ -121,11 +121,11 @@ export default function StudentScheduleView({ tuitions }: { tuitions: Tuition[] 
             <div className="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 bg-white/60 shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-extrabold text-sm shadow-md shrink-0">
-                  {selected.subject.charAt(0).toUpperCase()}
+                  {selected.subjects?.[0]?.charAt(0).toUpperCase() || 'C'}
                 </div>
                 <div>
                   <h3 className="font-extrabold text-slate-900 text-base flex items-center gap-2">
-                    {selected.subject}
+                    {selected.subjects?.join(", ")}
                     {selected.grade && (
                       <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">{selected.grade}</span>
                     )}
