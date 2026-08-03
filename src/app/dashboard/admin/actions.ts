@@ -329,3 +329,35 @@ export async function deleteUser(userId: string) {
   
   revalidatePath("/dashboard/admin");
 }
+
+export async function toggleMonthlyPayment(tuitionId: string, type: 'FEE' | 'SALARY', monthYear: string, amount: number) {
+  // Check if payment exists
+  const existing = await prisma.payment.findFirst({
+    where: { tuitionId, type, monthYear }
+  });
+
+  if (existing) {
+    // Toggle status
+    await prisma.payment.update({
+      where: { id: existing.id },
+      data: {
+        status: existing.status === "PAID" ? "UNPAID" : "PAID",
+        paidDate: existing.status === "PAID" ? null : new Date()
+      }
+    });
+  } else {
+    // Create new PAID payment
+    await prisma.payment.create({
+      data: {
+        tuitionId,
+        amount,
+        type,
+        monthYear,
+        status: "PAID",
+        paidDate: new Date(),
+      } as any // Use as any to bypass TS complaining about optional dueDate if Prisma client is not updated yet
+    });
+  }
+
+  revalidatePath("/dashboard/admin");
+}

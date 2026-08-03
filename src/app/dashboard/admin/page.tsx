@@ -8,6 +8,7 @@ import TimetableManager from "./TimetableManager";
 import GradeCategoryManager from "./GradeCategoryManager";
 import DeleteButton from "./DeleteButton";
 import CreateTuitionForm from "./CreateTuitionForm";
+import PaymentManager from "./PaymentManager";
 
 const GRADES = ["Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10", "O Levels", "A Levels"];
 
@@ -337,66 +338,7 @@ export default async function AdminDashboard() {
           <>
             {/* Active Tuitions & Payments */}
             <section className="glass-card glass-card-hover p-4 sm:p-7 rounded-2xl">
-              <div className="flex items-center space-x-3 mb-6 border-b border-slate-200/70 pb-4">
-                <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200/60 flex items-center justify-center text-blue-600 font-bold text-sm shadow-xs">
-                  💳
-                </div>
-                <h2 className="text-lg font-bold text-slate-900 tracking-wide">Payment Overview</h2>
-              </div>
-              <div className="border border-slate-200/80 rounded-xl overflow-x-auto bg-white/80 shadow-xs">
-                <table className="w-full text-left border-collapse min-w-[600px]">
-                  <thead className="bg-slate-50/90 border-b border-slate-200">
-                    <tr>
-                      <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Code</th>
-                      <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Subjects & Fee</th>
-                      <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Student</th>
-                      <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase">Payments</th>
-                      <th className="py-3.5 px-6 text-xs font-bold tracking-wider text-slate-600 uppercase text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {tuitions.length === 0 ? (
-                      <tr><td colSpan={4} className="py-8 px-6 text-center text-sm text-slate-500">No tuitions created yet.</td></tr>
-                    ) : tuitions.map(t => (
-                      <tr key={t.id} className="hover:bg-blue-50/30 transition-colors">
-                        <td className="py-4 px-6 text-sm font-bold text-blue-700">{t.tuitionCode}</td>
-                        <td className="py-4 px-6">
-                          <div className="text-sm font-semibold text-slate-900">{t.subjects?.join(", ")}</div>
-                          <div className="text-xs text-slate-500 font-medium mt-0.5">Student Fee: Rs {t.fee}/mo</div>
-                          <div className="text-xs text-indigo-600 font-medium mt-0.5">Teacher Fee: Rs {t.teacherFee}/mo</div>
-                        </td>
-                        <td className="py-4 px-6 text-sm text-slate-700 font-medium">{t.student.name}</td>
-                        <td className="py-4 px-6">
-                          {t.payments.length === 0 ? (
-                            <span className="text-slate-400 text-xs tracking-wider uppercase font-medium">No payments</span>
-                          ) : (
-                            <div className="flex flex-col gap-2 text-sm">
-                              {t.payments.map(p => (
-                                <div key={p.id} className="flex items-center gap-3">
-                                  <span className={`px-3 py-1 rounded-lg font-semibold text-xs border ${p.status === "PAID" ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200"}`}>
-                                    ${p.amount} • {p.status}
-                                  </span>
-                                  <form action={togglePaymentStatus.bind(null, p.id, p.status)}>
-                                    <button className="text-xs font-semibold text-slate-500 hover:text-blue-600 underline transition-colors">Toggle</button>
-                                  </form>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </td>
-                        <td className="py-4 px-6 text-right">
-                          <DeleteButton
-                            action={deleteTuition.bind(null, t.id)}
-                            confirmMessage="Are you sure you want to delete this class? All sessions and payments for this class will be deleted permanently."
-                          >
-                            Delete Class
-                          </DeleteButton>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <PaymentManager tuitions={tuitions as any} />
             </section>
           </>
         }

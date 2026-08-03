@@ -111,8 +111,11 @@ model Payment {
   tuitionId   String
   amount      Float
   status      String   @default("UNPAID")
-  dueDate     DateTime
+  dueDate     DateTime?
   paidDate    DateTime?
+  
+  type        String   @default("FEE") // "FEE" or "SALARY"
+  monthYear   String   @default("") // e.g. "2026-08"
   
   tuition     TuitionClass @relation(fields: [tuitionId], references: [id])
 }
