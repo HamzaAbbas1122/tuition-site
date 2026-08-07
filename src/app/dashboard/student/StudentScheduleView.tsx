@@ -15,7 +15,7 @@ type Session = {
   rescheduleReason: string | null;
 };
 
-type Payment = { id: string; amount: number; status: string };
+type Payment = { id: string; amount: number; status: string; type: string; monthYear: string };
 
 type Tuition = {
   id: string;

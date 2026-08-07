@@ -266,7 +266,7 @@ export default async function Home() {
       {/* ── Dashboard Preview ── */}
       <section className="w-full max-w-7xl px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-          
+
           {/* Left Text */}
           <div className="flex-1 space-y-6 text-center lg:text-left">
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
@@ -323,7 +323,7 @@ export default async function Home() {
                   <div className="flex justify-between items-start">
                     <div>
                       <div className="text-sm font-extrabold text-slate-900">A-Level Mathematics</div>
-                      <div className="text-[10px] text-slate-500 font-medium">Mr. Hamza Abbas</div>
+                      <div className="text-[10px] text-slate-500 font-medium">Your Teacher</div>
                     </div>
                     <div className="bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200">Active</div>
                   </div>
@@ -347,7 +347,7 @@ export default async function Home() {
                   </div>
 
                   <div className="bg-white rounded-xl border border-slate-200/80 p-3 shadow-xs opacity-70">
-                     <div className="flex justify-between items-center mb-1">
+                    <div className="flex justify-between items-center mb-1">
                       <div className="text-[11px] font-bold text-slate-600">Yesterday, 4:00 PM</div>
                       <div className="text-[10px] text-slate-500 font-bold border border-slate-200 px-2 py-0.5 rounded-full">Completed</div>
                     </div>
@@ -512,7 +512,7 @@ export default async function Home() {
             Everything you need to know before you start.
           </p>
         </div>
-        
+
         {/* Student FAQs */}
         <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3 px-1">For Students</p>
         <div className="space-y-4 mb-8">
