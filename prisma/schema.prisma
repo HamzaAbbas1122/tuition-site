@@ -39,11 +39,12 @@ model StudentProfile {
 }
 
 model TeacherProfile {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id])
-  subjects  String?
-  grades    String?
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id])
+  subjects      String?
+  grades        String?
+  qualification String?
 }
 
 model StudentApplication {
@@ -60,15 +61,16 @@ model StudentApplication {
 }
 
 model TeacherApplication {
-  id        String    @id @default(cuid())
-  name      String
-  phone     String
-  email     String
-  password  String?
-  subjects  String
-  grades    String?
-  status    String    @default("PENDING")
-  createdAt DateTime  @default(now())
+  id            String    @id @default(cuid())
+  name          String
+  phone         String
+  email         String
+  password      String?
+  subjects      String
+  grades        String?
+  qualification String?
+  status        String    @default("PENDING")
+  createdAt     DateTime  @default(now())
 }
 
 model TuitionClass {

@@ -257,3 +257,71 @@ export async function sendPasswordResetEmail({
     console.error(`[Email Error] Failed to send reset email to ${to}:`, error);
   }
 }
+/**
+ * 5. Sent when Admin approves an application — user sets their own password via a link
+ */
+export async function sendSetPasswordEmail({
+  to,
+  name,
+  role,
+  setPasswordUrl,
+}: {
+  to: string;
+  name: string;
+  role: "STUDENT" | "TEACHER";
+  setPasswordUrl: string;
+}) {
+  if (!smtpUser || !smtpPass) {
+    console.log(`[Email Skipped] SMTP credentials missing in .env. Target: ${to}`);
+    return;
+  }
+
+  const roleLabel = role === "TEACHER" ? "Teacher" : "Student";
+  const subject = `🎉 Welcome to Tuitionss.com — Set Your Password`;
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden;">
+      <div style="background: linear-gradient(135deg, #059669, #10b981); padding: 32px; text-align: center; color: white;">
+        <h1 style="margin: 0; font-size: 24px; font-weight: 800;">Tuitionss.com</h1>
+        <p style="margin-top: 8px; opacity: 0.9; font-size: 14px;">Application Approved 🎉</p>
+      </div>
+      <div style="padding: 32px; color: #1e293b;">
+        <h2 style="font-size: 18px; color: #0f172a; margin-top: 0;">Welcome, ${name}!</h2>
+        <p style="line-height: 1.6; color: #475569;">
+          Congratulations! Your application as a <strong>${roleLabel}</strong> at Tuitionss.com has been officially approved.
+        </p>
+        <p style="line-height: 1.6; color: #475569;">
+          To access your dashboard, please set your password using the button below. This link is valid for <strong>24 hours</strong>.
+        </p>
+
+        <div style="text-align: center; margin: 32px 0;">
+          <a href="${setPasswordUrl}" style="background-color: #059669; color: white; padding: 14px 32px; font-size: 15px; font-weight: 700; text-decoration: none; border-radius: 10px; display: inline-block;">
+            Set My Password
+          </a>
+        </div>
+
+        <div style="background-color: #fef9c3; border: 1px solid #fde68a; padding: 16px; border-radius: 10px; margin-bottom: 24px;">
+          <p style="margin: 0; font-size: 13px; color: #713f12;">
+            ⚠️ This link expires in <strong>24 hours</strong>. If it expires, use the <a href="${process.env.NEXTAUTH_URL || "https://www.tuitionss.com"}/forgot-password" style="color: #92400e;">forgot password</a> page to request a new one.
+          </p>
+        </div>
+
+        <p style="font-size: 12px; color: #94a3b8; word-break: break-all;">
+          Or copy and paste this URL into your browser:<br/>
+          <a href="${setPasswordUrl}" style="color: #059669;">${setPasswordUrl}</a>
+        </p>
+
+        <p style="font-size: 13px; color: #94a3b8; margin-top: 32px; border-t: 1px solid #f1f5f9; padding-top: 16px;">
+          © ${new Date().getFullYear()} Tuitionss.com. Empowering education worldwide.
+        </p>
+      </div>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({ from: smtpFrom, to, subject, html });
+    console.log(`[Email Sent] Set-password email sent to ${to}`);
+  } catch (error) {
+    console.error(`[Email Error] Failed to send set-password email to ${to}:`, error);
+  }
+}

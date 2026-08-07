@@ -78,7 +78,7 @@ export default async function Home() {
     },
     {
       q: "Is there a fee to apply as a teacher?",
-      a: "No — the application itself is completely free. There is a Rs. 2,500 fee for the 7-Day Professional Teacher Training that comes after the screening call. This is stated upfront in the FAQ so there are no surprises.",
+      a: "No — the application itself is completely free. There is a Rs. 3,000 fee for the 7-Day Professional Teacher Training that comes after the screening call. This is stated upfront in the FAQ so there are no surprises.",
       teacher: true,
     },
     {
@@ -101,7 +101,7 @@ export default async function Home() {
   const teacherSteps = [
     { num: "01", icon: "\ud83d\udcdd", title: "Free Application", desc: "Apply at tuitionss.com/apply/teacher. No fee to apply \u2014 pricing info is in the FAQ before you submit." },
     { num: "02", icon: "\ud83d\udcde", title: "Screening Call (5\u201310 min)", desc: "A short competency check on subject depth and grade fit. Pass/fail only \u2014 no pitch or fees discussed." },
-    { num: "03", icon: "\ud83c\udf93", title: "7-Day Training", desc: "Paid professional training (Rs. 2,500) led by an experienced online teacher. Pricing was visible before you applied.", cost: "Rs. 2,500" },
+    { num: "03", icon: "\ud83c\udf93", title: "7-Day Training", desc: "Paid professional training (Rs. 3,000) led by an experienced online teacher. Pricing was visible before you applied.", cost: "Rs. 3,000" },
     { num: "04", icon: "\ud83c\udfeb", title: "Graded Demo Class", desc: "An observed mock class evaluated by the trainer. This \u2014 not just attendance \u2014 earns your Verified status." },
     { num: "05", icon: "\u2705", title: "Verified & Placed", desc: "Get your badge, certificate, and reusable materials. Matched with students as demand arrives \u2014 typically within a few weeks." },
   ];
@@ -422,6 +422,11 @@ export default async function Home() {
                     <h3 className="text-xl font-extrabold text-slate-900">
                       {teacher.name}
                     </h3>
+                    {teacher.teacherProfile?.qualification && (
+                      <p className="mt-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-full inline-block">
+                        🎓 {teacher.teacherProfile.qualification}
+                      </p>
+                    )}
                     {teacher.teacherProfile?.subjects && (
                       <p className="mt-2 text-xs text-slate-600 leading-relaxed">
                         Teaches: {teacher.teacherProfile.subjects}
@@ -496,7 +501,7 @@ export default async function Home() {
           <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4">
             <span className="text-amber-500 text-base shrink-0 mt-0.5">💡</span>
             <p className="text-xs text-amber-900 leading-relaxed">
-              <strong>No hidden fees, ever.</strong> The Rs. 2,500 training cost is disclosed in the FAQ before you apply. The application itself is free and takes under 2 minutes.
+              <strong>No hidden fees, ever.</strong> The Rs. 3,000 training cost is disclosed in the FAQ before you apply. The application itself is free and takes under 2 minutes.
             </p>
           </div>
         </div>

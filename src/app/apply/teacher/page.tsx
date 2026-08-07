@@ -16,15 +16,8 @@ export default function TeacherApplicationPage() {
     "Physics",
   ]);
 
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  const passwordsMatch = confirmPassword === "" || password === confirmPassword;
-  const passwordStrong = password.length === 0 || password.length >= 8;
 
   const toggleGrade = (grade: string) => {
     if (selectedGrades.includes(grade)) {
@@ -51,28 +44,9 @@ export default function TeacherApplicationPage() {
     }
   };
 
-  const EyeIcon = ({ show }: { show: boolean }) =>
-    show ? (
-      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-      </svg>
-    ) : (
-      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-      </svg>
-    );
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
-      return;
-    }
     setError("");
     setIsLoading(true);
     const formData = new FormData(e.currentTarget);
@@ -104,7 +78,7 @@ export default function TeacherApplicationPage() {
       icon: "🎓",
       title: "Training Invitation (Transparent)",
       desc: "Candidates who pass are invited to the 7-Day Professional Teacher Training, led by a named trainer with 3 years of online teaching experience.",
-      tag: "Rs. 2,500",
+      tag: "Rs. 3,000",
     },
     {
       num: "04",
@@ -184,7 +158,7 @@ export default function TeacherApplicationPage() {
         <div className="mt-6 flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-2xl p-4">
           <span className="text-amber-500 text-lg shrink-0">💡</span>
           <p className="text-xs text-amber-900 leading-relaxed">
-            <strong>Full transparency:</strong> The 7-Day Training (Rs. 2,500) is mentioned in the FAQ before you apply — so you already know what to expect. There are no hidden fees at any stage.
+            <strong>Full transparency:</strong> The 7-Day Training (Rs. 3,000) is mentioned in the FAQ before you apply — so you already know what to expect. There are no hidden fees at any stage.
           </p>
         </div>
       </div>
@@ -255,6 +229,22 @@ export default function TeacherApplicationPage() {
                 />
                 <p className="text-xs text-slate-400 mt-1">Include country code, e.g. +92 300 1234567</p>
               </div>
+            </div>
+
+            {/* Qualification */}
+            <div>
+              <label htmlFor="qualification" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                Highest Qualification
+              </label>
+              <input
+                id="qualification"
+                name="qualification"
+                type="text"
+                required
+                maxLength={100}
+                placeholder="e.g. BS Mathematics, MSc Physics, B.Ed"
+                className="glass-input block w-full rounded-xl px-4 py-2.5 text-sm"
+              />
             </div>
 
             {/* Select Subjects Dropdown & Pills */}
@@ -346,60 +336,21 @@ export default function TeacherApplicationPage() {
                 <input key={g} type="hidden" name="grades" value={g} />
               ))}
             </div>
-            {/* Password section */}
-            <div className="pt-2 border-t border-slate-200/80">
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Set Your Portal Password</p>
-              <div className="space-y-3">
-                <div>
-                  <label htmlFor="teacher-password" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Password</label>
-                  <div className="relative">
-                    <input
-                      id="teacher-password"
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      required
-                      minLength={8}
-                      value={password}
-                      onChange={e => setPassword(e.target.value)}
-                      placeholder="Minimum 8 characters"
-                      className={`glass-input block w-full rounded-xl px-4 py-2.5 text-sm pr-10 transition-colors ${!passwordStrong ? "border-red-300 bg-red-50/30" : ""}`}
-                    />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600" aria-label="Toggle password">
-                      <EyeIcon show={showPassword} />
-                    </button>
-                  </div>
-                  {!passwordStrong && <p className="text-red-500 text-xs mt-1">Must be at least 8 characters</p>}
-                </div>
-                <div>
-                  <label htmlFor="teacher-confirm-password" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Confirm Password</label>
-                  <div className="relative">
-                    <input
-                      id="teacher-confirm-password"
-                      name="confirmPassword"
-                      type={showConfirm ? "text" : "password"}
-                      required
-                      minLength={8}
-                      value={confirmPassword}
-                      onChange={e => setConfirmPassword(e.target.value)}
-                      placeholder="Repeat your password"
-                      className={`glass-input block w-full rounded-xl px-4 py-2.5 text-sm pr-10 transition-colors ${!passwordsMatch ? "border-red-300 bg-red-50/30" : confirmPassword.length > 0 ? "border-emerald-300 bg-emerald-50/20" : ""}`}
-                    />
-                    <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600" aria-label="Toggle confirm password">
-                      <EyeIcon show={showConfirm} />
-                    </button>
-                  </div>
-                  {!passwordsMatch && <p className="text-red-500 text-xs mt-1">Passwords do not match</p>}
-                  {passwordsMatch && confirmPassword.length > 0 && <p className="text-emerald-600 text-xs mt-1">✓ Passwords match</p>}
-                </div>
-              </div>
-            </div>
+          </div>
+
+          {/* Password info note */}
+          <div className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-2xl px-4 py-3">
+            <span className="text-blue-500 text-base shrink-0 mt-0.5">✉️</span>
+            <p className="text-xs text-blue-800 leading-relaxed">
+              Once your application is reviewed, you&apos;ll receive an email with a link to set your dashboard password.
+            </p>
           </div>
 
           <div>
             <button
               type="submit"
               id="teacher-apply-submit"
-              disabled={isLoading || !passwordsMatch || !passwordStrong}
+              disabled={isLoading}
               className="w-full flex justify-center rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-700 px-4 py-3 text-sm font-bold text-white shadow-md shadow-blue-600/20 border border-blue-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "Submitting..." : "Submit Teacher Application"}

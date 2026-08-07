@@ -2,13 +2,12 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import bcrypt from "bcryptjs";
 import crypto from "crypto";
-import { sendApplicationApprovedEmail, sendClassAllottedEmail } from "@/lib/email";
+import { sendSetPasswordEmail, sendClassAllottedEmail } from "@/lib/email";
 
-/** Generates a secure random password: 10 chars, letters + numbers */
-function generatePassword(length = 10) {
-  return crypto.randomBytes(32).toString("base64").replace(/[^a-zA-Z0-9]/g, "").slice(0, length);
+/** Generates a secure token for the set-password link */
+function generateToken() {
+  return crypto.randomBytes(32).toString("hex");
 }
 
 export async function acceptStudentApp(id: string) {
@@ -23,17 +22,7 @@ export async function acceptStudentApp(id: string) {
   const emailDomain = process.env.STUDENT_EMAIL_DOMAIN || "student.tuitionss.com";
   const targetEmail = (app as any).email || `${app.studentName.replace(/\s+/g, "").toLowerCase()}@${emailDomain}`;
 
-  // Use password set by applicant; fall back to generated if missing (old applications)
-  const storedHash = (app as any).password as string | null;
-  let passwordHash: string;
-  let rawPassword: string | undefined;
-  if (storedHash) {
-    passwordHash = storedHash;
-  } else {
-    rawPassword = generatePassword();
-    passwordHash = await bcrypt.hash(rawPassword, 10);
-  }
-
+  // Create user account without a password — they'll set it via the email link
   await prisma.user.upsert({
     where: { email: targetEmail },
     update: {},
@@ -41,7 +30,7 @@ export async function acceptStudentApp(id: string) {
       name: app.studentName,
       email: targetEmail,
       phone: app.phone,
-      password: passwordHash,
+      password: null,
       role: "STUDENT",
       studentProfile: {
         create: { grade: (app as any).grade || "Class 9" }
@@ -49,15 +38,22 @@ export async function acceptStudentApp(id: string) {
     }
   });
 
-  if (targetEmail) {
-    await sendApplicationApprovedEmail({
-      to: targetEmail,
-      name: app.studentName,
-      role: "STUDENT",
-      email: targetEmail,
-      defaultPassword: storedHash ? "the password you chose during registration" : rawPassword,
-    });
-  }
+  // Generate a 24-hour set-password token
+  const token = generateToken();
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+  await prisma.passwordResetToken.create({
+    data: { token, email: targetEmail, expiresAt, used: false }
+  });
+
+  const baseUrl = process.env.NEXTAUTH_URL || "https://www.tuitionss.com";
+  const setPasswordUrl = `${baseUrl}/reset-password/${token}`;
+
+  await sendSetPasswordEmail({
+    to: targetEmail,
+    name: app.studentName,
+    role: "STUDENT",
+    setPasswordUrl,
+  });
 
   revalidatePath("/dashboard/admin");
 }
@@ -79,17 +75,7 @@ export async function acceptTeacherApp(id: string) {
     data: { status: "ACCEPTED" },
   });
 
-  // Use password set by applicant; fall back to generated if missing (old applications)
-  const storedTeacherHash = (app as any).password as string | null;
-  let teacherPasswordHash: string;
-  let teacherRawPassword: string | undefined;
-  if (storedTeacherHash) {
-    teacherPasswordHash = storedTeacherHash;
-  } else {
-    teacherRawPassword = generatePassword();
-    teacherPasswordHash = await bcrypt.hash(teacherRawPassword, 10);
-  }
-
+  // Create user account without a password — they'll set it via the email link
   await prisma.user.upsert({
     where: { email: app.email },
     update: {},
@@ -97,20 +83,29 @@ export async function acceptTeacherApp(id: string) {
       name: app.name,
       email: app.email,
       phone: app.phone,
-      password: teacherPasswordHash,
+      password: null,
       role: "TEACHER",
       teacherProfile: {
-        create: { subjects: app.subjects, grades: (app as any).grades || "Class 2 to A Levels" } as any
+        create: { subjects: app.subjects, grades: (app as any).grades || "Class 2 to A Levels", qualification: (app as any).qualification || null } as any
       }
     }
   });
 
-  await sendApplicationApprovedEmail({
+  // Generate a 24-hour set-password token
+  const token = generateToken();
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+  await prisma.passwordResetToken.create({
+    data: { token, email: app.email, expiresAt, used: false }
+  });
+
+  const baseUrl = process.env.NEXTAUTH_URL || "https://www.tuitionss.com";
+  const setPasswordUrl = `${baseUrl}/reset-password/${token}`;
+
+  await sendSetPasswordEmail({
     to: app.email,
     name: app.name,
     role: "TEACHER",
-    email: app.email,
-    defaultPassword: storedTeacherHash ? "the password you chose during registration" : teacherRawPassword,
+    setPasswordUrl,
   });
 
   revalidatePath("/dashboard/admin");
