@@ -12,7 +12,7 @@ export default function Navbar() {
   return (
     <nav className="bg-[#faf8f5]/90 backdrop-blur-xl border-b border-blue-100/80 sticky top-0 z-50 transition-all shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-[72px] sm:h-20">
 
           {/* Logo */}
           <div className="flex items-center">
@@ -21,18 +21,18 @@ export default function Navbar() {
               <Image 
                 src="/logo-desktop.png" 
                 alt="Tuitionss.com" 
-                width={200} 
-                height={40} 
-                className="hidden md:block h-10 w-auto object-contain"
+                width={260} 
+                height={50} 
+                className="hidden md:block h-[46px] w-auto object-contain mix-blend-multiply drop-shadow-sm transition-transform duration-300 group-hover:scale-[1.02]"
                 priority
               />
               {/* Mobile Logo */}
               <Image 
                 src="/z-logo.png" 
                 alt="Tuitionss.com" 
-                width={32} 
-                height={32} 
-                className="block md:hidden h-8 w-auto object-contain"
+                width={44} 
+                height={44} 
+                className="block md:hidden h-[36px] w-auto object-contain mix-blend-multiply drop-shadow-sm transition-transform duration-300 group-hover:scale-[1.02]"
                 priority
               />
             </Link>
