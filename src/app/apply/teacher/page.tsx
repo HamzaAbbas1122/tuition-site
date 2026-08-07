@@ -84,9 +84,114 @@ export default function TeacherApplicationPage() {
     }
   }
 
+  const hiringSteps = [
+    {
+      num: "01",
+      icon: "📝",
+      title: "Free Application",
+      desc: "Apply here — no fee. The FAQ already states the screening and paid training structure upfront, so nothing about pricing is a surprise later.",
+      tag: null,
+    },
+    {
+      num: "02",
+      icon: "📞",
+      title: "Subject Screening Call (5–10 min)",
+      desc: "A short call to check subject depth and grade-level fit only. No mention of training or fees — it's purely a pass/fail competency check.",
+      tag: null,
+    },
+    {
+      num: "03",
+      icon: "🎓",
+      title: "Training Invitation (Transparent)",
+      desc: "Candidates who pass are invited to the 7-Day Professional Teacher Training, led by a named trainer with 3 years of online teaching experience.",
+      tag: "Rs. 2,500",
+    },
+    {
+      num: "04",
+      icon: "🏫",
+      title: "Graded Demo Class",
+      desc: "Training ends with an observed mock class evaluated by the trainer. This is what earns \"Verified\" status — not merely completing 7 days.",
+      tag: null,
+    },
+    {
+      num: "05",
+      icon: "✅",
+      title: "Verified Badge + Roster Placement",
+      desc: "Successful candidates receive the Verified Teacher badge, a certificate, and reusable materials. You're added to the roster and matched as student demand arrives — typically within a few weeks.",
+      tag: null,
+    },
+  ];
+
   return (
-    <div className="py-16 px-4 sm:px-6 lg:px-8 flex justify-center items-center">
-      <div className="max-w-xl w-full space-y-8 glass-card glass-card-hover p-8 sm:p-10 rounded-3xl">
+    <div className="py-12 px-4 sm:px-6 lg:px-8">
+
+      {/* ── 5-Step Process Banner ── */}
+      <div className="max-w-4xl mx-auto mb-12">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-xs font-bold text-blue-700 mb-4">
+            <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+            How Our Teacher Hiring Works
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+            Join as a <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Verified Teacher</span>
+          </h1>
+          <p className="mt-3 text-sm text-slate-600 max-w-2xl mx-auto">
+            We keep the process transparent from start to finish. Here&apos;s exactly what to expect after you submit your application.
+          </p>
+        </div>
+
+        {/* Steps — vertical on mobile, 5-col grid on xl */}
+        <div className="relative">
+          {/* Connector line (desktop only) */}
+          <div className="hidden xl:block absolute top-10 left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-blue-200 via-indigo-300 to-blue-200 z-0" />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 relative z-10">
+            {hiringSteps.map((step) => (
+              <div
+                key={step.num}
+                className="flex flex-col items-center text-center bg-white/80 border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-200 group"
+              >
+                {/* Number badge */}
+                <div className="relative mb-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center shadow-md shadow-blue-500/30">
+                    <span className="text-white text-xs font-extrabold">{step.num}</span>
+                  </div>
+                </div>
+
+                {/* Icon */}
+                <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-2xl mb-3 group-hover:scale-110 transition-transform">
+                  {step.icon}
+                </div>
+
+                {/* Title */}
+                <h3 className="text-sm font-bold text-slate-900 leading-snug mb-2">{step.title}</h3>
+
+                {/* Training fee tag */}
+                {step.tag && (
+                  <span className="inline-block mb-2 px-2.5 py-1 text-[11px] font-extrabold rounded-full bg-amber-50 border border-amber-300 text-amber-800">
+                    {step.tag} fee
+                  </span>
+                )}
+
+                {/* Description */}
+                <p className="text-xs text-slate-500 leading-relaxed">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Transparency note */}
+        <div className="mt-6 flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-2xl p-4">
+          <span className="text-amber-500 text-lg shrink-0">💡</span>
+          <p className="text-xs text-amber-900 leading-relaxed">
+            <strong>Full transparency:</strong> The 7-Day Training (Rs. 2,500) is mentioned in the FAQ before you apply — so you already know what to expect. There are no hidden fees at any stage.
+          </p>
+        </div>
+      </div>
+
+      {/* ── Application Form ── */}
+      <div className="max-w-xl mx-auto">
+      <div className="w-full space-y-8 glass-card glass-card-hover p-8 sm:p-10 rounded-3xl">
         <div className="text-center">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-sky-500 mx-auto flex items-center justify-center shadow-md shadow-blue-500/20 mb-4">
             <span className="text-white font-extrabold text-xl">👨‍🏫</span>
@@ -301,6 +406,7 @@ export default function TeacherApplicationPage() {
             </button>
           </div>
         </form>
+      </div>
       </div>
     </div>
   );

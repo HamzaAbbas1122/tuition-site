@@ -70,12 +70,40 @@ export default async function Home() {
     },
     {
       q: "What if I need to miss a class?",
-      a: "No problem. You can request a reschedule directly from your student dashboard, and we'll arrange a make-up class with your teacher."
+      a: "No problem. You can request a reschedule directly from your student dashboard, and we\u2019ll arrange a make-up class with your teacher."
     },
     {
       q: "Are the classes group or individual?",
       a: "All our classes are strictly 1-on-1. You get 100% of the teacher's attention to focus on exactly what you need help with."
-    }
+    },
+    {
+      q: "Is there a fee to apply as a teacher?",
+      a: "No — the application itself is completely free. There is a Rs. 2,500 fee for the 7-Day Professional Teacher Training that comes after the screening call. This is stated upfront in the FAQ so there are no surprises.",
+      teacher: true,
+    },
+    {
+      q: "What does the subject screening call involve?",
+      a: "It's a short 5\u201310 minute call purely to assess your subject knowledge and grade-level fit. No pitch, no fees discussed \u2014 just a pass/fail competency check.",
+      teacher: true,
+    },
+    {
+      q: "How does the demo class work?",
+      a: "After completing the 7-day training, you deliver an observed mock class evaluated by the trainer. Passing the demo \u2014 not just completing 7 days \u2014 is what earns you the Verified Teacher badge.",
+      teacher: true,
+    },
+    {
+      q: "How soon will I be assigned students after getting verified?",
+      a: "It depends on real student demand for your subject and grade level. We match teachers as requests come in \u2014 typically within a few weeks of verification.",
+      teacher: true,
+    },
+  ];
+
+  const teacherSteps = [
+    { num: "01", icon: "\ud83d\udcdd", title: "Free Application", desc: "Apply at tuitionss.com/apply/teacher. No fee to apply \u2014 pricing info is in the FAQ before you submit." },
+    { num: "02", icon: "\ud83d\udcde", title: "Screening Call (5\u201310 min)", desc: "A short competency check on subject depth and grade fit. Pass/fail only \u2014 no pitch or fees discussed." },
+    { num: "03", icon: "\ud83c\udf93", title: "7-Day Training", desc: "Paid professional training (Rs. 2,500) led by an experienced online teacher. Pricing was visible before you applied.", cost: "Rs. 2,500" },
+    { num: "04", icon: "\ud83c\udfeb", title: "Graded Demo Class", desc: "An observed mock class evaluated by the trainer. This \u2014 not just attendance \u2014 earns your Verified status." },
+    { num: "05", icon: "\u2705", title: "Verified & Placed", desc: "Get your badge, certificate, and reusable materials. Matched with students as demand arrives \u2014 typically within a few weeks." },
   ];
 
   return (
@@ -417,6 +445,63 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* ── Teacher Hiring Process ── */}
+      <section className="w-full max-w-7xl px-6 lg:px-8">
+        <div className="glass-card p-10 rounded-3xl space-y-10">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-xs font-bold text-blue-700 mb-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                For Teacher Applicants
+              </div>
+              <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+                How to Join as a <span className="blue-glow-text">Verified Teacher</span>
+              </h2>
+              <p className="mt-3 text-sm text-slate-600 max-w-lg">
+                Our process is transparent from day one. 5 clear steps from application to your first student.
+              </p>
+            </div>
+            <Link href="/apply/teacher" className="shrink-0 inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-700 text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-md shadow-blue-500/20 hover:scale-105 transition-all">
+              Apply to Teach <span>→</span>
+            </Link>
+          </div>
+
+          {/* Steps grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {teacherSteps.map((step) => (
+              <div key={step.num} className="relative flex flex-col items-center text-center bg-white/90 border border-slate-200/60 rounded-2xl p-5 hover:border-blue-300 hover:shadow-md transition-all duration-200 group">
+                {/* Step number */}
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center shadow-md shadow-blue-500/30 mb-3">
+                  <span className="text-white text-[11px] font-extrabold">{step.num}</span>
+                </div>
+                {/* Icon */}
+                <div className="w-11 h-11 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition-transform">
+                  {step.icon}
+                </div>
+                {/* Title */}
+                <h3 className="text-[13px] font-bold text-slate-900 leading-snug mb-1.5">{step.title}</h3>
+                {/* Cost badge */}
+                {step.cost && (
+                  <span className="inline-block mb-2 px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-amber-50 border border-amber-300 text-amber-800">
+                    {step.cost}
+                  </span>
+                )}
+                {/* Description */}
+                <p className="text-[11px] text-slate-500 leading-relaxed">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Transparency notice */}
+          <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4">
+            <span className="text-amber-500 text-base shrink-0 mt-0.5">💡</span>
+            <p className="text-xs text-amber-900 leading-relaxed">
+              <strong>No hidden fees, ever.</strong> The Rs. 2,500 training cost is disclosed in the FAQ before you apply. The application itself is free and takes under 2 minutes.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* ── FAQ ── */}
       <section className="w-full max-w-4xl mx-auto px-6 lg:px-8 mb-12">
         <div className="text-center mb-12">
@@ -428,12 +513,35 @@ export default async function Home() {
           </p>
         </div>
         
-        <div className="space-y-4">
-          {faqs.map((faq, i) => (
+        {/* Student FAQs */}
+        <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3 px-1">For Students</p>
+        <div className="space-y-4 mb-8">
+          {faqs.filter(f => !f.teacher).map((faq, i) => (
             <details key={i} className="group glass-card rounded-2xl overflow-hidden [&_summary::-webkit-details-marker]:hidden">
               <summary className="flex items-center justify-between p-6 cursor-pointer select-none font-bold text-slate-900 list-none">
                 {faq.q}
                 <span className="transition group-open:rotate-180 text-blue-600">
+                  <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                </span>
+              </summary>
+              <div className="px-6 pb-6 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-4">
+                {faq.a}
+              </div>
+            </details>
+          ))}
+        </div>
+
+        {/* Teacher FAQs */}
+        <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3 px-1">For Teacher Applicants</p>
+        <div className="space-y-4">
+          {faqs.filter(f => f.teacher).map((faq, i) => (
+            <details key={i} className="group glass-card rounded-2xl overflow-hidden [&_summary::-webkit-details-marker]:hidden border-blue-100/80">
+              <summary className="flex items-center justify-between p-6 cursor-pointer select-none font-bold text-slate-900 list-none">
+                <span className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></span>
+                  {faq.q}
+                </span>
+                <span className="transition group-open:rotate-180 text-blue-600 shrink-0 ml-4">
                   <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
                 </span>
               </summary>
