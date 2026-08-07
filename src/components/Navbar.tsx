@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import Image from "next/image";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -12,15 +13,28 @@ export default function Navbar() {
     <nav className="bg-[#faf8f5]/90 backdrop-blur-xl border-b border-blue-100/80 sticky top-0 z-50 transition-all shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
+
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2.5 group">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-700 flex items-center justify-center shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
-                <span className="text-white font-extrabold text-sm tracking-wider">T</span>
-              </div>
-              <span className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">
-                Tuitionss<span className="blue-glow-text">.com</span>
-              </span>
+            <Link href="/" className="flex items-center group">
+              {/* Desktop Logo */}
+              <Image 
+                src="/logo-desktop.png" 
+                alt="Tuitionss.com" 
+                width={250} 
+                height={50} 
+                className="hidden md:block object-contain"
+                priority
+              />
+              {/* Mobile Logo */}
+              <Image 
+                src="/z-logo.png" 
+                alt="Tuitionss.com" 
+                width={40} 
+                height={40} 
+                className="block md:hidden object-contain"
+                priority
+              />
             </Link>
           </div>
 

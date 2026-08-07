@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
@@ -43,11 +44,21 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <footer className="border-t border-slate-200/80 bg-[#faf8f5]/80 backdrop-blur-md py-8 mt-20 text-center text-xs text-slate-500">
             <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-              <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-xs shadow-xs">
-                  T
-                </div>
-                <span className="font-extrabold text-slate-800 tracking-tight text-sm">Tuitionss.com</span>
+              <div className="flex items-center">
+                <Image 
+                  src="/logo-desktop.png" 
+                  alt="Tuitionss.com" 
+                  width={150} 
+                  height={30} 
+                  className="hidden sm:block object-contain opacity-70 grayscale hover:grayscale-0 hover:opacity-100 transition-all"
+                />
+                <Image 
+                  src="/z-logo.png" 
+                  alt="Tuitionss.com" 
+                  width={24} 
+                  height={24} 
+                  className="block sm:hidden object-contain opacity-70 grayscale hover:grayscale-0 hover:opacity-100 transition-all"
+                />
               </div>
               <p className="text-slate-500">© {new Date().getFullYear()} Tuitionss.com. Private 1-on-1 tuition for O &amp; A-Level students.</p>
               <div className="flex space-x-6 text-slate-600 font-medium">
