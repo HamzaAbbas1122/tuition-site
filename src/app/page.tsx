@@ -473,7 +473,7 @@ export default async function Home() {
                 <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
                   <span className="text-xs text-slate-500">Live 1-on-1 classes</span>
                   <Link href="/apply/student" className="text-xs font-bold text-blue-600 hover:underline">
-                    Request this teacher
+                    Request a teacher
                   </Link>
                 </div>
               </div>
