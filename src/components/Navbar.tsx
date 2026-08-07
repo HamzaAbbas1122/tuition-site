@@ -21,18 +21,18 @@ export default function Navbar() {
               <Image 
                 src="/logo-desktop.png" 
                 alt="Tuitionss.com" 
-                width={250} 
-                height={50} 
-                className="hidden md:block object-contain"
+                width={200} 
+                height={40} 
+                className="hidden md:block h-10 w-auto object-contain"
                 priority
               />
               {/* Mobile Logo */}
               <Image 
                 src="/z-logo.png" 
                 alt="Tuitionss.com" 
-                width={40} 
-                height={40} 
-                className="block md:hidden object-contain"
+                width={32} 
+                height={32} 
+                className="block md:hidden h-8 w-auto object-contain"
                 priority
               />
             </Link>
