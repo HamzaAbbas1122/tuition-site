@@ -1,13 +1,49 @@
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
 
 export default async function Home() {
-  // Fetch real teachers from DB
-  const teachers = await prisma.user.findMany({
-    where: { role: "TEACHER" },
-    include: { teacherProfile: true },
-    take: 3,
-  });
+  // Hardcoded teachers for the frontend display
+  const teachers = [
+    {
+      id: "1",
+      name: "Muhammad Ali",
+      teacherProfile: {
+        subjects: "Mathematics, Physics",
+        qualification: "MSc Physics",
+      },
+    },
+    {
+      id: "2",
+      name: "Fatima Zahra",
+      teacherProfile: {
+        subjects: "Biology, Chemistry",
+        qualification: "MBBS",
+      },
+    },
+    {
+      id: "3",
+      name: "Ahmed Raza",
+      teacherProfile: {
+        subjects: "Computer Science",
+        qualification: "BS Computer Science",
+      },
+    },
+    {
+      id: "4",
+      name: "Ayesha Noor",
+      teacherProfile: {
+        subjects: "English Literature",
+        qualification: "MA English",
+      },
+    },
+    {
+      id: "5",
+      name: "Usman Tariq",
+      teacherProfile: {
+        subjects: "Accounting, Economics",
+        qualification: "ACCA",
+      },
+    },
+  ];
 
   const subjects = [
     { title: "Mathematics", icon: "📐", desc: "Class 6 through A-Levels: Algebra, Calculus, Statistics & Geometry", badge: "STEM" },
