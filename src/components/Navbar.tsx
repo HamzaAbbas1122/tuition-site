@@ -21,18 +21,18 @@ export default function Navbar() {
               <Image 
                 src="/logo-desktop.png" 
                 alt="Tuitionss.com" 
-                width={260} 
-                height={50} 
-                className="hidden md:block h-[46px] w-auto object-contain mix-blend-multiply drop-shadow-sm transition-transform duration-300 group-hover:scale-[1.02]"
+                width={360} 
+                height={80} 
+                className="hidden md:block w-[240px] lg:w-[280px] h-auto mix-blend-multiply drop-shadow-sm transition-transform duration-300 group-hover:scale-[1.02]"
                 priority
               />
               {/* Mobile Logo */}
               <Image 
                 src="/z-logo.png" 
                 alt="Tuitionss.com" 
-                width={44} 
-                height={44} 
-                className="block md:hidden h-[36px] w-auto object-contain mix-blend-multiply drop-shadow-sm transition-transform duration-300 group-hover:scale-[1.02]"
+                width={80} 
+                height={80} 
+                className="block md:hidden w-[50px] h-auto mix-blend-multiply drop-shadow-sm transition-transform duration-300 group-hover:scale-[1.02]"
                 priority
               />
             </Link>
