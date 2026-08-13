@@ -63,22 +63,22 @@ export default function TeacherApplicationPage() {
       num: "01",
       icon: "📝",
       title: "Free Application",
-      desc: "Apply here — no fee. The FAQ already states the screening and paid training structure upfront, so nothing about pricing is a surprise later.",
+      desc: "Apply here — the process is completely free.",
       tag: null,
     },
     {
       num: "02",
       icon: "📞",
       title: "Subject Screening Call (5–10 min)",
-      desc: "A short call to check subject depth and grade-level fit only. No mention of training or fees — it's purely a pass/fail competency check.",
+      desc: "A short call to check subject depth and grade-level fit only. It's purely a pass/fail competency check.",
       tag: null,
     },
     {
       num: "03",
       icon: "🎓",
-      title: "Training Invitation (Transparent)",
+      title: "Training Invitation",
       desc: "Candidates who pass are invited to the 7-Day Professional Teacher Training, led by a named trainer with 3 years of online teaching experience.",
-      tag: "Rs. 3,000",
+      tag: null,
     },
     {
       num: "04",
@@ -140,10 +140,10 @@ export default function TeacherApplicationPage() {
                 {/* Title */}
                 <h3 className="text-sm font-bold text-slate-900 leading-snug mb-2">{step.title}</h3>
 
-                {/* Training fee tag */}
+                {/* Training tag */}
                 {step.tag && (
                   <span className="inline-block mb-2 px-2.5 py-1 text-[11px] font-extrabold rounded-full bg-amber-50 border border-amber-300 text-amber-800">
-                    {step.tag} fee
+                    {step.tag}
                   </span>
                 )}
 
@@ -154,11 +154,11 @@ export default function TeacherApplicationPage() {
           </div>
         </div>
 
-        {/* Transparency note */}
-        <div className="mt-6 flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-2xl p-4">
-          <span className="text-amber-500 text-lg shrink-0">💡</span>
-          <p className="text-xs text-amber-900 leading-relaxed">
-            <strong>Full transparency:</strong> The 7-Day Training (Rs. 3,000) is mentioned in the FAQ before you apply — so you already know what to expect. There are no hidden fees at any stage.
+        {/* Note */}
+        <div className="mt-6 flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-2xl p-4">
+          <span className="text-blue-500 text-lg shrink-0">💡</span>
+          <p className="text-xs text-blue-900 leading-relaxed">
+            <strong>100% Free Process:</strong> The application and training are completely free. There are no hidden fees at any stage.
           </p>
         </div>
       </div>
