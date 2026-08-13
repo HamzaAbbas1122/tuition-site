@@ -78,6 +78,18 @@ export default async function AdminDashboard() {
     where: { date: { gte: new Date(new Date().setHours(0, 0, 0, 0)) } }
   });
   const totalSiteVisits = await prisma.siteVisit.count();
+  const visitsByCountry = await prisma.siteVisit.groupBy({
+    by: ['country'],
+    _count: { id: true },
+    where: { 
+      AND: [
+        { country: { not: null } },
+        { country: { not: "" } }
+      ]
+    },
+    orderBy: { _count: { id: 'desc' } },
+    take: 3,
+  });
 
   const expectedRevenue = tuitions.reduce((sum, t) => sum + (t.isActive ? ((t.fee || 0) - (t.teacherFee || 0)) : 0), 0);
   const totalClasses = tuitions.length;
@@ -102,8 +114,20 @@ export default async function AdminDashboard() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="glass-card p-4 rounded-xl flex flex-col justify-center">
-          <p className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Site Visits (Today / Total)</p>
-          <p className="text-2xl font-extrabold text-blue-600">{siteVisitsToday} <span className="text-sm text-slate-400 font-medium">/ {totalSiteVisits}</span></p>
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Site Visits (Today / Total)</p>
+              <p className="text-2xl font-extrabold text-blue-600">{siteVisitsToday} <span className="text-sm text-slate-400 font-medium">/ {totalSiteVisits}</span></p>
+            </div>
+            {visitsByCountry.length > 0 && (
+              <div className="text-[9px] text-right text-slate-500">
+                <p className="font-bold text-slate-700 mb-0.5">Top Countries</p>
+                {visitsByCountry.map(v => (
+                  <p key={v.country}>{v.country}: {v._count.id}</p>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
         <div className="glass-card p-4 rounded-xl flex flex-col justify-center">
           <p className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Users (Students / Teachers)</p>
