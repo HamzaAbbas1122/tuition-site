@@ -167,7 +167,7 @@ export default async function AdminDashboard() {
                         <div className="flex justify-between items-start">
                           <p className="font-bold text-slate-900 text-lg">{app.studentName}</p>
                           <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                            {(app as any).grade || "Class 9"}
+                            {app.grade || "Class 9"}
                           </span>
                         </div>
                         <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-slate-600">
@@ -221,9 +221,19 @@ export default async function AdminDashboard() {
                   {teacherApps.map(app => (
                     <div key={app.id} className="p-5 rounded-xl flex flex-col gap-4 bg-white/90 border border-slate-200/80 shadow-xs hover:border-blue-300 transition-all">
                       <div>
-                        <p className="font-bold text-slate-900 text-lg">{app.name}</p>
+                        <div className="flex justify-between items-start">
+                          <p className="font-bold text-slate-900 text-lg">{app.name}</p>
+                          {app.qualification && (
+                            <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
+                              🎓 {app.qualification}
+                            </span>
+                          )}
+                        </div>
                         <div className="grid grid-cols-2 gap-y-1 gap-x-4 mt-2 text-xs text-slate-600">
                           <p className="col-span-2"><span className="text-slate-500 font-medium">Subjects:</span> <span className="text-indigo-600 font-bold">{app.subjects}</span></p>
+                          {app.grades && (
+                            <p className="col-span-2"><span className="text-slate-500 font-medium">Grades:</span> <span className="text-slate-800 font-semibold">{app.grades}</span></p>
+                          )}
                           <p className="col-span-2"><span className="text-slate-500 font-medium">Email:</span> <span className="text-slate-800 font-semibold">{app.email}</span></p>
                         </div>
                       </div>
