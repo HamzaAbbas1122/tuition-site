@@ -114,41 +114,34 @@ export default function TeacherApplicationPage() {
           </p>
         </div>
 
-        {/* Steps — vertical on mobile, 5-col grid on xl */}
-        <div className="relative">
-          {/* Connector line (desktop only) */}
-          <div className="hidden xl:block absolute top-10 left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-blue-200 via-indigo-300 to-blue-200 z-0" />
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 relative z-10">
-            {hiringSteps.map((step) => (
+        {/* Steps — horizontal timeline on desktop, vertical on mobile */}
+        <div className="relative max-w-5xl mx-auto px-4 md:px-0">
+          <div className="flex flex-col md:flex-row justify-between gap-8 md:gap-4 relative z-10">
+            {hiringSteps.map((step, idx) => (
               <div
                 key={step.num}
-                className="flex flex-col items-center text-center bg-white/80 border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-200 group"
+                className="flex flex-row md:flex-col items-center md:items-center text-left md:text-center flex-1 relative group"
               >
-                {/* Number badge */}
-                <div className="relative mb-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center shadow-md shadow-blue-500/30">
-                    <span className="text-white text-xs font-extrabold">{step.num}</span>
+                {/* Connecting Line */}
+                {idx !== hiringSteps.length - 1 && (
+                  <>
+                    <div className="hidden md:block absolute top-7 left-[50%] w-full h-[2px] bg-slate-200 z-0 group-hover:bg-blue-300 transition-colors" />
+                    <div className="md:hidden absolute top-14 left-7 w-[2px] h-[calc(100%+1rem)] bg-slate-200 z-0 group-hover:bg-blue-300 transition-colors" />
+                  </>
+                )}
+
+                {/* Icon/Number Circle */}
+                <div className="relative z-10 flex-shrink-0 w-14 h-14 rounded-full bg-white border-2 border-slate-200 flex items-center justify-center shadow-sm group-hover:border-blue-500 group-hover:bg-blue-50 transition-all duration-300">
+                  <span className="text-2xl">{step.icon}</span>
+                  <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center shadow-md">
+                    {parseInt(step.num, 10)}
                   </div>
                 </div>
 
-                {/* Icon */}
-                <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-2xl mb-3 group-hover:scale-110 transition-transform">
-                  {step.icon}
-                </div>
-
                 {/* Title */}
-                <h3 className="text-sm font-bold text-slate-900 leading-snug mb-2">{step.title}</h3>
-
-                {/* Training tag */}
-                {step.tag && (
-                  <span className="inline-block mb-2 px-2.5 py-1 text-[11px] font-extrabold rounded-full bg-amber-50 border border-amber-300 text-amber-800">
-                    {step.tag}
-                  </span>
-                )}
-
-                {/* Description */}
-                <p className="text-xs text-slate-500 leading-relaxed">{step.desc}</p>
+                <div className="ml-5 md:ml-0 md:mt-4 md:px-2">
+                  <h3 className="text-sm font-bold text-slate-800 leading-snug">{step.title}</h3>
+                </div>
               </div>
             ))}
           </div>

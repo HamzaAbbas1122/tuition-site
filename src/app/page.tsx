@@ -155,8 +155,8 @@ export default async function Home() {
           </div>
 
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold text-slate-900 tracking-tight leading-tight">
-            Private Tutoring,{" "}
-            <span className="blue-glow-text">Done Properly</span>
+            Verified Teachers.{" "}
+            <span className="blue-glow-text">Trusted Learning.</span>
           </h1>
 
           <p className="text-base sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
@@ -256,9 +256,9 @@ export default async function Home() {
 
       {/* ── 3 Free Demo Classes ── */}
       <section className="w-full max-w-7xl px-6 lg:px-8">
-        <div className="relative rounded-3xl overflow-hidden border border-emerald-200/80 bg-gradient-to-br from-emerald-50/70 to-white/80 glass-card p-10 sm:p-14">
+        <div className="relative rounded-3xl overflow-hidden border border-emerald-200/80 bg-gradient-to-br from-emerald-50/70 to-white/80 glass-card p-8 sm:p-14">
           {/* Decorative background number */}
-          <span className="absolute right-8 top-6 text-[120px] font-extrabold text-emerald-100/70 select-none leading-none pointer-events-none">3</span>
+          <span className="absolute -right-4 top-2 sm:right-8 sm:top-6 text-[100px] sm:text-[120px] font-extrabold text-emerald-100/70 select-none leading-none pointer-events-none">3</span>
 
           <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-10">
             {/* Left: copy */}
@@ -335,7 +335,7 @@ export default async function Home() {
               {/* Fake App Content */}
               <div className="flex h-[320px] bg-[#faf8f5]">
                 {/* Sidebar */}
-                <div className="w-1/3 border-r border-slate-200/80 bg-white/70 p-4 space-y-4">
+                <div className="hidden sm:block w-1/3 border-r border-slate-200/80 bg-white/70 p-4 space-y-4">
                   <div className="h-3 bg-slate-200 rounded w-1/2 mb-2"></div>
                   <div className="space-y-2">
                     <div className="h-12 bg-blue-50 rounded-xl border border-blue-200/60 p-2 flex items-center gap-2">
@@ -355,7 +355,7 @@ export default async function Home() {
                   </div>
                 </div>
                 {/* Main panel */}
-                <div className="w-2/3 p-5 flex flex-col gap-4">
+                <div className="w-full sm:w-2/3 p-4 sm:p-5 flex flex-col gap-4">
                   <div className="flex justify-between items-start">
                     <div>
                       <div className="text-sm font-extrabold text-slate-900">A-Level Mathematics</div>
@@ -507,30 +507,37 @@ export default async function Home() {
             </Link>
           </div>
 
-          {/* Steps grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            {teacherSteps.map((step) => (
-              <div key={step.num} className="relative flex flex-col items-center text-center bg-white/90 border border-slate-200/60 rounded-2xl p-5 hover:border-blue-300 hover:shadow-md transition-all duration-200 group">
-                {/* Step number */}
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center shadow-md shadow-blue-500/30 mb-3">
-                  <span className="text-white text-[11px] font-extrabold">{step.num}</span>
+          {/* Steps — horizontal timeline on desktop, vertical on mobile */}
+          <div className="relative max-w-5xl mx-auto px-2 md:px-0 mt-8">
+            <div className="flex flex-col md:flex-row justify-between gap-8 md:gap-4 relative z-10">
+              {teacherSteps.map((step, idx) => (
+                <div
+                  key={step.num}
+                  className="flex flex-row md:flex-col items-center md:items-center text-left md:text-center flex-1 relative group"
+                >
+                  {/* Connecting Line */}
+                  {idx !== teacherSteps.length - 1 && (
+                    <>
+                      <div className="hidden md:block absolute top-7 left-[50%] w-full h-[2px] bg-slate-200 z-0 group-hover:bg-blue-300 transition-colors" />
+                      <div className="md:hidden absolute top-14 left-7 w-[2px] h-[calc(100%+1rem)] bg-slate-200 z-0 group-hover:bg-blue-300 transition-colors" />
+                    </>
+                  )}
+
+                  {/* Icon/Number Circle */}
+                  <div className="relative z-10 flex-shrink-0 w-14 h-14 rounded-full bg-white border-2 border-slate-200 flex items-center justify-center shadow-sm group-hover:border-blue-500 group-hover:bg-blue-50 transition-all duration-300">
+                    <span className="text-2xl">{step.icon}</span>
+                    <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center shadow-md">
+                      {parseInt(step.num, 10)}
+                    </div>
+                  </div>
+
+                  {/* Title */}
+                  <div className="ml-5 md:ml-0 md:mt-4 md:px-2">
+                    <h3 className="text-sm font-bold text-slate-800 leading-snug">{step.title}</h3>
+                  </div>
                 </div>
-                {/* Icon */}
-                <div className="w-11 h-11 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition-transform">
-                  {step.icon}
-                </div>
-                {/* Title */}
-                <h3 className="text-[13px] font-bold text-slate-900 leading-snug mb-1.5">{step.title}</h3>
-                {/* Cost badge */}
-                {step.cost && (
-                  <span className="inline-block mb-2 px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-amber-50 border border-amber-300 text-amber-800">
-                    {step.cost}
-                  </span>
-                )}
-                {/* Description */}
-                <p className="text-[11px] text-slate-500 leading-relaxed">{step.desc}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
           {/* Transparency notice */}
