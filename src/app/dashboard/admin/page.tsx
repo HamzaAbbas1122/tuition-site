@@ -22,7 +22,19 @@ export default async function AdminDashboard() {
   const studentApps = await prisma.studentApplication.findMany({ where: { status: "PENDING" } });
   const teacherApps = await prisma.teacherApplication.findMany({ where: { status: "PENDING" } });
 
-  const teachers = await prisma.user.findMany({ where: { role: "TEACHER" } });
+  // Fetch emails of accepted teachers to filter the user lists
+  const acceptedTeacherAppsList = await prisma.teacherApplication.findMany({
+    where: { status: "ACCEPTED" },
+    select: { email: true }
+  });
+  const acceptedTeacherEmails = acceptedTeacherAppsList.map(app => app.email);
+
+  const teachers = await prisma.user.findMany({ 
+    where: { 
+      role: "TEACHER",
+      email: { in: acceptedTeacherEmails }
+    } 
+  });
   const students = await prisma.user.findMany({ where: { role: "STUDENT" } });
 
   const studentsWithProfile = await prisma.user.findMany({
@@ -38,7 +50,10 @@ export default async function AdminDashboard() {
   });
 
   const teachersWithProfile = await prisma.user.findMany({
-    where: { role: "TEACHER" },
+    where: { 
+      role: "TEACHER",
+      email: { in: acceptedTeacherEmails }
+    },
     include: {
       teacherProfile: true,
       teacherClasses: {
